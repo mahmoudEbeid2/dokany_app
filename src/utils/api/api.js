@@ -8,12 +8,13 @@ export const authAPI = axios.create({
 });
 
 export const sellerAPI = axios.create({
-  baseURL: `${BASE_URL}/`, 
+  baseURL: `${BASE_URL}`, 
 });
 
 sellerAPI.interceptors.request.use(
   async (config) => {
     const token = await AsyncStorage.getItem('token');
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -31,6 +32,7 @@ export const themeAPI = axios.create({
 themeAPI.interceptors.request.use(
   async (config) => {
     const token = await AsyncStorage.getItem('token');
+    
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
