@@ -12,9 +12,11 @@ import {
   Alert,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 const AddCategory =  ({ navigation }) => {
-     const token ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtZGRmNTVxNzAwMDBzNnlweG5oaThtOGgiLCJyb2xlIjoic2VsbGVyIiwiaWF0IjoxNzUzMTIxMjg1LCJleHAiOjE3NTM3MjYwODV9.EjqeiVhVpkBWo3kyJDO5ngPOHzWUAx3_kbis8kxoBxY"
+    //  const token ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtZGRmNTVxNzAwMDBzNnlweG5oaThtOGgiLCJyb2xlIjoic2VsbGVyIiwiaWF0IjoxNzUzMTIxMjg1LCJleHAiOjE3NTM3MjYwODV9.EjqeiVhVpkBWo3kyJDO5ngPOHzWUAx3_kbis8kxoBxY"
      // const token =  AsyncStorage.getItem("token");
 
   const [name, setName] = useState('');
@@ -49,6 +51,9 @@ const AddCategory =  ({ navigation }) => {
       type: 'image/jpeg',
     });
 
+    const token = await AsyncStorage.getItem('token');
+    // console.log("token",token);
+
     try {
       setLoading(true);
       const response = await fetch('https://dokany-api-production.up.railway.app/categories', {
@@ -75,7 +80,7 @@ const AddCategory =  ({ navigation }) => {
         // navigation.goBack();
       } else {
         Alert.alert(data.message || 'Failed to add category');
-        // console.log(response)
+        console.log(response)
       }
     } catch (err) {
       setLoading(false);
@@ -141,10 +146,9 @@ export default AddCategory;
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 30,
-    padding: 30,
-    backgroundColor: "#fff",
-    alignItems: "stretch",
+    padding: 20,
+    paddingBottom: 50,
+    backgroundColor: '#fff',
     // flex: 1,
   },
   title: {
@@ -200,7 +204,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 10,
     marginBottom: 15,
-    width: "300",
+    width: "100%",
   },
   saveBtn: {
     backgroundColor: "#5E2BD9",

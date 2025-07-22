@@ -3,19 +3,21 @@ import {
   View, Text, TextInput, StyleSheet, TouchableOpacity,
   Image, ScrollView, Alert, KeyboardAvoidingView, ActivityIndicator,
   FlatList,
+  StatusBar,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Picker } from "@react-native-picker/picker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 // import { useRoute } from "@react-navigation/native";
 
-const EditProduct = () => {
+const EditProduct = ({ navigation , route}) => {
 //   const route = useRoute();
 //   const { productId } = route.params; 
 
-  const productId = "cmddlj1lq00016teay7ymix6c";
+  const productId = route.params.productId;
 
 // const token =  AsyncStorage.getItem("token");
-  const token ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtZGRmNTVxNzAwMDBzNnlweG5oaThtOGgiLCJyb2xlIjoic2VsbGVyIiwiaWF0IjoxNzUzMTIxMjg1LCJleHAiOjE3NTM3MjYwODV9.EjqeiVhVpkBWo3kyJDO5ngPOHzWUAx3_kbis8kxoBxY";
+//   const token ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtZGRmNTVxNzAwMDBzNnlweG5oaThtOGgiLCJyb2xlIjoic2VsbGVyIiwiaWF0IjoxNzUzMTIxMjg1LCJleHAiOjE3NTM3MjYwODV9.EjqeiVhVpkBWo3kyJDO5ngPOHzWUAx3_kbis8kxoBxY";
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -31,6 +33,7 @@ const EditProduct = () => {
 
   useEffect(() => {
     const fetchProduct = async () => {
+        const token = await AsyncStorage.getItem('token');
       try {
         const res = await fetch(`https://dokany-api-production.up.railway.app/products/${productId}`, {
           headers: { Authorization: token }
@@ -53,6 +56,7 @@ const EditProduct = () => {
     };
 
     const fetchCategories = async () => {
+        const token = await AsyncStorage.getItem('token');
       const res = await fetch("https://dokany-api-production.up.railway.app/categories/seller", {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -96,6 +100,7 @@ const EditProduct = () => {
     }
 
     try {
+      const token = await AsyncStorage.getItem("token");
       setSaving(true);
       const formData = new FormData();
       formData.append("title", productName);
@@ -129,6 +134,7 @@ const EditProduct = () => {
       const data = await res.json();
       if (res.ok) {
         Alert.alert("Success", "Product updated successfully");
+        navigation.goBack();
       } else {
         // console.log(res)
 
@@ -152,7 +158,7 @@ const EditProduct = () => {
     <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={20}>
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
         <Text style={styles.title}>Edit Product</Text>
-
+<StatusBar backgroundColor="#7B5CFA" barStyle="light-content" />
         <TouchableOpacity style={styles.imageUploadBox} onPress={pickImages}>
            <Text style={styles.title}>Update a product image</Text>
                   <Text style={styles.imageUploadText}>Upload a photo of your product</Text>
@@ -244,11 +250,9 @@ const EditProduct = () => {
 
 const styles = StyleSheet.create({
  container: {
-    marginTop: 30,
-    padding: 30,
-    backgroundColor: "#fff",
-    alignItems: "stretch",
-    // flex: 1,
+    padding: 20,
+    paddingBottom: 50,
+    backgroundColor: '#fff',
   },
   title: {
     fontSize: 20,
@@ -303,7 +307,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 10,
     marginBottom: 15,
-    width: "300",
+    width: "100%",
   },
   saveBtn: {
     backgroundColor: "#5E2BD9",
