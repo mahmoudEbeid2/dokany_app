@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState ,useCallback} from "react";
 import {
   View,
   Text,
@@ -7,21 +7,28 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
+  ActivityIndicator,
 } from "react-native";
+import { useFocusEffect } from '@react-navigation/native';
+
+
 import AntDesign from "@expo/vector-icons/AntDesign";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 // { route, navigation }
-const ProductDetails = () => {
+const ProductDetails = ({ navigation, route}) => {
   // const token = await AsyncStorage.getItem("token");
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtZGRmNTVxNzAwMDBzNnlweG5oaThtOGgiLCJyb2xlIjoic2VsbGVyIiwiaWF0IjoxNzUzMTIxMjg1LCJleHAiOjE3NTM3MjYwODV9.EjqeiVhVpkBWo3kyJDO5ngPOHzWUAx3_kbis8kxoBxY";
+//   const token ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtZGRmNTVxNzAwMDBzNnlweG5oaThtOGgiLCJyb2xlIjoic2VsbGVyIiwiaWF0IjoxNzUzMTIxMjg1LCJleHAiOjE3NTM3MjYwODV9.EjqeiVhVpkBWo3kyJDO5ngPOHzWUAx3_kbis8kxoBxY";
   const [product, setProduct] = useState(null);
   const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   //   const { product } = route.params;
-  const productId = "cmddlnm4f00086teabs8nadbh";
+  const productId = route.params.productId;
 
-  useEffect(() => {
+ useFocusEffect (useCallback(() => {
     const fetchProduct = async () => {
+        
       try {
         const response = await fetch(
           `https://dokany-api-production.up.railway.app/products/${productId}`
@@ -34,6 +41,7 @@ const ProductDetails = () => {
       }
     };
     const fetchReviews = async () => {
+        const token = await AsyncStorage.getItem('token');
       try {
         const response = await fetch(
           `https://dokany-api-production.up.railway.app/reviews/${productId}`,
@@ -48,20 +56,25 @@ const ProductDetails = () => {
         setReviews(data);
       } catch (error) {
         console.error("Error fetching reviews:", error);
+      }finally {
+        setLoading(false);
       }
     };
 
     fetchProduct();
     fetchReviews();
-  }, []);
+  }, [])
+);
   const handleEdit = () => {
-    // Replace this with navigation to Edit screen later
+  navigation.navigate("EditProduct", { productId });
 
-    alert("Edit functionality is under construction.");
+
+    // alert("Edit functionality is under construction.");
   };
 
   const handleDelete = async () => {
     try {
+      const token = await AsyncStorage.getItem('token');
       const res = await fetch(
         `https://dokany-api-production.up.railway.app/products/${productId}`,
         {
@@ -75,7 +88,8 @@ const ProductDetails = () => {
       if (res.ok) {
         Alert.alert("Success", "Product deleted successfully!");
         // You can navigate back or refresh list
-        // navigation.goBack();
+        navigation.goBack();
+
       } else {
         const errorData = await res.json();
         Alert.alert(
@@ -91,6 +105,7 @@ const ProductDetails = () => {
 
 //   handleDeleteReview
 const handleDeleteReview = async (reviewId) => {
+  const token = await AsyncStorage.getItem('token');
   try {
     const res = await fetch(
       `https://dokany-api-production.up.railway.app/reviews/${reviewId}`,
@@ -119,6 +134,8 @@ const handleDeleteReview = async (reviewId) => {
   }
 }
 
+  if (loading) return <ActivityIndicator style={{ flex: 1 }} size="large" color="#7B5CFA" />;
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Image
@@ -131,7 +148,7 @@ const handleDeleteReview = async (reviewId) => {
         {product?.discount ? (
           <View style={styles.flex}>
             <Text style={styles.price}>${product?.price}</Text>
-            <Text style={styles.price}>discount: {product?.discount}</Text>
+            <Text style={styles.price}>Discount: {product?.discount}</Text>
           </View>
         ) : (
           <Text style={styles.price}>${product?.price}</Text>
@@ -142,14 +159,14 @@ const handleDeleteReview = async (reviewId) => {
         </Text>
 
         <Text style={styles.status}>
-          Status: {product?.status ? "Active" : "Inactive"}
+          Status: {product?.status }
         </Text>
         <View style={styles.flex}>
           <TouchableOpacity
             style={styles.editButton}
             onPress={() => handleEdit()}
           >
-            <Text style={styles.buttonText}> Edit</Text>
+            <Text style={styles.buttonText}>Edit</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -160,7 +177,7 @@ const handleDeleteReview = async (reviewId) => {
           </TouchableOpacity>
           {/* reviews */}
         </View>
-        <Text style={styles.name}>Reviews</Text>
+        <Text style={[styles.name, { marginTop: 20 }]}>Reviews</Text>
 
         {reviews?.length > 0 ? (
             
@@ -202,7 +219,7 @@ const handleDeleteReview = async (reviewId) => {
                     );
                 }}
                 >
-                    <AntDesign name="delete" size={24} color="black" />
+                    <AntDesign name="delete" size={20} color="black" />
                 </TouchableOpacity>
                 
               </View>
@@ -212,7 +229,7 @@ const handleDeleteReview = async (reviewId) => {
                     key={i}
                     name="star"
                     size={20}
-                    color={i < review?.rating ? "#FFD700" : "black"}
+                    color={i < review?.rating ? "#black" : "#ccc"}
                     style={styles.iconStar}
                   />
                 ))}
@@ -232,10 +249,8 @@ export default ProductDetails;
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 16,
-    // alignItems: 'center',
+    paddingBottom: 16,
     backgroundColor: "#fff",
-    // flex: 1,
   },
   image: {
     width: 420,
@@ -258,9 +273,9 @@ const styles = StyleSheet.create({
     // textAlign: '',
   },
   price: {
-    fontSize: 20,
+    fontSize: 16,
     marginVertical: 8,
-    color: "#121217",
+    color: "#666",
   },
   category: {
     fontSize: 16,
@@ -362,6 +377,7 @@ const styles = StyleSheet.create({
   },
   noReviews: {
     marginTop: 20,
+    marginBottom: 100,
     fontSize: 16,
     color: "#666",
     textAlign: "center",

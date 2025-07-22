@@ -24,7 +24,6 @@ const Stack = createNativeStackNavigator();
 
 
 export default  function App () {
-  //  AsyncStorage.setItem("token","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtZGRmNTVxNzAwMDBzNnlweG5oaThtOGgiLCJyb2xlIjoic2VsbGVyIiwiaWF0IjoxNzUzMTIxMjg1LCJleHAiOjE3NTM3MjYwODV9.EjqeiVhVpkBWo3kyJDO5ngPOHzWUAx3_kbis8kxoBxY")
   
   return (
 
@@ -37,6 +36,12 @@ export default  function App () {
         <Stack.Screen name="ConfirmPassword" component={ConfirmPasswordScreen} />
         <Stack.Screen name="Settings" component={SettingsScreen} />
         <Stack.Screen name="Payouts" component={PayoutsScreen} />
+        {/* products */}
+        <Stack.Screen name="CreateProduct" component={CreateProduct} />
+        <Stack.Screen name="EditProduct" component={EditProduct} />
+        <Stack.Screen name="CreateCategory" component={AddCategory} />
+        <Stack.Screen name="EditCategory" component={EditCategory} />
+        <Stack.Screen name="ProductDetails" component={ProductDetails} />
       </Stack.Navigator>
     </NavigationContainer>
 
