@@ -49,35 +49,48 @@ function UpdateCoupon({ coupon, onUpdateCoupon, onLoading }) {
     }
   }, []);
 
-  function handleUpdateCoupon() {
-    const today = new Date();
-    const days = parseInt(daysToExpire);
-    const expireDate = new Date();
-    expireDate.setDate(today.getDate() + (isNaN(days) ? 0 : days));
+  async function handleUpdateCoupon() {
+    try {
+      const token = await getToken(); // جلب التوكن
 
-    fetch(`${API}/api/coupon/${coupon.id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: token,
-      },
-      body: JSON.stringify({
-        code,
-        discount_value: isNaN(parseFloat(discount)) ? 0 : parseFloat(discount),
-        expiration_date: expireDate.toISOString(),
-        product_id: product,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
+      const today = new Date();
+      const days = parseInt(daysToExpire);
+      const expireDate = new Date();
+      expireDate.setDate(today.getDate() + (isNaN(days) ? 0 : days));
+
+      const response = await fetch(`${API}/api/coupon/${coupon.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+        body: JSON.stringify({
+          code,
+          discount_value: isNaN(parseFloat(discount))
+            ? 0
+            : parseFloat(discount),
+          expiration_date: expireDate.toISOString(),
+          product_id: product,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
         console.log("✅ Coupon updated:", data);
         Alert.alert("Success", "Coupon updated successfully!");
         onUpdateCoupon(data);
-      })
-      .catch((err) => {
-        console.error("❌ Error:", err);
-        Alert.alert("Error", "Something went wrong while updating the coupon.");
-      });
+      } else {
+        console.error("❌ Server error:", data);
+        Alert.alert(
+          "Error",
+          data?.message || "Something went wrong while updating the coupon."
+        );
+      }
+    } catch (err) {
+      console.error("❌ Error:", err);
+      Alert.alert("Error", "Something went wrong while updating the coupon.");
+    }
   }
 
   useEffect(() => {
