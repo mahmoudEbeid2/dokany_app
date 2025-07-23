@@ -19,7 +19,7 @@ const settings = [
   {
     content: 'Edit Profile',
     icon: <FontAwesome name="user" size={20} color="#121217" />,
-    GoToPage: 'EditProfile',
+    GoToPage: 'EditSellerProfile',
   },
   {
     content: 'Withdrawals & Payouts',
