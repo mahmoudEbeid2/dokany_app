@@ -1,0 +1,184 @@
+import { useState, useRef, useEffect } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
+import ProductDropdown from "./ProductDropdown";
+import { API } from "@env";
+
+function UpdateCoupon({ coupon, onUpdateCoupon, onLoading }) {
+  const [code, setCode] = useState(coupon.code);
+  const [discount, setDiscount] = useState(coupon.discount_value.toString());
+  const [daysToExpire, setDaysToExpire] = useState(() => {
+    if (!coupon.expiration_date) return "0";
+
+    const today = new Date();
+    const expireDate = new Date(coupon.expiration_date);
+
+    const todayMidnight = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    );
+    const expireMidnight = new Date(
+      expireDate.getFullYear(),
+      expireDate.getMonth(),
+      expireDate.getDate()
+    );
+
+    const diffInMs = expireMidnight - todayMidnight;
+    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+
+    return diffInDays > 0 ? diffInDays.toString() : "0";
+  });
+
+  const [product, setProduct] = useState(coupon.product_id);
+
+  const token =
+    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtZGRmcDh5MDAwMDFzNnlwMWY0bW4xZWgiLCJyb2xlIjoic2VsbGVyIiwiaWF0IjoxNzUzMTMyNTkyLCJleHAiOjE3NTM3MzczOTJ9.SY-EgjwraLb27FLWL50heKW-SqBcI8oOqx_muzO_Di4";
+
+  const codeInputRef = useRef(null);
+
+  useEffect(() => {
+    if (codeInputRef.current) {
+      codeInputRef.current.focus();
+    }
+  }, []);
+
+  function handleUpdateCoupon() {
+    const today = new Date();
+    const days = parseInt(daysToExpire);
+    const expireDate = new Date();
+    expireDate.setDate(today.getDate() + (isNaN(days) ? 0 : days));
+
+    fetch(`${API}/api/coupon/${coupon.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        code,
+        discount_value: isNaN(parseFloat(discount)) ? 0 : parseFloat(discount),
+        expiration_date: expireDate.toISOString(),
+        product_id: product,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("✅ Coupon updated:", data);
+        Alert.alert("Success", "Coupon updated successfully!");
+        onUpdateCoupon(data);
+      })
+      .catch((err) => {
+        console.error("❌ Error:", err);
+        Alert.alert("Error", "Something went wrong while updating the coupon.");
+      });
+  }
+
+  useEffect(() => {
+    setCode(coupon.code);
+    setDiscount(coupon.discount_value.toString());
+    setDaysToExpire(() => {
+      if (!coupon.expiration_date) return "0";
+
+      const today = new Date();
+      const expireDate = new Date(coupon.expiration_date);
+
+      const todayMidnight = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate()
+      );
+      const expireMidnight = new Date(
+        expireDate.getFullYear(),
+        expireDate.getMonth(),
+        expireDate.getDate()
+      );
+
+      const diffInMs = expireMidnight - todayMidnight;
+      const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+
+      return diffInDays > 0 ? diffInDays.toString() : "0";
+    });
+
+    setProduct(coupon.product_id);
+  }, [coupon]);
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Update Coupon</Text>
+
+      <TextInput
+        ref={codeInputRef}
+        style={styles.input}
+        placeholder="Coupon Code"
+        value={code}
+        onChangeText={(text) => setCode(text)}
+      />
+
+      <TextInput
+        style={styles.input}
+        placeholder="Discount Percentage"
+        value={discount}
+        keyboardType="numeric"
+        onChangeText={(text) => setDiscount(text)}
+      />
+
+      <TextInput
+        style={styles.input}
+        placeholder="Valid for (days)"
+        value={daysToExpire}
+        keyboardType="numeric"
+        onChangeText={(text) => setDaysToExpire(text)}
+      />
+
+      <ProductDropdown
+        value={product}
+        onChange={setProduct}
+        onLoading={onLoading}
+      />
+
+      <TouchableOpacity style={styles.button} onPress={handleUpdateCoupon}>
+        <Text style={styles.buttonText}>Update Coupon</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: 10,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10,
+    color: "#120F1A",
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#7569FA",
+    borderRadius: 20,
+    padding: 16,
+    marginBottom: 16,
+  },
+  button: {
+    backgroundColor: "#7569FA",
+    padding: 16,
+    borderRadius: 20,
+    alignItems: "center",
+    marginTop: 16,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+});
+
+export default UpdateCoupon;

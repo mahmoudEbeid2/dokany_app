@@ -1,4 +1,5 @@
 
+
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import CreateProduct from './src/screens/createProduct/CreateProduct';
@@ -24,13 +25,13 @@ import PayoutsScreen from './src/screens/PayoutsScreen';
 import CustomersListScreen from './src/screens/Customers/CustomersListScreen';
 import AuthLoadingScreen from './src/screens/AuthLoadingScreen';
 
+
 const Stack = createNativeStackNavigator();
 
 
 export default  function App () {
   
   return (
-    <NavigationContainer>
       <Stack.Navigator initialRouteName="Splash">
          <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Register" component={RegisterScreen} />
@@ -51,7 +52,6 @@ export default  function App () {
         <Stack.Screen name="ProductDetails" component={ProductDetails} />
       </Stack.Navigator>
     </NavigationContainer>
-    
 
   );
 }
