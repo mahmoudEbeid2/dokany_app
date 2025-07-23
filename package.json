@@ -21,6 +21,13 @@
     "react-native": "0.79.5",
     "react-native-image-picker": "^8.2.1",
     "react-native-safe-area-context": "5.4.0",
+<<<<<<< HEAD
+    "react-native-screens": "~4.11.1",
+    "@react-native-async-storage/async-storage": "2.1.2",
+
+    "react-native-safe-area-context": "5.4.0",
+=======
+>>>>>>> 137ff76a3a4486d7d8ea772f849b7869dae3522b
     "react-native-screens": "~4.11.1"
   },
   "devDependencies": {
