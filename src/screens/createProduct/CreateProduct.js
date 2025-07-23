@@ -16,8 +16,8 @@ import {
 import { launchImageLibrary } from "react-native-image-picker";
 import * as ImagePicker from "expo-image-picker";
 import { Picker } from "@react-native-picker/picker";
-import { Keyboard, Platform } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { API } from "@env";
 
 const CreateProduct = ({navigation}) => {
 
@@ -94,7 +94,7 @@ const CreateProduct = ({navigation}) => {
         });
       });
       const response = await fetch(
-        "https://dokany-api-production.up.railway.app/products",
+        `${API}/products`,
         {
           method: "POST",
           headers: {
@@ -142,7 +142,7 @@ const CreateProduct = ({navigation}) => {
         const token = await AsyncStorage.getItem('token');
       try {
         const response = await fetch(
-          "https://dokany-api-production.up.railway.app/categories/seller",
+          `${API}/categories/seller`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { API } from "@env";
 
 
 const EditCategory =  ({ route, navigation }) => {
@@ -60,7 +61,7 @@ const EditCategory =  ({ route, navigation }) => {
     try {
       setLoading(true);
       const response = await fetch(
-        `https://dokany-api-production.up.railway.app/categories/${category.id}`,
+        `${API}/categories/${category.id}`,
         {
           method: 'PUT',
           headers: {

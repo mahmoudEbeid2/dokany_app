@@ -8,6 +8,7 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import { Picker } from "@react-native-picker/picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { API } from "@env";
 // import { useRoute } from "@react-navigation/native";
 
 const EditProduct = ({ navigation , route}) => {
@@ -35,7 +36,7 @@ const EditProduct = ({ navigation , route}) => {
     const fetchProduct = async () => {
         const token = await AsyncStorage.getItem('token');
       try {
-        const res = await fetch(`https://dokany-api-production.up.railway.app/products/${productId}`, {
+        const res = await fetch(`${API}/products/${productId}`, {
           headers: { Authorization: token }
         });
         const data = await res.json();
@@ -57,7 +58,7 @@ const EditProduct = ({ navigation , route}) => {
 
     const fetchCategories = async () => {
         const token = await AsyncStorage.getItem('token');
-      const res = await fetch("https://dokany-api-production.up.railway.app/categories/seller", {
+      const res = await fetch(`${API}/categories/seller`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -125,7 +126,7 @@ const EditProduct = ({ navigation , route}) => {
       }
 
   
-      const res = await fetch(`https://dokany-api-production.up.railway.app/products/${productId}`, {
+      const res = await fetch(`${API}/products/${productId}`, {
         method: "PUT",
         headers: { Authorization: `Bearer ${token}` },
         body: formData,

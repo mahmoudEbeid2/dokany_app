@@ -13,11 +13,11 @@ import {
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { API } from "@env";
 
 
 const AddCategory =  ({ navigation }) => {
-    //  const token ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtZGRmNTVxNzAwMDBzNnlweG5oaThtOGgiLCJyb2xlIjoic2VsbGVyIiwiaWF0IjoxNzUzMTIxMjg1LCJleHAiOjE3NTM3MjYwODV9.EjqeiVhVpkBWo3kyJDO5ngPOHzWUAx3_kbis8kxoBxY"
-     // const token =  AsyncStorage.getItem("token");
+
 
   const [name, setName] = useState('');
   const [image, setImage] = useState(null);
@@ -56,7 +56,7 @@ const AddCategory =  ({ navigation }) => {
 
     try {
       setLoading(true);
-      const response = await fetch('https://dokany-api-production.up.railway.app/categories', {
+      const response = await fetch(`${API}/categories`, {
         method: 'POST',
         headers: {
         //   'Content-Type': 'multipart/form-data',
