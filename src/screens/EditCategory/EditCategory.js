@@ -12,13 +12,16 @@ import {
   Alert,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const EditCategory = async () => {
-//   const { category } = route.params; 
-const category = { name: 'Test5',
-    id:"cmddaye3d0005w43dj89d6gnc"
- };
- const token = await AsyncStorage.getItem("token");
+
+const EditCategory =  ({ route, navigation }) => {
+  const { category } = route.params; 
+// const category = { name: 'Test5',
+//     id:"cmddaye3d0005w43dj89d6gnc"
+//  };
+//   const token ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtZGMzNzhuazAwMDgxMmtjY3V2MGkybjMiLCJyb2xlIjoic2VsbGVyIiwiaWF0IjoxNzUzMDQwODE1LCJleHAiOjE3NTM2NDU2MTV9.5RI4Ou2Oohgd05E615SL6-2Z-7XQL00FppfKFCRxoq4";
+
 
 
   const [name, setName] = useState(category.name || '');
@@ -37,6 +40,7 @@ const category = { name: 'Test5',
   };
 
   const handleUpdate = async () => {
+    const token = await AsyncStorage.getItem('token');
     if (!name) {
       Alert.alert('Please enter name');
       return;
@@ -74,7 +78,7 @@ const category = { name: 'Test5',
           {
             text: 'OK',
             onPress: () => {
-            //   navigation.goBack();
+              navigation.goBack();
             },
           },
         ]);
@@ -196,7 +200,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 10,
     marginBottom: 15,
-    width: "300",
+    width: "100%",
   },
   saveBtn: {
     backgroundColor: "#5E2BD9",

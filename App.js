@@ -18,13 +18,16 @@ import ConfirmPasswordScreen from "./src/screens/ConfirmPasswordScreen";
 import SettingsScreen from "./src/screens/SettingsScreen";
 import PayoutsScreen from "./src/screens/PayoutsScreen";
 import AuthLoadingScreen from "./src/screens/AuthLoadingScreen";
+// cutomer screens
 import CustomersListScreen from "./src/screens/Customers/CustomersListScreen";
 import AddCustomerScreen from "./src/screens/Customers/AddCustomerScreen";
 import CustomerDetailsScreen from "./src/screens/Customers/CustomerDetailsScreen";
 import EditCustomerScreen from "./src/screens/Customers/EditCustomerScreen";
 const Stack = createNativeStackNavigator();
 
-export default function App() {
+
+export default  function App () {
+  
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="AuthLoading">

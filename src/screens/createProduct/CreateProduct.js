@@ -17,11 +17,12 @@ import { launchImageLibrary } from "react-native-image-picker";
 import * as ImagePicker from "expo-image-picker";
 import { Picker } from "@react-native-picker/picker";
 import { Keyboard, Platform } from "react-native";
-// import { useNavigation } from '@react-navigation/native';
-const CreateProduct = () => {
-  // const navigation = useNavigation();
-  const categoryId = "cmdc3qxl8000a12kc49thcm72";
-  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtZGRmNTVxNzAwMDBzNnlweG5oaThtOGgiLCJyb2xlIjoic2VsbGVyIiwiaWF0IjoxNzUzMTIxMjg1LCJleHAiOjE3NTM3MjYwODV9.EjqeiVhVpkBWo3kyJDO5ngPOHzWUAx3_kbis8kxoBxY";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const CreateProduct = ({navigation}) => {
+
+//   const categoryId = "cmdc3qxl8000a12kc49thcm72";
+//   const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtZGRmNTVxNzAwMDBzNnlweG5oaThtOGgiLCJyb2xlIjoic2VsbGVyIiwiaWF0IjoxNzUzMTIxMjg1LCJleHAiOjE3NTM3MjYwODV9.EjqeiVhVpkBWo3kyJDO5ngPOHzWUAx3_kbis8kxoBxY";
   const [productName, setProductName] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
@@ -72,7 +73,9 @@ const CreateProduct = () => {
       return;
     }
 
+
     try {
+        const token = await AsyncStorage.getItem('token');
         setLoading(true);
       const formData = new FormData();
       formData.append("title", productName);
@@ -136,6 +139,7 @@ const CreateProduct = () => {
   //   get categories
   useEffect(() => {
     const fetchCategories = async () => {
+        const token = await AsyncStorage.getItem('token');
       try {
         const response = await fetch(
           "https://dokany-api-production.up.railway.app/categories/seller",
@@ -174,6 +178,15 @@ const CreateProduct = () => {
     
     >
       <Text style={styles.title}>Add Product</Text>
+
+      {categories?.length>0? null:<View style={styles.loadingContainer}>
+        <Text style={styles.title}>not categories yet plesse add category</Text>
+        <TouchableOpacity style={styles.saveBtn} onPress={() => navigation.navigate("CreateCategory")}>
+        <Text style={styles.saveBtnText}>Add Category</Text>
+      </TouchableOpacity>   
+      </View>}
+        
+        
     
       <TouchableOpacity style={styles.imageUploadBox} onPress={pickImages}>
         <Text style={styles.title}>Add a product image</Text>
@@ -321,11 +334,15 @@ export default CreateProduct;
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 30,
-    padding: 30,
-    backgroundColor: "#fff",
-    alignItems: "stretch",
-    // flex: 1,
+    // marginTop: 30,
+    // padding: 30,
+    // backgroundColor: "#fff",
+    // alignItems: "stretch",
+    // // flex: 1,
+   
+    padding: 20,
+    paddingBottom: 50,
+    backgroundColor: '#fff',
   },
   title: {
     fontSize: 20,
@@ -380,7 +397,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 10,
     marginBottom: 15,
-    width: "300",
+    width: "100%",
   },
   saveBtn: {
     backgroundColor: "#5E2BD9",
