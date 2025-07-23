@@ -7,12 +7,13 @@ import OrderItem from "./OrderItem";
 function OrderByStatus({ status }) {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
-  const token =
-    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtZGRmcDh5MDAwMDFzNnlwMWY0bW4xZWgiLCJyb2xlIjoic2VsbGVyIiwiaWF0IjoxNzUzMTMyNTkyLCJleHAiOjE3NTM3MzczOTJ9.SY-EgjwraLb27FLWL50heKW-SqBcI8oOqx_muzO_Di4";
+
   useEffect(() => {
     const fetchOrders = async () => {
       try {
         setLoading(true);
+        const token = await AsyncStorage.getItem("token");
+
         const response = await fetch(`${API}/api/orders/${status}`, {
           method: "GET",
           headers: {

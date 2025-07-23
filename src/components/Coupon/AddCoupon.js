@@ -16,40 +16,48 @@ function AddCoupon({ onAddCoupon, onLoading }) {
   const [daysToExpire, setDaysToExpire] = useState("");
   const [product, setProduct] = useState("");
 
-  const token =
-    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtZGRmcDh5MDAwMDFzNnlwMWY0bW4xZWgiLCJyb2xlIjoic2VsbGVyIiwiaWF0IjoxNzUzMTMyNTkyLCJleHAiOjE3NTM3MzczOTJ9.SY-EgjwraLb27FLWL50heKW-SqBcI8oOqx_muzO_Di4";
-  function handleAddCoupon() {
-    const today = new Date();
-    const expireDate = new Date();
-    expireDate.setDate(today.getDate() + parseInt(daysToExpire));
+  async function handleAddCoupon() {
+    try {
+      const token = await getToken();
 
-    fetch(`${API}/api/coupon`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: token,
-      },
-      body: JSON.stringify({
-        code,
-        discount_value: parseFloat(discount),
-        expiration_date: expireDate.toISOString(),
-        product_id: product,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        Alert.alert("Success", "✅ Coupon added successfully! ");
-        onAddCoupon(data);
-      })
-      .catch((err) => {
-        console.error("❌ Error:", err);
-        Alert.alert("Error", "Something went wrong while adding the coupon.");
+      const today = new Date();
+      const expireDate = new Date();
+      expireDate.setDate(today.getDate() + parseInt(daysToExpire));
+
+      const response = await fetch(`${API}/api/coupon`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+        body: JSON.stringify({
+          code,
+          discount_value: parseFloat(discount),
+          expiration_date: expireDate.toISOString(),
+          product_id: product,
+        }),
       });
 
-    setCode("");
-    setDiscount("");
-    setDaysToExpire("");
-    setProduct(null);
+      const data = await response.json();
+
+      if (response.ok) {
+        Alert.alert("Success", "✅ Coupon added successfully!");
+        onAddCoupon(data);
+        setCode("");
+        setDiscount("");
+        setDaysToExpire("");
+        setProduct(null);
+      } else {
+        console.error("❌ Server error:", data);
+        Alert.alert(
+          "Error",
+          data?.message || "Something went wrong while adding the coupon."
+        );
+      }
+    } catch (err) {
+      console.error("❌ Error:", err);
+      Alert.alert("Error", "Something went wrong while adding the coupon.");
+    }
   }
 
   return (

@@ -7,11 +7,9 @@ const ProductDropdown = ({ id, value, onChange }) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const token =
-    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtZGRmcDh5MDAwMDFzNnlwMWY0bW4xZWgiLCJyb2xlIjoic2VsbGVyIiwiaWF0IjoxNzUzMTMyNTkyLCJleHAiOjE3NTM3MzczOTJ9.SY-EgjwraLb27FLWL50heKW-SqBcI8oOqx_muzO_Di4";
-
   const fetchAllProducts = async () => {
     try {
+      const token = await AsyncStorage.getItem("token");
       let page = 1;
       let allProducts = [];
       let hasMore = true;

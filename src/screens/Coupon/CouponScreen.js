@@ -18,12 +18,10 @@ function CouponScreen() {
   const [selectedCoupon, setSelectedCoupon] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const token =
-    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtZGRmcDh5MDAwMDFzNnlwMWY0bW4xZWgiLCJyb2xlIjoic2VsbGVyIiwiaWF0IjoxNzUzMTMyNTkyLCJleHAiOjE3NTM3MzczOTJ9.SY-EgjwraLb27FLWL50heKW-SqBcI8oOqx_muzO_Di4";
-
   useEffect(() => {
     async function fetchData() {
       try {
+        const token = await AsyncStorage.getItem("token");
         setLoading(true);
         const response = await fetch(`${API}/api/coupon`, {
           method: "GET",
@@ -47,24 +45,35 @@ function CouponScreen() {
     fetchData();
   }, []);
 
-  function handleDeleteCoupon(id) {
-    fetch(`${API}/api/coupon/${id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: token,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
+  async function handleDeleteCoupon(id) {
+    try {
+      const token = await getToken(); // جلب التوكن
+
+      const response = await fetch(`${API}/api/coupon/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
         console.log("✅ Coupon deleted:", data);
         Alert.alert("Success", "Coupon deleted successfully!");
         setCoupon((prev) => prev.filter((coupon) => coupon.id !== id));
-      })
-      .catch((err) => {
-        console.error("❌ Error:", err);
-        Alert.alert("Error", "Something went wrong while deleting the coupon.");
-      });
+      } else {
+        console.error("❌ Server error:", data);
+        Alert.alert(
+          "Error",
+          data?.message || "Something went wrong while deleting the coupon."
+        );
+      }
+    } catch (err) {
+      console.error("❌ Error:", err);
+      Alert.alert("Error", "Something went wrong while deleting the coupon.");
+    }
   }
 
   function handleAddCoupon(newCoupon) {
