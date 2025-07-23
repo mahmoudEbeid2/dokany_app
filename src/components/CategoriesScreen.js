@@ -10,40 +10,38 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage'; 
+import { useNavigation, useIsFocused } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API } from "@env";
 
 export default function CategoriesScreen() {
   const navigation = useNavigation();
+  const isFocused = useIsFocused();
 
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [token, setToken] = useState(null); 
 
-  useEffect(() => {
-    const getTokenAndFetchCategories = async () => {
+  const fetchCategories = async () => {
+    setLoading(true);
+    try {
       const storedToken = await AsyncStorage.getItem('token');
       const finalToken = `Bearer ${storedToken}`;
-      setToken(finalToken);
 
-      setLoading(true);
-      try {
-        const res = await axios.get(
-          `${API}/categories/seller`,
-          {
-            headers: { Authorization: finalToken },
-          }
-        );
-        setCategories(res.data);
-      } catch (err) {
-        console.error('Error fetching categories:', err);
-      }
-      setLoading(false);
-    };
+      const res = await axios.get(`${API}/categories/seller`, {
+        headers: { Authorization: finalToken },
+      });
+      setCategories(res.data);
+    } catch (err) {
+      console.error('Error fetching categories:', err);
+    }
+    setLoading(false);
+  };
 
-    getTokenAndFetchCategories();
-  }, []);
+  useEffect(() => {
+    if (isFocused) {
+      fetchCategories();
+    }
+  }, [isFocused]);
 
   const renderItem = ({ item }) => (
     <TouchableOpacity style={styles.card}>

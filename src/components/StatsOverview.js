@@ -3,8 +3,10 @@ import { View, StyleSheet } from 'react-native';
 import StatCard from './StatCard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API } from "@env";
+import { useIsFocused } from '@react-navigation/native';
 
 export default function StatsOverview() {
+  const isFocused = useIsFocused();
   const [stats, setStats] = useState({
     totalEarnings: 0,
     totalOrders: 0,
@@ -12,15 +14,11 @@ export default function StatsOverview() {
     totalProducts: 0,
   });
 
-const [token, setToken] = useState(null);
-
-useEffect(() => {
-  const loadTokenAndFetchStats = async () => {
-    const storedToken = await AsyncStorage.getItem('token');
-    const finalToken = `Bearer ${storedToken}`;
-    setToken(finalToken);
-
+  const fetchStats = async () => {
     try {
+      const storedToken = await AsyncStorage.getItem('token');
+      const finalToken = `Bearer ${storedToken}`;
+
       const res = await fetch(`${API}/api/seller/dashboard-stats`, {
         headers: { Authorization: finalToken },
       });
@@ -31,9 +29,11 @@ useEffect(() => {
     }
   };
 
-  loadTokenAndFetchStats();
-}, []);
-
+  useEffect(() => {
+    if (isFocused) {
+      fetchStats();
+    }
+  }, [isFocused]);
 
   return (
     <View style={styles.container}>
@@ -51,11 +51,9 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
-    paddingVertical:20,
-    rowGap: 10, 
-    margin:10,
-    borderRadius:30
-
+    paddingVertical: 20,
+    rowGap: 10,
+    margin: 10,
+    borderRadius: 30,
   },
 });
-
