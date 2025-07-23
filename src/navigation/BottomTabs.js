@@ -33,7 +33,7 @@ export default function BottomTabs() {
         tabBarInactiveTintColor: 'gray',
       })}
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
+  <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Orders" component={OrdersScreen} />
       <Tab.Screen name="Products" component={ProductsAndCategories} />
       <Tab.Screen name="Customers" component={CustomersScreen} />
