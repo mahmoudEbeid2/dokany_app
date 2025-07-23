@@ -8,20 +8,13 @@ export const authAPI = axios.create({
 });
 
 export const sellerAPI = axios.create({
-<<<<<<< HEAD
-  baseURL: `${BASE_URL}`,
-=======
+
   baseURL: `${BASE_URL}`, 
->>>>>>> 137ff76a3a4486d7d8ea772f849b7869dae3522b
 });
 
 sellerAPI.interceptors.request.use(
   async (config) => {
-<<<<<<< HEAD
-    const token = await AsyncStorage.getItem("token");
-=======
     const token = await AsyncStorage.getItem('token');
->>>>>>> 137ff76a3a4486d7d8ea772f849b7869dae3522b
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -39,13 +32,9 @@ export const themeAPI = axios.create({
 
 themeAPI.interceptors.request.use(
   async (config) => {
-<<<<<<< HEAD
-    const token = await AsyncStorage.getItem("token");
 
-=======
     const token = await AsyncStorage.getItem('token');
     
->>>>>>> 137ff76a3a4486d7d8ea772f849b7869dae3522b
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
