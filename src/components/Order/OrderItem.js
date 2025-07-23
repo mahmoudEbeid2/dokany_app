@@ -1,0 +1,68 @@
+import React from "react";
+import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { useNavigation } from "@react-navigation/native";
+function OrderItem({ order }) {
+  const navigation = useNavigation();
+
+  const handlePress = () => {
+    navigation.navigate("OrderDetails", { order });
+  };
+  return (
+    <TouchableOpacity onPress={handlePress}>
+      <View style={styles.continuer}>
+        <View style={styles.contentContinuer}>
+          <View>
+            <Image
+              source={{
+                uri: `${
+                  order.customer.profile_image ||
+                  "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                }`,
+              }}
+              style={styles.image}
+            />
+          </View>
+          <View>
+            <Text style={styles.name}>
+              {order.customer.f_name + " " + order.customer.l_name}
+            </Text>
+            <Text style={styles.price}>{"$" + order.total_price} </Text>
+          </View>
+        </View>
+        <MaterialIcons name="arrow-forward-ios" size={24} color="#121217" />
+      </View>
+    </TouchableOpacity>
+  );
+}
+
+const styles = StyleSheet.create({
+  continuer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 8,
+    width: "100%",
+  },
+  image: {
+    width: 56,
+    height: 56,
+    borderRadius: 40,
+  },
+  contentContinuer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 16,
+  },
+  name: {
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  price: {
+    color: "#6E6387",
+    fontSize: 14,
+  },
+});
+
+export default OrderItem;
