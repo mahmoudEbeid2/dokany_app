@@ -84,8 +84,32 @@ export default function EditSellerProfile() {
       }
     }
   };
+const validateForm = () => {
+  const requiredFields = ['user_name', 'f_name', 'email', 'phone', 'city', 'country'];
+  for (let field of requiredFields) {
+    if (!form[field]) {
+      Alert.alert("Missing Field", `Please enter ${field.replace(/_/g, " ")}`);
+      return false;
+    }
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(form.email)) {
+    Alert.alert("Invalid Email", "Please enter a valid email address.");
+    return false;
+  }
+
+  if (form.password && form.password.length < 6) {
+    Alert.alert("Weak Password", "Password should be at least 6 characters.");
+    return false;
+  }
+
+  return true;
+};
 
   const handleSubmit = async () => {
+      if (!validateForm()) return;
+
     try {
       const formData = new FormData();
 
