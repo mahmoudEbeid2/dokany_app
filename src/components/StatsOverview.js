@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import StatCard from './StatCard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API } from "@env";
 
 export default function StatsOverview() {
   const [stats, setStats] = useState({
@@ -20,11 +21,10 @@ useEffect(() => {
     setToken(finalToken);
 
     try {
-      const res = await fetch('https://dokany-api-production.up.railway.app/api/seller/dashboard-stats', {
+      const res = await fetch(`${API}/api/seller/dashboard-stats`, {
         headers: { Authorization: finalToken },
       });
       const data = await res.json();
-      console.log('Stats:', data);
       setStats(data);
     } catch (err) {
       console.log('Error fetching stats:', err);
@@ -54,7 +54,6 @@ const styles = StyleSheet.create({
     paddingVertical:20,
     rowGap: 10, 
     margin:10,
-    backgroundColor: '#b7b3ddff',
     borderRadius:30
 
   },

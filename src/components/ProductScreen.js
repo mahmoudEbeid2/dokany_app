@@ -14,6 +14,7 @@ import axios from 'axios';
 import ProductCard from './ProductCard';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {API}  from "@env";
 
 export default function ProductScreen() {
   const navigation = useNavigation();
@@ -25,7 +26,6 @@ export default function ProductScreen() {
   const [token, setToken] = useState(null);
 
   const [pageSize] = useState(10);
-  const API = Constants.expoConfig?.extra?.API || 'https://dokany-api-production.up.railway.app/api';
 
   useEffect(() => {
     const loadTokenAndFetch = async () => {
@@ -86,7 +86,7 @@ export default function ProductScreen() {
   };
 
   const goToDetails = (productId) => {
-    navigation.navigate('ProductDetails', { id: productId });
+navigation.navigate('ProductDetails', { productId });
   };
 
   const paginatedData = filteredProducts.slice(

@@ -19,7 +19,6 @@ export default function HomeScreen({ navigation }) {
         <LastOrders />
       </ScrollView>
 
-      <BottomNav navigation={navigation} />
     </SafeAreaView>
   );
 }

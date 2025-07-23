@@ -11,32 +11,38 @@ import {
 import axios from 'axios';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
-;
+import AsyncStorage from '@react-native-async-storage/async-storage'; 
+import { API } from "@env";
 
 export default function CategoriesScreen() {
-      const navigation = useNavigation();
+  const navigation = useNavigation();
 
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
-
-  const fetchCategories = async () => {
-    setLoading(true);
-    try {
-      const res = await axios.get(
-        'https://dokany-api-production.up.railway.app/categories/seller',
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      setCategories(res.data);
-    } catch (err) {
-      console.error('Error fetching categories:', err);
-    }
-    setLoading(false);
-  };
+  const [token, setToken] = useState(null); 
 
   useEffect(() => {
-    fetchCategories();
+    const getTokenAndFetchCategories = async () => {
+      const storedToken = await AsyncStorage.getItem('token');
+      const finalToken = `Bearer ${storedToken}`;
+      setToken(finalToken);
+
+      setLoading(true);
+      try {
+        const res = await axios.get(
+          `${API}/categories/seller`,
+          {
+            headers: { Authorization: finalToken },
+          }
+        );
+        setCategories(res.data);
+      } catch (err) {
+        console.error('Error fetching categories:', err);
+      }
+      setLoading(false);
+    };
+
+    getTokenAndFetchCategories();
   }, []);
 
   const renderItem = ({ item }) => (
@@ -48,12 +54,13 @@ export default function CategoriesScreen() {
 
   return (
     <View style={styles.container}>
-        <TouchableOpacity
-  style={styles.fab}
-onPress={() => navigation.navigate('CreateCategory')}
->
-  <Ionicons name="add" size={28} color="#fff" />
-</TouchableOpacity>
+      <TouchableOpacity
+        style={styles.fab}
+        onPress={() => navigation.navigate('CreateCategory')}
+      >
+        <Ionicons name="add" size={28} color="#fff" />
+      </TouchableOpacity>
+
       {loading ? (
         <ActivityIndicator size="large" color="#000" style={{ marginTop: 20 }} />
       ) : (
@@ -91,21 +98,20 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   fab: {
-  position: 'absolute',
-  bottom: 60,
-  right: 20,
-  backgroundColor: '#4F479E',
-  width: 60,
-  height: 60,
-  borderRadius: 30,
-  justifyContent: 'center',
-  alignItems: 'center',
-  elevation: 5, 
-  shadowColor: '#000', 
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.3,
-  shadowRadius: 3,
-  zIndex:10,
-}
-
+    position: 'absolute',
+    bottom: 60,
+    right: 20,
+    backgroundColor: '#4F479E',
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    zIndex: 10,
+  },
 });

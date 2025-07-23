@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import OrderCard from './OrderCard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API } from "@env";
 
 export default function LastOrders() {
   const [orders, setOrders] = useState([]);
@@ -10,7 +11,7 @@ export default function LastOrders() {
     const fetchOrders = async () => {
       try {
         const storedToken = await AsyncStorage.getItem('token');
-        const res = await fetch('https://dokany-api-production.up.railway.app/api/orders', {
+        const res = await fetch(`${API}/api/orders`, {
           headers: {
             Authorization: `Bearer ${storedToken}`,
           },

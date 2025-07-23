@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API } from "@env";
 
 export default function EditSellerProfile() {
   const [token, setToken] = useState(null);
@@ -41,7 +42,7 @@ export default function EditSellerProfile() {
         const authHeader = `Bearer ${storedToken}`;
         setToken(authHeader);
 
-        const sellerRes = await fetch("https://dokany-api-production.up.railway.app/api/seller/id", {
+        const sellerRes = await fetch(`${API}/api/seller/id`, {
           headers: { Authorization: authHeader },
         });
 
@@ -50,7 +51,7 @@ export default function EditSellerProfile() {
         setProfilePreview(sellerData.profile_imge);
         setLogoPreview(sellerData.logo);
 
-        const themeRes = await fetch("https://dokany-api-production.up.railway.app/themes");
+        const themeRes = await fetch(`${API}/themes`);
         const themeData = await themeRes.json();
         setThemes(themeData);
 

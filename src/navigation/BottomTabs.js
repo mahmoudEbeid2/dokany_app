@@ -3,10 +3,10 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 
-import ProductsAndCategories from '../screens/ProductsAndCategories';
-import OrdersScreen from '../screens/OrdersScreen';
-import CustomersScreen from '../screens/CustomersScreen';
-import CouponsScreen from '../screens/CouponsScreen';
+import ProductsAndCategories from '../screens/ProductsAndCategoriesScreen';
+import OrdersScreen from '../screens/Orders/OrderScreen';
+import CustomersScreen from '../screens/Customers/CustomersListScreen';
+import CouponsScreen from '../screens/Coupon/CouponScreen';
 import HomeScreen from '../screens/HomeScreen';
 
 const Tab = createBottomTabNavigator();
