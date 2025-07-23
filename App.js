@@ -21,6 +21,7 @@ import ProductsAndCategoriesScreen from './src/screens/ProductsAndCategoriesScre
 import SettingsScreen from './src/screens/SettingsScreen';
 import EditSellerProfile from './src/screens/EditSellerProfile';
 import PayoutsScreen from './src/screens/PayoutsScreen';
+import CustomersListScreen from './src/screens/Customers/CustomersListScreen';
 import AuthLoadingScreen from './src/screens/AuthLoadingScreen';
 
 const Stack = createNativeStackNavigator();
@@ -37,6 +38,7 @@ export default  function App () {
         <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
         <Stack.Screen name="ConfirmPassword" component={ConfirmPasswordScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Customers" component={CustomersListScreen} />
         <Stack.Screen name="Settings" component={SettingsScreen} />
         <Stack.Screen name="Products" component={ProductsAndCategoriesScreen} />
         <Stack.Screen name="EditSellerProfile" component={EditSellerProfile} />
