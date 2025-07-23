@@ -4,16 +4,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 export default function SplashScreen({ navigation }) {
-  useEffect(() => {
+useEffect(() => {
     const checkAuth = async () => {
       const token = await AsyncStorage.getItem('token');
-      setTimeout(() => {
-        navigation.replace(token ? 'Home' : 'Login');
-      }, 2000); 
+      navigation.replace(token ? 'Home' : 'Login');
     };
-
     checkAuth();
   }, []);
+
+
 
   return (
       <View style={styles.container}>

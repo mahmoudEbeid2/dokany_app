@@ -161,7 +161,7 @@ export default function EditSellerProfile() {
 
       {[
         "user_name", "f_name", "l_name", "email", "phone",
-        "city", "governorate", "country", "subdomain"
+        "city", "governorate", "country", "subdomain","payout_method"
       ].map((key) => (
         <TextInput
           key={key}
@@ -172,21 +172,6 @@ export default function EditSellerProfile() {
         />
       ))}
 
-      <Text style={styles.label}>Payout Method</Text>
-      <View style={styles.payoutMethods}>
-        {['bank_transfer', 'vodafone_cash'].map(method => (
-          <TouchableOpacity
-            key={method}
-            style={[
-              styles.payoutOption,
-              form.payout_method === method && styles.payoutSelected
-            ]}
-            onPress={() => handleChange('payout_method', method)}
-          >
-            <Text style={styles.payoutText}>{method.replace('_', ' ')}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
 
       <Text style={styles.label}>Select Theme</Text>
       <View style={styles.themeList}>
