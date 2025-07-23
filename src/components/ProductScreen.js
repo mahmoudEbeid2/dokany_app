@@ -8,39 +8,24 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import Constants from 'expo-constants';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
-import ProductCard from './ProductCard';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {API}  from "@env";
+import { API } from "@env";
+import ProductCard from './ProductCard';
 
 export default function ProductScreen() {
   const navigation = useNavigation();
+  const isFocused = useIsFocused(); 
+
   const [allProducts, setAllProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
-  const [token, setToken] = useState(null);
-
   const [pageSize] = useState(10);
-
-  useEffect(() => {
-    const loadTokenAndFetch = async () => {
-      const storedToken = await AsyncStorage.getItem('token');
-      if (storedToken) {
-        setToken(storedToken);
-        fetchAllProducts(storedToken);
-      } else {
-        setLoading(false);
-        console.error(' Token not found in AsyncStorage');
-      }
-    };
-
-    loadTokenAndFetch();
-  }, []);
+  const [token, setToken] = useState(null);
 
   const fetchAllProducts = async (authToken) => {
     try {
@@ -76,6 +61,24 @@ export default function ProductScreen() {
     setLoading(false);
   };
 
+  useEffect(() => {
+    const loadTokenAndFetch = async () => {
+      const storedToken = await AsyncStorage.getItem('token');
+      if (storedToken) {
+        setToken(storedToken);
+        fetchAllProducts(storedToken);
+      } else {
+        setLoading(false);
+        console.error('Token not found in AsyncStorage');
+      }
+    };
+
+    if (isFocused) {
+      setLoading(true); // 👈 مهم عشان يعمل لودينج من جديد
+      loadTokenAndFetch();
+    }
+  }, [isFocused]);
+
   const handleSearch = (text) => {
     setSearchText(text);
     const filtered = allProducts.filter((p) =>
@@ -86,7 +89,7 @@ export default function ProductScreen() {
   };
 
   const goToDetails = (productId) => {
-navigation.navigate('ProductDetails', { productId });
+    navigation.navigate('ProductDetails', { productId });
   };
 
   const paginatedData = filteredProducts.slice(
