@@ -19,7 +19,7 @@ const settings = [
   {
     content: 'Edit Profile',
     icon: <FontAwesome name="user" size={20} color="#121217" />,
-    GoToPage: 'EditProfile',
+    GoToPage: 'EditSellerProfile',
   },
   {
     content: 'Withdrawals & Payouts',
@@ -73,7 +73,6 @@ export default function SettingsScreen({ navigation }) {
       </View>
     );
   }
-
   return (
     <ScrollView style={styles.container}>
       <View style={styles.profileContainer}>
@@ -81,7 +80,7 @@ export default function SettingsScreen({ navigation }) {
           source={seller?.profile_imge ? { uri: seller.profile_imge } : defaultProfile}
           style={styles.profileImage}
         />
-        <Text style={styles.nameText}>{seller?.name || seller?.f_name || 'Your Name'}</Text>
+        <Text style={styles.nameText}>{seller?.user_name || seller?.f_name || 'Your Name'}</Text>
         <Text style={styles.subdomainText}>@{seller?.subdomain || 'subdomain'}</Text>
       </View>
 
@@ -93,7 +92,7 @@ export default function SettingsScreen({ navigation }) {
             if (setting.GoToPage === 'Logout') {
               handleLogout();
             } else {
-              navigation.navigate(setting.GoToPage, { sellerId: seller?.id });
+              navigation.navigate(setting.GoToPage, { sellerId: seller?.id, payoutMethod: seller?.payout_method });
             }
           }}
         >

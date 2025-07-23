@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   TextInput,
@@ -7,46 +7,44 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
-} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { authAPI } from '../utils/api/api';
+} from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { authAPI } from "../utils/api/api";
 
 export default function LoginScreen({ navigation }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
 
   const handleLogin = async () => {
     const newErrors = {};
 
-    if (!email) newErrors.email = 'Email is required';
-    if (!password) newErrors.password = 'Password is required';
+    if (!email) newErrors.email = "Email is required";
+    if (!password) newErrors.password = "Password is required";
 
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
 
     try {
+      const res = await authAPI.post("seller/login", { email, password });
 
-      const res = await authAPI.post('seller/login', { email, password });
+      await AsyncStorage.setItem("token", res.data.token);
 
-      await AsyncStorage.setItem('token', res.data.token);
-
-      alert('Login successful');
+      alert("Login successful");
       setErrors({});
-      navigation.navigate('Settings');
+      navigation.navigate('Home');
     } catch (err) {
       console.error(err);
-      console.error('Login error:', err.message, err.stack);
+      console.error("Login error:", err.message, err.stack);
       setErrors({
-        general: err?.response?.data?.error || 'Login failed',
+        general: err?.response?.data?.error || "Login failed",
       });
     }
   };
 
-
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
       <Text style={styles.title}>Login</Text>
@@ -54,9 +52,9 @@ export default function LoginScreen({ navigation }) {
       <TextInput
         placeholder="Email"
         value={email}
-        onChangeText={text => {
+        onChangeText={(text) => {
           setEmail(text);
-          setErrors(prev => ({ ...prev, email: null }));
+          setErrors((prev) => ({ ...prev, email: null }));
         }}
         style={[styles.input, errors.email && styles.inputError]}
         autoCapitalize="none"
@@ -67,9 +65,9 @@ export default function LoginScreen({ navigation }) {
       <TextInput
         placeholder="Password"
         value={password}
-        onChangeText={text => {
+        onChangeText={(text) => {
           setPassword(text);
-          setErrors(prev => ({ ...prev, password: null }));
+          setErrors((prev) => ({ ...prev, password: null }));
         }}
         style={[styles.input, errors.password && styles.inputError]}
         secureTextEntry
@@ -82,11 +80,11 @@ export default function LoginScreen({ navigation }) {
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => navigation.navigate('ResetPassword')}>
+      <TouchableOpacity onPress={() => navigation.navigate("ResetPassword")}>
         <Text style={styles.link}>Forgot password?</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+      <TouchableOpacity onPress={() => navigation.navigate("Register")}>
         <Text style={styles.link}>
           Don't have an account? <Text style={styles.linkBold}>Register</Text>
         </Text>
@@ -99,55 +97,51 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 24,
-    justifyContent: 'center',
-    backgroundColor: '#fff',
+    justifyContent: "center",
+    backgroundColor: "#fff",
   },
   title: {
     fontSize: 26,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 24,
-    textAlign: 'center',
+    textAlign: "center",
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 10,
     padding: 12,
     marginBottom: 8,
     fontSize: 16,
   },
   inputError: {
-    borderColor: 'red',
+    borderColor: "red",
   },
   error: {
-    color: 'red',
+    color: "red",
     marginBottom: 8,
     fontSize: 12,
   },
   button: {
-    backgroundColor: '#7569FA',
+    backgroundColor: "#7569FA",
     paddingVertical: 14,
     borderRadius: 10,
     marginTop: 12,
-    alignItems: 'center',
+    alignItems: "center",
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   link: {
-    color: '#231f53ff',
-    textAlign: 'center',
+    color: "#231f53ff",
+    textAlign: "center",
     marginTop: 18,
     fontSize: 14,
   },
   linkBold: {
-    fontWeight: 'bold',
-    textDecorationLine: 'underline',
+    fontWeight: "bold",
+    textDecorationLine: "underline",
   },
 });
-
-
-
-

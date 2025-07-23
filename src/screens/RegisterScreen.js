@@ -24,7 +24,7 @@ const fields = [
   { name: 'governorate', label: 'Governorate', icon: <FontAwesome name="map-marker" size={20} /> },
   { name: 'country', label: 'Country', icon: <FontAwesome name="globe" size={20} /> },
   { name: 'subdomain', label: 'Subdomain', icon: <FontAwesome name="link" size={20} /> },
-  { name: 'payout_method', label: 'Payout Method', icon: <FontAwesome name="credit-card" size={20} /> },
+  { name: 'payout_method', label: 'Payout Account', icon: <FontAwesome name="credit-card" size={20} /> },
   { name: 'password', label: 'Password', icon: <Ionicons name="lock-closed" size={20} />, isPassword: true },
   { name: 'confirm_password', label: 'Confirm Password', icon: <Ionicons name="lock-closed-outline" size={20} />, isPassword: true },
 ];
@@ -102,7 +102,7 @@ export default function RegisterScreen({ navigation }) {
         break;
 
       case 'payout_method':
-        if (!value) return "Payout method is required";
+        if (!value) return "Payout Account is required";
         break;
 
       default:
@@ -213,7 +213,7 @@ export default function RegisterScreen({ navigation }) {
     }
 
     if (!form.payout_method) {
-      newErrors.payout_method = "Payout method is required";
+      newErrors.payout_method = "Payout Account is required";
     }
 
     return newErrors;
