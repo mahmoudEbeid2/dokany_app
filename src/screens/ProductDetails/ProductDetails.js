@@ -14,6 +14,7 @@ import { useFocusEffect } from '@react-navigation/native';
 
 import AntDesign from "@expo/vector-icons/AntDesign";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { API } from "@env";
 
 // { route, navigation }
 const ProductDetails = ({ navigation, route}) => {
@@ -31,7 +32,7 @@ const ProductDetails = ({ navigation, route}) => {
         
       try {
         const response = await fetch(
-          `https://dokany-api-production.up.railway.app/products/${productId}`
+          `${API}/products/${productId}`
         );
         const data = await response.json();
         console.log("Product:", data);
@@ -44,7 +45,7 @@ const ProductDetails = ({ navigation, route}) => {
         const token = await AsyncStorage.getItem('token');
       try {
         const response = await fetch(
-          `https://dokany-api-production.up.railway.app/reviews/${productId}`,
+          `${API}/reviews/${productId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -76,7 +77,7 @@ const ProductDetails = ({ navigation, route}) => {
     try {
       const token = await AsyncStorage.getItem('token');
       const res = await fetch(
-        `https://dokany-api-production.up.railway.app/products/${productId}`,
+        `${API}/products/${productId}`,
         {
           method: "DELETE",
           headers: {
@@ -108,7 +109,7 @@ const handleDeleteReview = async (reviewId) => {
   const token = await AsyncStorage.getItem('token');
   try {
     const res = await fetch(
-      `https://dokany-api-production.up.railway.app/reviews/${reviewId}`,
+      `${API}/reviews/${reviewId}`,
       {
         method: "DELETE",
         headers: {
