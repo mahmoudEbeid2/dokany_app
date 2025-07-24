@@ -3,6 +3,7 @@ import { View, FlatList, ActivityIndicator, Text } from "react-native";
 import { API } from "@env";
 import { loderStyles } from "./style";
 import OrderItem from "./OrderItem";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function OrderByStatus({ status }) {
   const [orders, setOrders] = useState([]);
@@ -13,12 +14,13 @@ function OrderByStatus({ status }) {
       try {
         setLoading(true);
         const token = await AsyncStorage.getItem("token");
+        console.log("token", token);
 
         const response = await fetch(`${API}/api/orders/${status}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: token,
+            Authorization: `Bearer ${token}`,
           },
         });
         if (!response.ok) {
@@ -34,32 +36,26 @@ function OrderByStatus({ status }) {
     };
     fetchOrders();
   }, [status]);
+
   return (
-    <>
-      <View>
-        {loading ? (
-          <View style={loderStyles.loader}>
-            <ActivityIndicator size="large" color="#7569FA" />
-          </View>
-        ) : (
-          <FlatList
-            data={orders}
-            keyExtractor={(item, index) => item._id ?? index.toString()}
-            showsVerticalScrollIndicator={false}
-            renderItem={({ item }) => <OrderItem order={item} />}
-            ListEmptyComponent={
-              !loading && (
-                <View style={{ padding: 20, alignItems: "center" }}>
-                  <Text style={{ color: "#999", fontSize: 16 }}>
-                    No orders found
-                  </Text>
-                </View>
-              )
-            }
-          />
-        )}
-      </View>
-    </>
+    <View>
+      {loading ? (
+        <View style={loderStyles.loader}>
+          <ActivityIndicator size="large" color="#7569FA" />
+        </View>
+      ) : orders.length === 0 ? (
+        <View style={{ padding: 20, alignItems: "center" }}>
+          <Text style={{ color: "#999", fontSize: 16 }}>No orders found.</Text>
+        </View>
+      ) : (
+        <FlatList
+          data={orders}
+          keyExtractor={(item, index) => item._id ?? index.toString()}
+          showsVerticalScrollIndicator={false}
+          renderItem={({ item }) => <OrderItem order={item} />}
+        />
+      )}
+    </View>
   );
 }
 

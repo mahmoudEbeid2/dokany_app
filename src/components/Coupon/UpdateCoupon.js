@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import ProductDropdown from "./ProductDropdown";
 import { API } from "@env";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function UpdateCoupon({ coupon, onUpdateCoupon, onLoading }) {
   const [code, setCode] = useState(coupon.code);
@@ -38,9 +39,6 @@ function UpdateCoupon({ coupon, onUpdateCoupon, onLoading }) {
 
   const [product, setProduct] = useState(coupon.product_id);
 
-  const token =
-    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtZGRmcDh5MDAwMDFzNnlwMWY0bW4xZWgiLCJyb2xlIjoic2VsbGVyIiwiaWF0IjoxNzUzMTMyNTkyLCJleHAiOjE3NTM3MzczOTJ9.SY-EgjwraLb27FLWL50heKW-SqBcI8oOqx_muzO_Di4";
-
   const codeInputRef = useRef(null);
 
   useEffect(() => {
@@ -51,7 +49,7 @@ function UpdateCoupon({ coupon, onUpdateCoupon, onLoading }) {
 
   async function handleUpdateCoupon() {
     try {
-      const token = await getToken(); // جلب التوكن
+      const token = await AsyncStorage.getItem("token");
 
       const today = new Date();
       const days = parseInt(daysToExpire);
@@ -62,7 +60,7 @@ function UpdateCoupon({ coupon, onUpdateCoupon, onLoading }) {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: token,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           code,
@@ -77,8 +75,7 @@ function UpdateCoupon({ coupon, onUpdateCoupon, onLoading }) {
       const data = await response.json();
 
       if (response.ok) {
-        console.log("✅ Coupon updated:", data);
-        Alert.alert("Success", "Coupon updated successfully!");
+        Alert.alert("Success", " ✅ Coupon updated successfully!");
         onUpdateCoupon(data);
       } else {
         console.error("❌ Server error:", data);

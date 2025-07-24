@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { View, ActivityIndicator, StyleSheet } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { API } from "@env";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 const ProductDropdown = ({ id, value, onChange }) => {
   const [products, setProducts] = useState([]);
   const [open, setOpen] = useState(false);
@@ -17,7 +19,7 @@ const ProductDropdown = ({ id, value, onChange }) => {
       while (hasMore) {
         const res = await fetch(`${API}/products/seller?page=${page}`, {
           headers: {
-            Authorization: token,
+            Authorization: `Bearer ${token}`,
           },
         });
 
@@ -73,7 +75,7 @@ const ProductDropdown = ({ id, value, onChange }) => {
           setItems={setProducts}
           placeholder="Select Product"
           searchable
-          listMode="SCROLLVIEW"
+          listMode="MODAL"
           searchPlaceholder="Search Here"
           style={styles.dropdown}
           dropDownContainerStyle={styles.dropdownContainer}
