@@ -15,6 +15,8 @@ import { useFocusEffect } from '@react-navigation/native';
 import AntDesign from "@expo/vector-icons/AntDesign";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API } from "@env";
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { StatusBar } from "expo-status-bar";
 
 // { route, navigation }
 const ProductDetails = ({ navigation, route}) => {
@@ -138,7 +140,16 @@ const handleDeleteReview = async (reviewId) => {
   if (loading) return <ActivityIndicator style={{ flex: 1 }} size="large" color="#7B5CFA" />;
 
   return (
+      <SafeAreaView style={{ flex: 1 }}>
+        <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+
     <ScrollView contentContainerStyle={styles.container}>
+        <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={styles.backButton}
+      >
+        <AntDesign name="arrowleft" size={24} color="black" />
+      </TouchableOpacity>
       <Image
         source={{ uri: product?.images?.[0].image }}
         style={styles.image}
@@ -243,6 +254,7 @@ const handleDeleteReview = async (reviewId) => {
         )}
       </View>
     </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -271,12 +283,13 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 24,
     fontWeight: "bold",
+    color: "#333",
     // textAlign: '',
   },
   price: {
     fontSize: 16,
     marginVertical: 8,
-    color: "#666",
+    color: "#665491",
   },
   category: {
     fontSize: 16,
@@ -303,10 +316,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     borderRadius: 8,
   },
-  backText: {
-    color: "#fff",
-    fontSize: 16,
-  },
+
   editButton: {
     backgroundColor: "#F2F0F5",
     padding: 10,
@@ -314,7 +324,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   deleteButton: {
-    backgroundColor: "#5E2BD9",
+    backgroundColor: "#7569fa",
     padding: 10,
     borderRadius: 8,
     marginTop: 10,
@@ -347,6 +357,8 @@ const styles = StyleSheet.create({
   reviewName: {
     fontWeight: "bold",
     marginBottom: 5,
+    color:"#333",
+    fontSize:16,
   },
 
   reviewText: {
@@ -382,5 +394,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#666",
     textAlign: "center",
+  },
+        backButton: {
+    position: "absolute",
+    top: 15,
+    left: 20,
+    zIndex: 3,
+    padding: 8,
+    // backgroundColor: "#E8E5F5",
+    // borderRadius: 50,
+    // alignItems: "center",
+    // justifyContent: "center",  
   },
 });

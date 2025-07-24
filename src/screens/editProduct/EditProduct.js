@@ -9,7 +9,9 @@ import * as ImagePicker from "expo-image-picker";
 import { Picker } from "@react-native-picker/picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API } from "@env";
-// import { useRoute } from "@react-navigation/native";
+import AntDesign from '@expo/vector-icons/AntDesign';
+import { SafeAreaView } from 'react-native-safe-area-context';
+// import { useRoute } from "@react-navigation/native";   
 
 const EditProduct = ({ navigation , route}) => {
 //   const route = useRoute();
@@ -156,12 +158,21 @@ const EditProduct = ({ navigation , route}) => {
 };
 
   return (
+      <SafeAreaView style={{ flex: 1 }}>
+
     <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={20}>
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+        <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={styles.backButton}
+      >
+        <AntDesign name="arrowleft" size={24} color="black" />
+      </TouchableOpacity>
+
         <Text style={styles.title}>Edit Product</Text>
-<StatusBar backgroundColor="#7B5CFA" barStyle="light-content" />
+<StatusBar barStyle="dark-content" backgroundColor="#fff" />
         <TouchableOpacity style={styles.imageUploadBox} onPress={pickImages}>
-           <Text style={styles.title}>Update a product image</Text>
+           <Text style={styles.title2}>Update a product image</Text>
                   <Text style={styles.imageUploadText}>Upload a photo of your product</Text>
                   <Text style={styles.imageUploadBtn}>Upload image</Text>
         </TouchableOpacity>
@@ -246,6 +257,7 @@ const EditProduct = ({ navigation , route}) => {
         </TouchableOpacity>)}
       </ScrollView>
     </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 
@@ -256,9 +268,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   title: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 15,
+    marginBottom: 20,
+    marginTop: 10,
+    color: "#333",
+    textAlign: "center",
+  },
+  title2: {
+    fontSize: 18,
+    fontWeight: "700",
+    marginBottom: 16,
+    marginTop: 10,
+    color: "#333",
     textAlign: "center",
   },
   imageUploadBox: {
@@ -271,7 +293,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   imageUploadText: {
-    color: "#666",
+    color: "#665491",
     fontSize: 16,
   },
   imageUploadBtn: {
@@ -302,8 +324,8 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: "#ccc",
-    backgroundColor: "#E8E5F5",
+    borderColor: "#7569fa",
+    backgroundColor: "#fff",
     borderRadius: 10,
     paddingHorizontal: 15,
     paddingVertical: 10,
@@ -311,27 +333,38 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   saveBtn: {
-    backgroundColor: "#5E2BD9",
-    paddingVertical: 15,
-    borderRadius: 10,
+    backgroundColor: "#7569fa",
+    padding: 16,
+    borderRadius: 20,
     alignItems: "center",
+    marginTop: 16,
   },
   saveBtnText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
-    marginBottom: 5,
   },
   pickerWrapper: {
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: "#7569FA",
     borderRadius: 6,
     marginBottom: 15,
-    backgroundColor: "#E8E5F5",
+    backgroundColor: "#fff",
   },
   picker: {
     height: 60,
     width: "100%",
+  },
+      backButton: {
+    position: "absolute",
+    top: 30,
+    left: 20,
+    zIndex: 3,
+    padding: 8,
+    // backgroundColor: "#E8E5F5",
+    // borderRadius: 50,
+    // alignItems: "center",
+    // justifyContent: "center",  
   },
 });
 
