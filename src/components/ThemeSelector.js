@@ -29,10 +29,10 @@ export default function ThemeSelector({ selectedTheme, onSelectTheme }) {
 
   const fetchThemes = async () => {
     try {
-      const res = await themeAPI.get(''); 
+      const res = await themeAPI.get('');
       const fetchedThemes = res.data.themes.map((theme) => ({
         name: theme.name,
-        image: { uri: theme.image }, 
+        image: { uri: theme.image },
       }));
       setThemes(fetchedThemes);
     } catch (error) {
@@ -91,8 +91,8 @@ export default function ThemeSelector({ selectedTheme, onSelectTheme }) {
               style={styles.modalImage}
               resizeMode="contain"
             />
-            <TouchableOpacity onPress={() => setModalVisible(false)}>
-              <Text style={styles.closeButton}>Close</Text>
+            <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
+              <Text style={styles.closeButtonText}>Close</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -106,9 +106,10 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   subHeader: {
-    fontSize: 18,
-    fontWeight: '600',
-    marginBottom: 12,
+    fontSize: 16,
+    color: "#333",
+    fontWeight: "bold",
+    marginBottom: 10,
   },
   themesRow: {
     flexDirection: 'row',
@@ -151,8 +152,10 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: 18,
-    fontWeight: '600',
-    marginBottom: 12,
+    fontWeight: "700",
+    marginBottom: 16,
+    color: "#333",
+    marginTop: 10,
   },
   modalImage: {
     width: '100%',
@@ -160,10 +163,16 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   closeButton: {
+    backgroundColor: "#7569FA",
+    padding: 16,
+    borderRadius: 20,
+    alignItems: "center",
     marginTop: 16,
-    color: '#7569FA',
-    fontWeight: 'bold',
+  },
+  closeButtonText: {
+    color: "#fff",
     fontSize: 16,
+    fontWeight: "bold",
   },
 });
 

@@ -11,10 +11,13 @@ import {
     Modal,
     Pressable,
     TouchableOpacity,
+    SafeAreaView,
+    StatusBar,
 } from 'react-native';
 import { sellerAPI } from '../utils/api/api';
+import { AntDesign } from '@expo/vector-icons';
 
-export default function PayoutsScreen({ route }) {
+export default function PayoutsScreen({ route, navigation }) {
     const { sellerId, payoutMethod } = route.params;
     const [amount, setAmount] = useState('');
     const [loading, setLoading] = useState(false);
@@ -81,140 +84,177 @@ export default function PayoutsScreen({ route }) {
         fetchPayouts();
     }, []);
 
+    const renderHeader = () => (
+        <View style={styles.headerContainer}>
+            <View style={styles.navigationContainer}>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <AntDesign name="arrowleft" size={24} color="black" />
+                </TouchableOpacity>
+                <Text style={styles.navigationTitle}>Payouts</Text>
+            </View>
 
-    return (
-        <View style={styles.container}>
-            <Text style={styles.heading}>Total Earnings</Text>
+            <Text style={styles.heading}>Earnings</Text>
 
             {summary && (
                 <View style={styles.summaryContainer}>
-                    <Text style={styles.summaryText}>$ {summary.remaining_balance} </Text>
-                    <TouchableOpacity style={styles.requestPayoutButton} onPress={() => setModalVisible(true)} >
-                        <Text style={styles.requestPayoutButtonText}>Request Payout</Text>
+                    <Text style={styles.summaryText}>$ {summary.remaining_balance}</Text>
+                    <TouchableOpacity
+                        style={styles.requestPayoutButton}
+                        onPress={() => setModalVisible(true)}
+                    >
+                        <Text style={styles.requestPayoutButtonText}>Request Withdrawal</Text>
                     </TouchableOpacity>
                 </View>
             )}
 
-
-            <Text style={styles.historyTitle}>Payout History</Text>
-
-            {loading ? (
-                <ActivityIndicator size="large" color="#7569FA" />
-            ) : (
-                <FlatList
-                    data={payouts}
-                    keyExtractor={(item) => item.id}
-                    renderItem={({ item }) => {
-                        const capitalize = (str) =>
-                            str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-
-                        const status = item.status.toLowerCase();
-                        const displayStatus = capitalize(item.status);
-
-                        return (
-                            <View style={styles.payoutItem}>
-                                <Text style={styles.payoutItemText}>$ {item.amount}</Text>
-                                <Text
-                                    style={[
-                                        styles.statusBadge,
-                                        {
-                                            backgroundColor:
-                                                status === 'pending'
-                                                    ? '#FFD301'
-                                                    : status === 'paid'
-                                                        ? '#006B3D'
-                                                        : '#D61F1F',
-                                        },
-                                    ]}
-                                >
-                                    {displayStatus}
-                                </Text>
-                                <Text style={styles.dateText}>
-                                    {new Date(item.date).toLocaleDateString()}
-                                </Text>
-                            </View>
-                        );
-                    }}
-                />)
-            }
-
-            {/* MODAL */}
-            <Modal visible={modalVisible} animationType="slide" transparent={true}>
-                <View style={styles.modalOverlay}>
-                    <View style={styles.modalContainer}>
-                        <Text style={styles.modalTitle}>New Payout Request</Text>
-
-                        <TextInput
-                            placeholder="Amount"
-                            keyboardType="numeric"
-                            value={amount}
-                            onChangeText={setAmount}
-                            style={styles.input}
-                        />
-                        <Button
-                            title={submitting ? 'Submitting...' : 'Submit Request'}
-                            onPress={handleSubmit}
-                            color="#7569FA"
-                            disabled={submitting}
-                        />
-                        <Pressable onPress={() => setModalVisible(false)} style={styles.closeBtn}>
-                            <Text style={styles.closeText}>Close</Text>
-                        </Pressable>
-                    </View>
-                </View>
-            </Modal>
+            <Text style={styles.historyTitle}>Withdrawal History</Text>
         </View>
+    );
+
+    return (
+        <>
+            <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+            <SafeAreaView style={{ flex: 1, backgroundColor: "#FAFAFA" }}>
+                {loading ? (
+                    <ActivityIndicator size="large" color="#7569FA" style={{ marginTop: 20 }} />
+                ) : (
+                    <FlatList
+                        contentContainerStyle={styles.container}
+                        data={payouts}
+                        keyExtractor={(item) => item.id}
+                        ListHeaderComponent={renderHeader}
+                        renderItem={({ item }) => {
+                            const capitalize = (str) =>
+                                str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+
+                            const status = item.status.toLowerCase();
+                            const displayStatus = capitalize(item.status);
+
+                            return (
+                                <View style={styles.payoutItem}>
+                                    <View style={styles.payoutItemTextContainer}>
+                                        <Text style={styles.payoutItemText}>$ {item.amount}</Text>
+                                        <Text style={styles.payoutItemTextSub}>{displayStatus}</Text>
+                                    </View>
+                                    <View
+                                        style={[
+                                            styles.statusBadge,
+                                            {
+                                                backgroundColor:
+                                                    status === 'pending'
+                                                        ? '#FFD301'
+                                                        : status === 'paid'
+                                                            ? '#006B3D'
+                                                            : '#D61F1F',
+                                            },
+                                        ]}
+                                    />
+                                </View>
+                            );
+                        }}
+                    />
+                )}
+
+                {/* MODAL */}
+                <Modal visible={modalVisible} animationType="slide" transparent={true}>
+                    <View style={styles.modalOverlay}>
+                        <View style={styles.modalContainer}>
+                            <Text style={styles.modalTitle}>New Payout Request</Text>
+                            <TextInput
+                                placeholder="Amount"
+                                keyboardType="numeric"
+                                value={amount}
+                                onChangeText={setAmount}
+                                style={styles.input}
+                            />
+
+                            <TouchableOpacity
+                                onPress={handleSubmit}
+                                disabled={submitting}
+                                style={styles.requestPayoutButton}
+                            >
+                                <Text style={styles.requestPayoutButtonText}>{submitting ? 'Submitting...' : 'Submit Request'}</Text>
+                            </TouchableOpacity>
+
+                            <Pressable onPress={() => setModalVisible(false)} style={styles.closeBtn}>
+                                <Text style={styles.closeText}>Close</Text>
+                            </Pressable>
+                        </View>
+                    </View>
+                </Modal>
+            </SafeAreaView>
+        </>
     );
 }
 
+
 const styles = StyleSheet.create({
     container: {
-        padding: 20,
-        backgroundColor: '#fff',
+        paddingVertical: 20,
+        paddingHorizontal: 10,
+        backgroundColor: '#FAFAFA',
         flex: 1,
     },
+    navigationContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: 10,
+    },
+    navigationTitle: {
+        fontSize: 24,
+        fontWeight: "bold",
+        marginBottom: 20,
+        color: "#333",
+        marginTop: 10,
+        flex: 1,
+        textAlign: "center",
+    },
     heading: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginBottom: 12,
-        color: '#121217',
+        fontSize: 18,
+        fontWeight: "700",
+        marginBottom: 16,
+        color: "#333",
+        marginTop: 10,
     },
     summaryContainer: {
-        backgroundColor: '#F7F7FC',
         paddingVertical: 40,
         paddingHorizontal: 16,
         borderRadius: 20,
         marginBottom: 16,
         display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+        flexDirection: 'column',
+        gap: 16,
         alignItems: 'center',
     },
     summaryText: {
         fontSize: 24,
-        fontWeight: '600',
-        color: '#333',
-        margin: 0,
+        fontWeight: "bold",
+        color: "#333",
+        textAlign: "center",
+        marginTop: 10,
     },
     historyTitle: {
         fontSize: 18,
-        fontWeight: '600',
-        marginVertical: 16,
+        fontWeight: "700",
+        marginBottom: 16,
+        color: "#333",
+        marginTop: 10,
     },
     requestPayoutButton: {
-        backgroundColor: '#7569FA',
-        paddingHorizontal: 30,
-        paddingVertical: 10,
+        backgroundColor: "#7569FA",
+        padding: 16,
         borderRadius: 20,
+        alignItems: "center",
+        marginTop: 16,
     },
     requestPayoutButtonText: {
-        color: '#fff',
-        fontSize: 12,
-        fontWeight: '600',
+        color: "#fff",
+        fontSize: 16,
+        fontWeight: "bold",
     },
     payoutItem: {
-        backgroundColor: '#F7F7FC',
-        padding: 12,
+        paddingVertical: 16,
+        paddingHorizontal: 10,
         marginBottom: 10,
         borderRadius: 6,
         display: 'flex',
@@ -223,31 +263,31 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     payoutItemText: {
-        fontSize: 20,
-        fontWeight: '600',
-        color: '#333',
+        fontSize: 18,
+        fontWeight: "700",
+        color: "#333",
+        marginTop: 10,
     },
-    statusBadge: {
-        fontSize: 12,
-        fontWeight: '600',
-        color: '#fff',
-        padding: 6,
-        borderRadius: 6,
-        width: 80,
-        textAlign: 'center',
-    },
-    dateText: {
+    payoutItemTextSub: {
         fontSize: 12,
         color: '#555',
         marginTop: 4,
     },
+    statusBadge: {
+        width: 12,
+        height: 12,
+        borderRadius: 6,
+        marginRight: 10,
+    },
     input: {
         borderWidth: 1,
-        borderColor: '#ddd',
         padding: 10,
         marginBottom: 12,
-        borderRadius: 6,
+        borderRadius: 8,
         width: '100%',
+        color: "#665491",
+        fontSize: 14,
+        borderColor: "#7569FA",
     },
     modalOverlay: {
         flex: 1,
