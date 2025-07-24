@@ -3,6 +3,7 @@ import DropDownPicker from "react-native-dropdown-picker";
 import { useState } from "react";
 import { statusStyle as styles } from "./OrderDetailsStyle";
 import { API } from "@env";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function OrderStatus({ status, order_id }) {
   const [open, setOpen] = useState(false);
@@ -15,33 +16,30 @@ function OrderStatus({ status, order_id }) {
     { label: "Cancelled", value: "cancelled", key: "cancelled" },
   ]);
 
-  const token =
-    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtZGRmcDh5MDAwMDFzNnlwMWY0bW4xZWgiLCJyb2xlIjoic2VsbGVyIiwiaWF0IjoxNzUzMTMyNTkyLCJleHAiOjE3NTM3MzczOTJ9.SY-EgjwraLb27FLWL50heKW-SqBcI8oOqx_muzO_Di4";
+  async function handleUpdate() {
+    try {
+      const token = await AsyncStorage.getItem("token");
 
-  function handleUpdate() {
-    fetch(`${API}/api/orders/${order_id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: token,
-      },
-      body: JSON.stringify({ status: value }),
-    })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Failed to update status");
-        }
-        return res.json();
-      })
-      .then(() => {
-        alert("Order status updated successfully ✅");
-      })
-      .catch((error) => {
-        console.error(error);
-        alert("Something went wrong ❌");
+      const res = await fetch(`${API}/api/orders/${order_id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+        body: JSON.stringify({ status: value }),
       });
-  }
 
+      if (!res.ok) {
+        throw new Error("Failed to update status");
+      }
+
+      await res.json();
+      alert("Order status updated successfully ✅");
+    } catch (error) {
+      console.error(error);
+      alert("Something went wrong ❌");
+    }
+  }
   const buttonStyle = {
     width: "100%",
     backgroundColor: "#6130D4",

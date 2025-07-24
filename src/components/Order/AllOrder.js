@@ -1,59 +1,69 @@
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
+import { View, FlatList, ActivityIndicator, Text } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 import OrderItem from "./OrderItem";
-import { View, FlatList, ActivityIndicator } from "react-native";
 import { loderStyles } from "./style";
 import { API } from "@env";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function AllOrder() {
   const [loading, setLoading] = useState(true);
   const [orders, setOrders] = useState([]);
 
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        setLoading(true);
-        const token = await AsyncStorage.getItem("token");
+  useFocusEffect(
+    useCallback(() => {
+      const fetchOrders = async () => {
+        try {
+          setLoading(true);
+          const token = await AsyncStorage.getItem("token");
 
-        const response = await fetch(`${API}/api/orders`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token,
-          },
-        });
+          const response = await fetch(`${API}/api/orders`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          });
 
-        if (!response.ok) {
-          throw new Error("❌ Failed to fetch data");
+          if (!response.ok) {
+            throw new Error("❌ Failed to fetch data");
+          }
+
+          const data = await response.json();
+          setOrders(data);
+        } catch (error) {
+          console.error("⚠️ Error fetching orders:", error);
+        } finally {
+          setLoading(false);
         }
+      };
 
-        const data = await response.json();
-        setOrders(data);
-      } catch (error) {
-        console.error("⚠️ Error fetching orders:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchOrders();
-  }, []);
+      fetchOrders();
+    }, [])
+  );
 
   return (
-    <>
-      <View>
-        {loading ? (
-          <View style={loderStyles.loader}>
-            <ActivityIndicator size="large" color="#7569FA" />
-          </View>
-        ) : (
-          <FlatList
-            data={orders}
-            keyExtractor={(item, index) => item._id ?? index.toString()}
-            showsVerticalScrollIndicator={false}
-            renderItem={({ item }) => <OrderItem order={item} />}
-          />
-        )}
-      </View>
-    </>
+    <View style={{ flex: 1 }}>
+      {loading ? (
+        <View style={loderStyles.loader}>
+          <ActivityIndicator size="large" color="#7569FA" />
+        </View>
+      ) : orders.length === 0 ? (
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <Text style={{ fontSize: 18, color: "#999" }}>
+            📦 No Orders found
+          </Text>
+        </View>
+      ) : (
+        <FlatList
+          data={orders}
+          keyExtractor={(item, index) => item._id ?? index.toString()}
+          showsVerticalScrollIndicator={false}
+          renderItem={({ item }) => <OrderItem order={item} />}
+        />
+      )}
+    </View>
   );
 }

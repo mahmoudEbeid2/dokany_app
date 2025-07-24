@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import ProductDropdown from "./ProductDropdown";
 import { API } from "@env";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function AddCoupon({ onAddCoupon, onLoading }) {
   const [code, setCode] = useState("");
@@ -18,7 +19,7 @@ function AddCoupon({ onAddCoupon, onLoading }) {
 
   async function handleAddCoupon() {
     try {
-      const token = await getToken();
+      const token = await AsyncStorage.getItem("token");
 
       const today = new Date();
       const expireDate = new Date();
@@ -28,7 +29,7 @@ function AddCoupon({ onAddCoupon, onLoading }) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: token,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           code,

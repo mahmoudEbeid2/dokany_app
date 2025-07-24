@@ -1,65 +1,86 @@
+// App.js
+import React, { useEffect, useState } from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import RegisterScreen from "./src/screens/RegisterScreen";
+import LoginScreen from "./src/screens/LoginScreen";
+import ResetPasswordScreen from "./src/screens/ResetPasswordScreen";
+import ConfirmPasswordScreen from "./src/screens/ConfirmPasswordScreen";
+import SplashScreen from "./src/screens/SplashScreen";
+import CreateProduct from "./src/screens/createProduct/CreateProduct";
+import EditProduct from "./src/screens/editProduct/EditProduct";
+import AddCategory from "./src/screens/AddCategory/AddCategory";
+import EditCategory from "./src/screens/EditCategory/EditCategory";
+import ProductDetails from "./src/screens/ProductDetails/ProductDetails";
+import EditSellerProfile from "./src/screens/EditSellerProfile";
+import PayoutsScreen from "./src/screens/PayoutsScreen";
+import SettingsScreen from "./src/screens/SettingsScreen";
+import CustomersListScreen from "./src/screens/Customers/CustomersListScreen";
 
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import CreateProduct from './src/screens/createProduct/CreateProduct';
-import EditProduct from './src/screens/editProduct/EditProduct';
-import AddCategory from './src/screens/AddCategory/AddCategory';
-import EditCategory from './src/screens/EditCategory/EditCategory';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import ProductDetails from './src/screens/ProductDetails/ProductDetails';
-import SplashScreen from './src/screens/SplashScreen';
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
-import RegisterScreen from './src/screens/RegisterScreen';
-import LoginScreen from './src/screens/LoginScreen';
-import ResetPasswordScreen from './src/screens/ResetPasswordScreen';
-import ConfirmPasswordScreen from './src/screens/ConfirmPasswordScreen';
-import HomeScreen from './src/screens/HomeScreen';
-import ProductsAndCategoriesScreen from './src/screens/ProductsAndCategoriesScreen';
-import SettingsScreen from './src/screens/SettingsScreen';
-import EditSellerProfile from './src/screens/EditSellerProfile';
-import PayoutsScreen from './src/screens/PayoutsScreen';
-import CustomersListScreen from './src/screens/Customers/CustomersListScreen';
-import AuthLoadingScreen from './src/screens/AuthLoadingScreen';
-
+import BottomTabs from "./src/navigation/BottomTabs";
 
 const Stack = createNativeStackNavigator();
 
+export default function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(null);
 
-export default  function App () {
-  
+  useEffect(() => {
+    const checkToken = async () => {
+      const token = await AsyncStorage.getItem("token");
+      setIsAuthenticated(!!token);
+    };
+
+    checkToken();
+  }, []);
+
+  if (isAuthenticated === null) {
+    return <SplashScreen />;
+  }
+
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Splash">
-   <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Register" component={RegisterScreen} />
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
-        <Stack.Screen name="ConfirmPassword" component={ConfirmPasswordScreen} />
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Customers" component={CustomersListScreen} />
-        <Stack.Screen name="Settings" component={SettingsScreen} />
-        <Stack.Screen name="Products" component={ProductsAndCategoriesScreen} />
-        <Stack.Screen name="EditSellerProfile" component={EditSellerProfile} />
-        <Stack.Screen name="Payouts" component={PayoutsScreen} />
-        {/* products */}
-        <Stack.Screen name="CreateProduct" component={CreateProduct} />
-        <Stack.Screen name="EditProduct" component={EditProduct} />
-        <Stack.Screen name="CreateCategory" component={AddCategory} />
-        <Stack.Screen name="EditCategory" component={EditCategory} />
-        <Stack.Screen name="ProductDetails" component={ProductDetails} />
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        {isAuthenticated ? (
+          <>
+            {/* Main App Tabs */}
+            <Stack.Screen name="MainTabs" component={BottomTabs} />
+            {/* Nested Screens */}
+            <Stack.Screen name="CreateProduct" component={CreateProduct} />
+            <Stack.Screen name="EditProduct" component={EditProduct} />
+            <Stack.Screen name="CreateCategory" component={AddCategory} />
+            <Stack.Screen name="EditCategory" component={EditCategory} />
+            <Stack.Screen name="ProductDetails" component={ProductDetails} />
+            <Stack.Screen name="Settings" component={SettingsScreen} />
+            <Stack.Screen
+              name="EditSellerProfile"
+              component={EditSellerProfile}
+            />
+            <Stack.Screen name="Payouts" component={PayoutsScreen} />
+            <Stack.Screen name="Customers" component={CustomersListScreen} />
+          </>
+        ) : (
+          <>
+            <Stack.Screen name="Splash" component={SplashScreen} />
+            <Stack.Screen name="Register" component={RegisterScreen} />
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen
+              name="ResetPassword"
+              component={ResetPasswordScreen}
+            />
+            <Stack.Screen
+              name="ConfirmPassword"
+              component={ConfirmPasswordScreen}
+            />
+          </>
+        )}
       </Stack.Navigator>
     </NavigationContainer>
-
   );
 }
 
 //======================================================================================
-
-
 
 // import { StatusBar } from 'expo-status-bar';
 // import { StyleSheet, Text, View } from 'react-native';
