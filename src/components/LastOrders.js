@@ -55,11 +55,12 @@ export default function LastOrders() {
 const styles = StyleSheet.create({
   container: {
     padding: 10,
+
   },
   heading: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    marginBottom: 10,
-    marginLeft: 11,
+   fontSize: 18, 
+    fontWeight: "700", 
+    marginBottom: 16, 
+    color: "#333", 
   },
 });

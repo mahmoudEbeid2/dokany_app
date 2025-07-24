@@ -10,14 +10,12 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import StatsOverview from '../components/StatsOverview';
 import LastOrders from '../components/LastOrders';
-import BottomNav from '../components/BottomNav';
 
 export default function HomeScreen({ navigation }) {
   const dummyData = [];
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate loading delay
     const timer = setTimeout(() => {
       setLoading(false);
     }, 1500);
@@ -43,6 +41,7 @@ export default function HomeScreen({ navigation }) {
             <View style={styles.header}>
               <Text style={styles.title}>Storefront</Text>
               <Ionicons
+              style={styles.setting}
                 name="settings-outline"
                 size={24}
                 onPress={() => navigation.navigate('Settings')}
@@ -62,7 +61,7 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F7F7F7',
+    backgroundColor: '#FAFAFA',
   },
   loadingContainer: {
     flex: 1,
@@ -74,16 +73,24 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
-    marginBottom: 10,
   },
   title: {
-    fontSize: 18,
-    fontWeight: 'bold',
+  fontSize: 24, 
+    fontWeight: "bold", 
+    marginBottom: 20, 
+    color: "#333", 
+    marginTop: 10, 
+    paddingHorizontal:10
   },
   overview: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginLeft: 16,
+    fontSize: 18, 
+    fontWeight: "700", 
+    color: "#333", 
+        paddingHorizontal:10
+
   },
+  setting:{
+            paddingHorizontal:10
+
+  }
 });

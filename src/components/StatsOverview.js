@@ -50,10 +50,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
     paddingVertical: 20,
     rowGap: 10,
     margin: 10,
     borderRadius: 30,
+        backgroundColor: '#FAFAFA',
+      
+
   },
 });

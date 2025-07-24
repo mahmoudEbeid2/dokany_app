@@ -7,10 +7,12 @@ import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API } from "@env";
 import { AntDesign } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 export default function EditSellerProfile() {
   const [token, setToken] = useState(null);
   const [themes, setThemes] = useState([]);
+  const navigation = useNavigation(); 
 
   const [form, setForm] = useState({
     id: '',
@@ -234,8 +236,12 @@ const validateForm = () => {
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 20, alignItems: 'center', marginTop: 20 },
-  header: { fontSize: 20, fontWeight: 'bold', marginBottom: 20 },
+  container: { padding: 20, alignItems: 'center', marginTop: 20 ,backgroundColor:"#FAFAFA"},
+  header: {  fontSize: 24, 
+    fontWeight: "bold", 
+    marginBottom: 20, 
+    color: "#333", 
+    marginTop: 10, },
 
   imageRow: {
     flexDirection: 'row',
@@ -346,13 +352,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },backButton: {
   position: "absolute",
-  top: 10,
-  left: 15,
-  zIndex: 10,
-  padding: 8,
-  borderRadius: 50,
-  alignItems: "center",
-  justifyContent: "center",  
+     top: 15,
+    left: 20,
+    zIndex: 3,
+    backgroundColor: "#E8E5F5",
+    padding: 8,
+    borderRadius: 50,
+    alignItems: "center",
+    justifyContent: "center",   
 },
 
 });

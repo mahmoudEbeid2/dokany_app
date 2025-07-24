@@ -7,16 +7,14 @@ import CategoriesScreen from '../components/CategoriesScreen';
 
 export default function ProductsAndCategoriesScreen() {
   const [activeTab, setActiveTab] = useState('products');
-  const navigation = useNavigation(); // ✅ استخدام navigation
+  const navigation = useNavigation(); 
 
   return (
     <View style={styles.container}>
-      {/* 🔙 Back Button */}
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
         <AntDesign name="arrowleft" size={24} color="black" />
       </TouchableOpacity>
 
-      {/* 🔘 Switch Buttons */}
       <View style={styles.tabContainer}>
         <TouchableOpacity
           onPress={() => setActiveTab('products')}
@@ -37,7 +35,6 @@ export default function ProductsAndCategoriesScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* 🔄 Active Screen */}
       <View style={styles.content}>
         {activeTab === 'products' ? <ProductsScreen /> : <CategoriesScreen />}
       </View>
@@ -46,28 +43,27 @@ export default function ProductsAndCategoriesScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
+  container: { flex: 1 ,backgroundColor:"#FAFAFA"},
   tabContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    backgroundColor: '#eee',
+        backgroundColor: '#FAFAFA',
     paddingVertical: 10,
   },
   tabButton: {
     paddingVertical: 8,
     paddingHorizontal: 20,
     marginHorizontal: 10,
-    borderRadius: 20,
+borderRadius: 20, 
     backgroundColor: '#ddd',
   },
   activeTab: {
-    backgroundColor: '#000',
+backgroundColor: "#7569FA", 
   },
   tabText: {
-    fontSize: 16,
     color: '#555',
-    fontWeight: '500',
-  },
+fontSize: 16, 
+fontWeight: "bold",   },
   activeText: {
     color: '#fff',
     fontWeight: 'bold',
@@ -76,13 +72,15 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   backButton: {
-    position: 'absolute',
+        position: "absolute",
     top: 15,
     left: 20,
     zIndex: 3,
+    backgroundColor: "#E8E5F5",
     padding: 8,
     borderRadius: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",  
   },
+
 });

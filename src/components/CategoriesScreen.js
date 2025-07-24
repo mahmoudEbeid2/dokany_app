@@ -110,7 +110,8 @@ export default function CategoriesScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 10 },
+  container: { flex: 1, padding: 10,        backgroundColor: '#FAFAFA',
+ },
   card: {
     width: '48%',
     backgroundColor: '#fff',
