@@ -42,7 +42,7 @@ function OrderStatus({ status, order_id }) {
   }
   const buttonStyle = {
     width: "100%",
-    backgroundColor: "#6130D4",
+    backgroundColor: "#7569FA",
     marginTop: 40,
     height: 50,
     justifyContent: "center",
@@ -53,7 +53,7 @@ function OrderStatus({ status, order_id }) {
   const buttonTextStyle = {
     color: "white",
     fontWeight: "bold",
-    fontSize: 14,
+    fontSize: 16,
   };
 
   return (
