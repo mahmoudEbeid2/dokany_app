@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   FlatList,
@@ -7,17 +7,16 @@ import {
   TouchableOpacity,
   StyleSheet,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import axios from 'axios';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useNavigation, useIsFocused } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { API } from "@env";
+import { API } from '@env';
 
 export default function CategoriesScreen() {
   const navigation = useNavigation();
-  const isFocused = useIsFocused();
-
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -25,10 +24,8 @@ export default function CategoriesScreen() {
     setLoading(true);
     try {
       const storedToken = await AsyncStorage.getItem('token');
-      const finalToken = `Bearer ${storedToken}`;
-
       const res = await axios.get(`${API}/categories/seller`, {
-        headers: { Authorization: finalToken },
+        headers: { Authorization: `Bearer ${storedToken}` },
       });
       setCategories(res.data);
     } catch (err) {
@@ -37,17 +34,54 @@ export default function CategoriesScreen() {
     setLoading(false);
   };
 
-  useEffect(() => {
-    if (isFocused) {
+  const handleDelete = async (id) => {
+    Alert.alert('Delete Category', 'Are you sure?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            const token = await AsyncStorage.getItem('token');
+            await axios.delete(`${API}/categories/${id}`, {
+              headers: { Authorization: `Bearer ${token}` },
+            });
+            setCategories((prev) => prev.filter((cat) => cat.id !== id));
+          } catch (err) {
+            console.error('Error deleting category:', err);
+          }
+        },
+      },
+    ]);
+  };
+
+  useFocusEffect(
+    useCallback(() => {
       fetchCategories();
-    }
-  }, [isFocused]);
+    }, [])
+  );
 
   const renderItem = ({ item }) => (
-    <TouchableOpacity style={styles.card}>
+    <View style={styles.card}>
       <Image source={{ uri: item.image }} style={styles.image} />
       <Text style={styles.name}>{item.name}</Text>
-    </TouchableOpacity>
+
+      <View style={styles.actions}>
+        <TouchableOpacity
+          style={styles.actionBtn}
+          onPress={() => navigation.navigate('EditCategory', { category: item })}
+        >
+          <Ionicons name="create-outline" size={18} color="#4F479E" />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.actionBtn}
+          onPress={() => handleDelete(item.id)}
+        >
+          <Ionicons name="trash-outline" size={18} color="red" />
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 
   return (
@@ -94,6 +128,14 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 14,
     fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  actions: {
+    flexDirection: 'row',
+    marginTop: 10,
+  },
+  actionBtn: {
+    marginHorizontal: 8,
   },
   fab: {
     position: 'absolute',

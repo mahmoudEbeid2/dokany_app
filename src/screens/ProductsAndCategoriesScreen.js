@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import ProductsScreen from '../components/ProductScreen';
 import CategoriesScreen from '../components/CategoriesScreen';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ProductsAndCategoriesScreen() {
   const [activeTab, setActiveTab] = useState('products');
@@ -44,6 +45,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#eee',
     paddingVertical: 10,
+    marginTop:40
   },
   tabButton: {
     paddingVertical: 8,
