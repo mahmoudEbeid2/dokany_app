@@ -6,6 +6,7 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API } from "@env";
+import { AntDesign } from '@expo/vector-icons';
 
 export default function EditSellerProfile() {
   const [token, setToken] = useState(null);
@@ -162,7 +163,15 @@ const validateForm = () => {
   };
 
   return (
+    
     <ScrollView contentContainerStyle={styles.container}>
+      <TouchableOpacity
+  onPress={() => navigation.goBack()}
+  style={styles.backButton}
+>
+  <AntDesign name="arrowleft" size={24} color="black" />
+</TouchableOpacity>
+
       <Text style={styles.header}>Edit Your Profile</Text>
 
       <View style={styles.imageRow}>
@@ -335,5 +344,15 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
     fontSize: 16,
-  },
+  },backButton: {
+  position: "absolute",
+  top: 10,
+  left: 15,
+  zIndex: 10,
+  padding: 8,
+  borderRadius: 50,
+  alignItems: "center",
+  justifyContent: "center",  
+},
+
 });

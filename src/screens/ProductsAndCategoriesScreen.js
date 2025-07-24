@@ -1,14 +1,21 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { AntDesign } from '@expo/vector-icons'; // ✅ استيراد أيقونة السهم
+import { useNavigation } from '@react-navigation/native';
 import ProductsScreen from '../components/ProductScreen';
 import CategoriesScreen from '../components/CategoriesScreen';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ProductsAndCategoriesScreen() {
   const [activeTab, setActiveTab] = useState('products');
+  const navigation = useNavigation(); // ✅ استخدام navigation
 
   return (
     <View style={styles.container}>
+      {/* 🔙 Back Button */}
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+        <AntDesign name="arrowleft" size={24} color="black" />
+      </TouchableOpacity>
+
       {/* 🔘 Switch Buttons */}
       <View style={styles.tabContainer}>
         <TouchableOpacity
@@ -45,7 +52,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#eee',
     paddingVertical: 10,
-    marginTop:40
   },
   tabButton: {
     paddingVertical: 8,
@@ -68,5 +74,15 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+  },
+  backButton: {
+    position: 'absolute',
+    top: 15,
+    left: 20,
+    zIndex: 3,
+    padding: 8,
+    borderRadius: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
