@@ -14,7 +14,6 @@ function OrderByStatus({ status }) {
       try {
         setLoading(true);
         const token = await AsyncStorage.getItem("token");
-        console.log("token", token);
 
         const response = await fetch(`${API}/api/orders/${status}`, {
           method: "GET",
