@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, SafeAreaView, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import StatsOverview from '../components/StatsOverview';
 import LastOrders from '../components/LastOrders'; 
+import BottomNav from '../components/BottomNav';
 
 export default function HomeScreen({ navigation }) {
   const dummyData = []; 
