@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
   },
   editButton: {
     flex: 1,
-    backgroundColor: "#007AFF",
+    backgroundColor: "#ccc",
     borderRadius: 20,
     padding: 16,
     borderRadius: 20,
@@ -209,13 +209,13 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   editButtonText: {
-    color: "#fff",
+    color: "#333",
     fontSize: 16,
     fontWeight: "bold",
   },
   deleteButton: {
     flex: 1,
-    backgroundColor: "tomato",
+    backgroundColor: "red",
     padding: 16,
     borderRadius: 20,
     alignItems: "center",
