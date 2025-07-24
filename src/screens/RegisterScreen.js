@@ -6,27 +6,30 @@ import {
   TextInput,
   Button,
   StyleSheet,
+  StatusBar,
   Image,
   TouchableOpacity,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { Ionicons, MaterialIcons, FontAwesome } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons, FontAwesome, AntDesign } from '@expo/vector-icons';
 import { authAPI } from '../utils/api/api';
 import ThemeSelector from '../components/ThemeSelector';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
 
 const fields = [
-  { name: 'user_name', label: 'Username', icon: <FontAwesome name="user" size={20} /> },
-  { name: 'f_name', label: 'First Name', icon: <Ionicons name="person" size={20} /> },
-  { name: 'l_name', label: 'Last Name', icon: <Ionicons name="person-outline" size={20} /> },
-  { name: 'email', label: 'Email', icon: <MaterialIcons name="email" size={20} /> },
-  { name: 'phone', label: 'Phone', icon: <FontAwesome name="phone" size={20} /> },
-  { name: 'city', label: 'City', icon: <FontAwesome name="building" size={20} /> },
-  { name: 'governorate', label: 'Governorate', icon: <FontAwesome name="map-marker" size={20} /> },
-  { name: 'country', label: 'Country', icon: <FontAwesome name="globe" size={20} /> },
-  { name: 'subdomain', label: 'Subdomain', icon: <FontAwesome name="link" size={20} /> },
-  { name: 'payout_method', label: 'Payout Account', icon: <FontAwesome name="credit-card" size={20} /> },
-  { name: 'password', label: 'Password', icon: <Ionicons name="lock-closed" size={20} />, isPassword: true },
-  { name: 'confirm_password', label: 'Confirm Password', icon: <Ionicons name="lock-closed-outline" size={20} />, isPassword: true },
+  { name: 'user_name', label: 'Username', placeholder: 'Enter Username', icon: <FontAwesome name="user" size={20} /> },
+  { name: 'f_name', label: 'First Name', placeholder: 'Enter First Name', icon: <Ionicons name="person" size={20} /> },
+  { name: 'l_name', label: 'Last Name', placeholder: 'Enter Last Name', icon: <Ionicons name="person-outline" size={20} /> },
+  { name: 'email', label: 'Email', placeholder: 'Enter Email', icon: <MaterialIcons name="email" size={20} /> },
+  { name: 'phone', label: 'Phone', placeholder: 'Enter Phone', icon: <FontAwesome name="phone" size={20} /> },
+  { name: 'city', label: 'City', placeholder: 'Enter City', icon: <FontAwesome name="building" size={20} /> },
+  { name: 'governorate', label: 'Governorate', placeholder: 'Enter Governorate', icon: <FontAwesome name="map-marker" size={20} /> },
+  { name: 'country', label: 'Country', placeholder: 'Enter Country', icon: <FontAwesome name="globe" size={20} /> },
+  { name: 'subdomain', label: 'Subdomain', placeholder: 'Enter Subdomain', icon: <FontAwesome name="link" size={20} /> },
+  { name: 'payout_method', label: 'Payout Account', placeholder: 'Enter Payout Account', icon: <FontAwesome name="credit-card" size={20} /> },
+  { name: 'password', label: 'Password', placeholder: 'Enter Password', icon: <Ionicons name="lock-closed" size={20} />, isPassword: true },
+  { name: 'confirm_password', label: 'Confirm Password', placeholder: 'Confirm Password', icon: <Ionicons name="lock-closed-outline" size={20} />, isPassword: true },
 ];
 
 export default function RegisterScreen({ navigation }) {
@@ -285,81 +288,125 @@ export default function RegisterScreen({ navigation }) {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.header}>Create an Account</Text>
-
-      {fields.map(({ name, label, icon, isPassword }) => (
-        <View key={name} style={{ marginBottom: 15 }}>
-          <View style={styles.inputContainer}>
-            <View style={styles.icon}>{icon}</View>
-            <TextInput
-              placeholder={label}
-              value={form[name]}
-              secureTextEntry={!!isPassword}
-              onChangeText={(val) => handleChange(name, val)}
-              style={styles.input}
-            />
+    <>
+      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+      <SafeAreaView style={{ flex: 1 }}>
+        <ScrollView contentContainerStyle={styles.container}>
+          <View
+            style={styles.navigationContainer}
+          >
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <AntDesign name="arrowleft" size={24} color="black" />
+            </TouchableOpacity>
+            <Text
+              style={styles.navigationTitle}
+            >
+              Register
+            </Text>
           </View>
-          {errors[name] && <Text style={styles.errorText}>{errors[name]}</Text>}
-        </View>
-      ))}
+          <Text style={styles.header}>Create an Account</Text>
+          {fields.map(({ name, label, icon, placeholder, isPassword }) => (
+            <View key={name} style={{ marginBottom: 15 }}>
+              <Text style={styles.inputLabel}>{label}</Text>
+              <View style={styles.inputContainer}>
+                <View style={styles.icon}>{icon}</View>
+                <TextInput
+                  placeholder={placeholder}
+                  value={form[name]}
+                  secureTextEntry={!!isPassword}
+                  onChangeText={(val) => handleChange(name, val)}
+                  style={styles.input}
+                  placeholderTextColor="#665491"
+
+                />
+              </View>
+              {errors[name] && <Text style={styles.errorText}>{errors[name]}</Text>}
+            </View>
+          ))}
 
 
-      <View style={styles.uploadContainer}>
-        <Text style={styles.uploadHeader}>Add a Store Logo</Text>
-        <Text style={styles.uploadDescription}>{logo ? "Store Logo Selected" : "Upload a photo of your store logo"}</Text>
-        <TouchableOpacity onPress={() => pickImage(setLogo)} style={styles.uploadButton}>
-          <Text>Upload Image</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.uploadContainer}>
-        <Text style={styles.uploadHeader}>Add a Profile Image</Text>
-        <Text style={styles.uploadDescription}>{profileImage ? "Profile Image Selected" : "Upload a photo of your profile"}</Text>
-        <TouchableOpacity onPress={() => pickImage(setProfileImage)} style={styles.uploadButton}>
-          <Text>Upload Image</Text>
-        </TouchableOpacity>
-      </View>
+          <View style={styles.uploadContainer}>
+            <Text style={styles.uploadHeader}>Add a Store Logo</Text>
+            <Text style={styles.uploadDescription}>{logo ? "Store Logo Selected" : "Upload a photo of your store logo"}</Text>
+            <TouchableOpacity onPress={() => pickImage(setLogo)} style={styles.uploadButton}>
+              <Text>Upload Image</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.uploadContainer}>
+            <Text style={styles.uploadHeader}>Add a Profile Image</Text>
+            <Text style={styles.uploadDescription}>{profileImage ? "Profile Image Selected" : "Upload a photo of your profile"}</Text>
+            <TouchableOpacity onPress={() => pickImage(setProfileImage)} style={styles.uploadButton}>
+              <Text>Upload Image</Text>
+            </TouchableOpacity>
+          </View>
 
-      <ThemeSelector selectedTheme={selectedTheme} onSelectTheme={setSelectedTheme} />
+          <ThemeSelector selectedTheme={selectedTheme} onSelectTheme={setSelectedTheme} />
 
 
-      <TouchableOpacity onPress={handleRegister} style={styles.registerButton}>
-        <Text style={styles.buttonText}>Register</Text>
-      </TouchableOpacity>
-    </ScrollView>
+          <TouchableOpacity onPress={handleRegister} style={styles.registerButton}>
+            <Text style={styles.buttonText}>Register</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </SafeAreaView>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    paddingHorizontal: 10,
     paddingBottom: 50,
-    backgroundColor: '#fff',
+    backgroundColor: '#FAFAFA',
+  },
+  navigationContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 10,
+  },
+  navigationTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
+    flex: 1,
+    textAlign: 'center',
+    marginBottom: 20,
+    marginTop: 10,
   },
   header: {
-    fontSize: 26,
-    fontWeight: 'bold',
-    marginVertical: 20,
+    fontSize: 18,
+    fontWeight: '700',
+    marginBottom: 16,
+    marginTop: 10,
     textAlign: 'center',
     color: '#333',
+  },
+  inputLabel: {
+    fontSize: 16,
+    color: "#333",
+    fontWeight: "bold",
+    marginBottom: 10,
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderColor: '#eee',
+    borderColor: '#7569FA',
     borderWidth: 1,
-    borderRadius: 20,
+    borderRadius: 8,
     paddingHorizontal: 10,
-    marginBottom: 15,
+    marginBottom: 10,
     paddingVertical: 5,
+    color: "#665491",
+    fontSize: 14,
   },
   icon: {
-    marginRight: 10,
-    width: 24,
+    marginRight: 5,
+    width: 20,
   },
   input: {
     flex: 1,
-    fontSize: 16,
+    color: "#665491",
+    fontSize: 14,
     paddingTop: 10,
   },
   uploadContainer: {
@@ -368,43 +415,42 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 15,
-    borderColor: '#D1CFE8',
+    borderColor: '#7569FA',
     borderWidth: 1,
     borderRadius: 6,
     borderStyle: 'dashed',
     paddingVertical: 20,
   },
   uploadHeader: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#0D0D1C',
+    fontSize: 16,
+    color: "#333",
+    fontWeight: "bold",
   },
   uploadDescription: {
+    color: "#665491",
     fontSize: 14,
-    color: '#0D0D1C',
-    marginBottom: 30,
+    marginBottom: 20,
   },
   uploadButton: {
     backgroundColor: '#f0f0f0',
     padding: 10,
     borderRadius: 10,
     alignItems: 'center',
+    color: "#665491",
     fontSize: 14,
-    fontWeight: 'bold',
   },
   registerButton: {
-    backgroundColor: '#7569FA',
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 10,
+    backgroundColor: "#7569FA",
+    padding: 16,
+    borderRadius: 20,
+    alignItems: "center",
+    marginTop: 16,
+
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   errorText: {
     color: 'red',
