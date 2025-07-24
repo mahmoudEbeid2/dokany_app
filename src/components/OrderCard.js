@@ -3,16 +3,17 @@ import { View, Text, StyleSheet, Image } from 'react-native';
 
 export default function OrderCard({ name, orderNumber, price, image }) {
   const fullName = name || 'Unknown Customer';
-  const avatarSource = image ? { uri: image } : null;
+
+  const avatarSource = image
+    ? typeof image === 'string'
+      ? { uri: image }
+      : image
+    : require('../../assets/avtar.jpg'); 
 
   return (
     <View style={styles.card}>
       <View style={styles.avatarWrapper}>
-        {avatarSource ? (
-          <Image source={avatarSource} style={styles.avatar} />
-        ) : (
-          <View style={styles.placeholderAvatar} />
-        )}
+        <Image source={avatarSource} style={styles.avatar} />
       </View>
       <View style={styles.details}>
         <View style={styles.left}>
@@ -43,12 +44,6 @@ const styles = StyleSheet.create({
     height: 48,
     borderRadius: 24,
   },
-  placeholderAvatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: '#ccc',
-  },
   details: {
     flex: 1,
     flexDirection: 'row',
@@ -71,6 +66,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     color: '#000',
-    marginRight:18
+    marginRight: 18,
   },
 });

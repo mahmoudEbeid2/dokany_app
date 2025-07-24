@@ -94,8 +94,9 @@ export default function CategoriesScreen() {
       </TouchableOpacity>
 
       {loading ? (
-        <ActivityIndicator size="large" color="#000" style={{ marginTop: 20 }} />
-      ) : (
+  <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#4F479E" />
+      </View>      ) : (
         <FlatList
           data={categories}
           keyExtractor={(item) => item.id}
@@ -154,4 +155,11 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     zIndex: 10,
   },
+  
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F7F7F7',
+  }
 });

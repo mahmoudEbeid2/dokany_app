@@ -74,7 +74,7 @@ export default function ProductScreen() {
     };
 
     if (isFocused) {
-      setLoading(true); // 👈 مهم عشان يعمل لودينج من جديد
+      setLoading(true); 
       loadTokenAndFetch();
     }
   }, [isFocused]);
@@ -116,8 +116,11 @@ export default function ProductScreen() {
       />
 
       {loading ? (
-        <ActivityIndicator size="large" color="#000" style={{ marginTop: 50 }} />
-      ) : (
+
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#4F479E" />
+      </View>
+        ) : (
         <>
           <FlatList
             data={paginatedData}
@@ -198,4 +201,10 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     zIndex: 10,
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F7F7F7',
+  }
 });

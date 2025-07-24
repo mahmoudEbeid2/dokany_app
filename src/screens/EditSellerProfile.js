@@ -168,7 +168,7 @@ const validateForm = () => {
       <View style={styles.imageRow}>
         <TouchableOpacity onPress={() => pickImage("profile")} style={styles.imageContainer}>
           <Image
-            source={profilePreview ? { uri: profilePreview } : require('../../assets/profile-placeholder.png.png')}
+            source={profilePreview ? { uri: profilePreview } : require('../../assets/avtar.jpg')}
             style={styles.profileImage}
           />
           <Text style={styles.imageText}>Profile</Text>
