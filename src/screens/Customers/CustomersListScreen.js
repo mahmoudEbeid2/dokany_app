@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   Text,
   View,
-  SafeAreaView,
   FlatList,
   TouchableOpacity,
   TextInput,
@@ -11,8 +10,10 @@ import {
   Alert,
   StyleSheet,
 } from "react-native";
-import { Feather } from "@expo/vector-icons";
+import { useFocusEffect } from "@react-navigation/native";
+import { AntDesign, Feather } from "@expo/vector-icons";
 import { sellerAPI } from "../../utils/api/api";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const CustomersListScreen = ({ navigation }) => {
   const [customers, setCustomers] = useState([]);
@@ -20,25 +21,27 @@ const CustomersListScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const fetchCustomers = useCallback(async () => {
-    try {
-      setLoading(true);
-      const response = await sellerAPI.get("/api/seller/customers");
-      const fetchedCustomers = response.data || [];
-      setCustomers(fetchedCustomers);
-      setFilteredCustomers(fetchedCustomers);
-    } catch (error) {
-      console.error("Failed to fetch customers:", error);
-      Alert.alert("Error", "Failed to fetch customers from the server.");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      const fetchCustomers = async () => {
+        try {
+          setLoading(true);
+          const response = await sellerAPI.get("/api/seller/customers");
+          const fetchedCustomers = response.data || [];
+          setCustomers(fetchedCustomers);
+          // Set filtered customers here as well to reflect the latest fetch
+          setFilteredCustomers(fetchedCustomers);
+        } catch (error) {
+          console.error("Failed to fetch customers:", error);
+          Alert.alert("Error", "Failed to fetch customers from the server.");
+        } finally {
+          setLoading(false);
+        }
+      };
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", fetchCustomers);
-    return unsubscribe;
-  }, [navigation, fetchCustomers]);
+      fetchCustomers();
+    }, [])
+  );
 
   useEffect(() => {
     if (searchQuery.trim() === "") {
@@ -87,6 +90,13 @@ const CustomersListScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <View style={styles.headerContainer}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <AntDesign name="arrowleft" size={24} color="black" />
+        </TouchableOpacity>
+        <Text style={styles.title}>Customers</Text>
+        <View style={{ width: 24 }} />
+      </View>
       <View style={styles.searchContainer}>
         <Feather
           name="search"
@@ -104,7 +114,7 @@ const CustomersListScreen = ({ navigation }) => {
       <FlatList
         data={filteredCustomers}
         renderItem={renderCustomerItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.listContainer}
       />
       <TouchableOpacity
@@ -120,7 +130,20 @@ const CustomersListScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFF",
+    backgroundColor: "#FAFAFA",
+    paddingInline: 50,
+  },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#333",
   },
   centered: {
     flex: 1,
@@ -131,7 +154,9 @@ const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#F0F2F5",
+    backgroundColor: "#ffffff",
+    borderColor: "#7569FA",
+    borderWidth: 1,
     borderRadius: 12,
     marginHorizontal: 20,
     paddingHorizontal: 15,
@@ -153,8 +178,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: "#EEE",
   },
   avatar: {
     width: 50,
@@ -167,21 +190,20 @@ const styles = StyleSheet.create({
   },
   customerName: {
     fontSize: 16,
-    fontWeight: "600",
-    color: "#1A202C",
+    fontWeight: "bold",
+    color: "#333",
   },
   customerRegistered: {
     fontSize: 14,
-    color: "#718096",
+    color: "#665491",
     marginTop: 4,
   },
   fab: {
     position: "absolute",
-    right: 20,
+    right: 30,
     bottom: 30,
-    backgroundColor: "#6200EE",
-    width: 60,
-    height: 60,
+    backgroundColor: "#7569FA",
+    padding: 16,
     borderRadius: 30,
     justifyContent: "center",
     alignItems: "center",
