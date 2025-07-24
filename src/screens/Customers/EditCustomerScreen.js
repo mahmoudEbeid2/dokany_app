@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   Text,
   View,
-  SafeAreaView,
   TouchableOpacity,
   TextInput,
   Image,
@@ -18,6 +17,8 @@ import {
   validateUsername,
   validatePassword,
 } from "../../utils/validation";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { AntDesign } from "@expo/vector-icons";
 
 const EditCustomerScreen = ({ route, navigation }) => {
   const { customer } = route.params;
@@ -104,6 +105,15 @@ const EditCustomerScreen = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={styles.formContainer}>
+      <View style={styles.headerContainer}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <AntDesign name="arrowleft" size={24} color="black" />
+        </TouchableOpacity>
+
+        <Text style={styles.title}>Edit Customer</Text>
+
+        <View style={{ width: 24 }} />
+      </View>
       <ScrollView>
         <TouchableOpacity
           style={styles.editAvatarContainer}
@@ -221,33 +231,50 @@ const EditCustomerScreen = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   formContainer: {
     flex: 1,
-    backgroundColor: "#FFF",
+    backgroundColor: "#FAFAFA",
+    padding: 10,
+  },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+  },
+
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#333",
   },
   form: {
-    padding: 20,
+    padding: 10,
   },
   label: {
-    fontSize: 14,
-    color: "#718096",
+    fontSize: 16,
+    color: "#333",
     marginBottom: 8,
-    fontWeight: "600",
+    fontWeight: "bold",
   },
   input: {
-    backgroundColor: "#F0F2F5",
-    borderRadius: 12,
+    backgroundColor: "#fff",
+    borderWidth: 1,
+    borderColor: "#7569FA",
+    borderRadius: 8,
     padding: 15,
     fontSize: 16,
     marginBottom: 20,
+    color: "gray",
   },
   formFooter: {
-    padding: 20,
+    padding: 10,
     borderTopWidth: 1,
     borderTopColor: "#F0F2F5",
   },
   button: {
-    backgroundColor: "#6200EE",
-    padding: 18,
-    borderRadius: 12,
+    backgroundColor: "#7569FA",
+    padding: 16,
+    borderRadius: 20,
     alignItems: "center",
   },
   buttonText: {

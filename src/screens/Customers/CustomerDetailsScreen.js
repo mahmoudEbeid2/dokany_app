@@ -2,7 +2,6 @@ import React from "react";
 import {
   Text,
   View,
-  SafeAreaView,
   TouchableOpacity,
   Image,
   Alert,
@@ -10,6 +9,8 @@ import {
   StyleSheet,
 } from "react-native";
 import { sellerAPI } from "../../utils/api/api";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { AntDesign } from "@expo/vector-icons";
 
 const CustomerDetailsScreen = ({ route, navigation }) => {
   const { customer } = route.params;
@@ -58,6 +59,15 @@ const CustomerDetailsScreen = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={styles.detailsContainer}>
+      <View style={styles.headerContainer}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <AntDesign name="arrowleft" size={24} color="black" />
+        </TouchableOpacity>
+
+        <Text style={styles.title}>Customer Details</Text>
+
+        <View style={{ width: 24 }} />
+      </View>
       <ScrollView>
         <Image source={imageSource} style={styles.detailsAvatar} />
         <View style={styles.detailsContent}>
@@ -75,6 +85,18 @@ const CustomerDetailsScreen = ({ route, navigation }) => {
               <Text style={styles.detailsInfoTitle}>City</Text>
               <Text style={styles.detailsInfoText}>
                 {customer.city || "N/A"}
+              </Text>
+            </View>
+          </View>
+          <View style={styles.detailsInfoRow}>
+            <View style={styles.detailsInfoBlock}>
+              <Text style={styles.detailsInfoTitle}>Governorate</Text>
+              <Text style={styles.detailsInfoText}>{customer.governorate}</Text>
+            </View>
+            <View style={styles.detailsInfoBlock}>
+              <Text style={styles.detailsInfoTitle}>Country</Text>
+              <Text style={styles.detailsInfoText}>
+                {customer.country || "N/A"}
               </Text>
             </View>
           </View>
@@ -98,7 +120,20 @@ const CustomerDetailsScreen = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFF",
+    backgroundColor: "#FAFAFA",
+  },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+  },
+
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#333",
   },
   headerTitle: {
     fontSize: 28,
@@ -110,31 +145,31 @@ const styles = StyleSheet.create({
   detailsContainer: {
     flex: 1,
     backgroundColor: "#FFF",
+    padding: 10,
   },
   detailsAvatar: {
+    padding: 10,
     width: "100%",
     height: 350,
     resizeMode: "cover",
   },
   detailsContent: {
-    padding: 20,
+    padding: 10,
   },
   detailsName: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "#1A202C",
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#333",
+    marginBottom: 16,
+    marginTop: 10,
   },
   detailsEmail: {
-    fontSize: 16,
-    color: "#718096",
-    marginTop: 4,
-  },
-  detailsId: {
     fontSize: 14,
-    color: "#A0AEC0",
-    marginTop: 8,
-    marginBottom: 20,
+    color: "#665491",
+    marginTop: 4,
+    fontWeight: "bold",
   },
+
   detailsInfoRow: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -147,41 +182,46 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   detailsInfoTitle: {
-    fontSize: 14,
-    color: "#718096",
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#333",
     marginBottom: 4,
   },
   detailsInfoText: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "600",
-    color: "#1A202C",
+    color: "#665491",
   },
   detailsFooter: {
     flexDirection: "row",
-    padding: 20,
     borderTopWidth: 1,
     borderTopColor: "#F0F2F5",
   },
   editButton: {
     flex: 1,
-    backgroundColor: "#F0F2F5",
-    padding: 18,
-    borderRadius: 12,
+    backgroundColor: "#007AFF",
+    borderRadius: 20,
+    padding: 16,
+    borderRadius: 20,
     alignItems: "center",
+    marginTop: 16,
+    marginLeft: 10,
     marginRight: 10,
   },
   editButtonText: {
-    color: "#1A202C",
+    color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
   },
   deleteButton: {
     flex: 1,
-    backgroundColor: "#E53E3E",
-    padding: 18,
-    borderRadius: 12,
+    backgroundColor: "tomato",
+    padding: 16,
+    borderRadius: 20,
     alignItems: "center",
+    marginTop: 16,
     marginLeft: 10,
+    marginRight: 10,
   },
   buttonText: {
     color: "#FFF",

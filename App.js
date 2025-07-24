@@ -17,6 +17,9 @@ import EditSellerProfile from "./src/screens/EditSellerProfile";
 import PayoutsScreen from "./src/screens/PayoutsScreen";
 import SettingsScreen from "./src/screens/SettingsScreen";
 import CustomersListScreen from "./src/screens/Customers/CustomersListScreen";
+import AddCustomerScreen from "./src/screens/Customers/AddCustomerScreen";
+import CustomerDetailsScreen from "./src/screens/Customers/CustomerDetailsScreen";
+import EditCustomerScreen from "./src/screens/Customers/EditCustomerScreen";
 import HomeScreen from "./src/screens/HomeScreen";
 import OrderDetails from "./src/screens/Orders/OrderDetails";
 
@@ -48,7 +51,13 @@ export default function App() {
         <Stack.Screen name="Settings" component={SettingsScreen} />
         <Stack.Screen name="EditSellerProfile" component={EditSellerProfile} />
         <Stack.Screen name="Payouts" component={PayoutsScreen} />
-        <Stack.Screen name="Customers" component={CustomersListScreen} />
+        <Stack.Screen name="CustomersList" component={CustomersListScreen} />
+        <Stack.Screen name="AddCustomer" component={AddCustomerScreen} />
+        <Stack.Screen
+          name="CustomerDetails"
+          component={CustomerDetailsScreen}
+        />
+        <Stack.Screen name="EditCustomer" component={EditCustomerScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="OrderDetails" component={OrderDetails} />
       </Stack.Navigator>

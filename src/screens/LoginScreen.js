@@ -32,7 +32,7 @@ export default function LoginScreen({ navigation }) {
 
       alert("Login successful");
       setErrors({});
-      navigation.navigate('Home');
+      navigation.navigate("Customers");
     } catch (err) {
       console.error(err);
       console.error("Login error:", err.message, err.stack);
