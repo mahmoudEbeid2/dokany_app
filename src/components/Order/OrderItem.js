@@ -30,7 +30,7 @@ function OrderItem({ order }) {
             <Text style={styles.price}>{"$" + order.total_price} </Text>
           </View>
         </View>
-        <MaterialIcons name="arrow-forward-ios" size={24} color="#121217" />
+        <MaterialIcons name="arrow-forward-ios" size={20} color="gray" />
       </View>
     </TouchableOpacity>
   );
