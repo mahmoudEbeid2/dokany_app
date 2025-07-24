@@ -8,12 +8,19 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  FlatList,
+  SafeAreaView,
+  StatusBar,
+  Platform, ToastAndroid,
+
 } from 'react-native';
+
 import { Ionicons, FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {sellerAPI} from '../utils/api/api';
+import { sellerAPI } from '../utils/api/api';
 import defaultProfile from '../../assets/Seller.png';
+import * as Clipboard from 'expo-clipboard';
 
 const settings = [
   {
@@ -74,46 +81,91 @@ export default function SettingsScreen({ navigation }) {
     );
   }
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.profileContainer}>
-        <Image
-          source={seller?.profile_imge ? { uri: seller.profile_imge } : defaultProfile}
-          style={styles.profileImage}
-        />
-        <Text style={styles.nameText}>{seller?.user_name || seller?.f_name || 'Your Name'}</Text>
-        <Text style={styles.subdomainText}>@{seller?.subdomain || 'subdomain'}</Text>
-      </View>
-
-      {settings.map((setting, index) => (
-        <TouchableOpacity
-          key={index}
-          style={styles.optionContainer}
-          onPress={() => {
-            if (setting.GoToPage === 'Logout') {
-              handleLogout();
-            } else {
-              navigation.navigate(setting.GoToPage, { sellerId: seller?.id, payoutMethod: seller?.payout_method });
-            }
-          }}
-        >
-          <View style={styles.optionDetails}>
-            <View style={styles.optionIconContainer}>
-              {setting.icon}
-            </View>
-            <Text style={styles.optionText}>{setting.content}</Text>
+    <>
+      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+      <SafeAreaView style={{ flex: 1 }}>
+        <ScrollView contentContainerStyle={styles.container}>
+          <View
+            style={styles.navigationContainer}
+          >
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <AntDesign name="arrowleft" size={24} color="black" />
+            </TouchableOpacity>
+            <Text
+              style={styles.navigationTitle}
+            >
+              Settings
+            </Text>
           </View>
-          <AntDesign name="arrowright" size={24} color="black" />
-        </TouchableOpacity>
-      ))}
-    </ScrollView>
+          <View style={styles.profileContainer}>
+            <Image
+              source={seller?.profile_imge ? { uri: seller.profile_imge } : defaultProfile}
+              style={styles.profileImage}
+            />
+            <Text style={styles.nameText}>{seller?.user_name || seller?.f_name || 'Your Name'}</Text>
+            <TouchableOpacity
+              onPress={() => {
+                Clipboard.setStringAsync(`@${seller?.subdomain || 'subdomain'}`);
+                if (Platform.OS === 'android') {
+                  ToastAndroid.show('Copied to clipboard', ToastAndroid.SHORT);
+                } else {
+                  Alert.alert('Copied!', 'Subdomain copied to clipboard.');
+                }
+              }}
+            >
+              <Text style={styles.subdomainText}>@{seller?.subdomain || 'subdomain'}</Text>
+            </TouchableOpacity>
+
+          </View>
+
+          {settings.map((setting, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.optionContainer}
+              onPress={() => {
+                if (setting.GoToPage === 'Logout') {
+                  handleLogout();
+                } else {
+                  navigation.navigate(setting.GoToPage, { sellerId: seller?.id, payoutMethod: seller?.payout_method });
+                }
+              }}
+            >
+              <View style={styles.optionDetails}>
+                <View style={styles.optionIconContainer}>
+                  {setting.icon}
+                </View>
+                <Text style={styles.optionText}>{setting.content}</Text>
+              </View>
+              <AntDesign name="arrowright" size={24} color="black" />
+            </TouchableOpacity>
+          ))}
+
+        </ScrollView>
+      </SafeAreaView>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 20,
-    backgroundColor: '#fff',
+    paddingVertical: 20,
+    paddingHorizontal: 10,
+    backgroundColor: '#FAFAFA',
     flex: 1,
+  },
+  navigationContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+  },
+  navigationTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
+    color: "#333",
+    marginTop: 10,
+    flex: 1,
+    textAlign: "center",
   },
   loadingContainer: {
     flex: 1,
@@ -129,16 +181,18 @@ const styles = StyleSheet.create({
     height: 128,
     borderRadius: 64,
     backgroundColor: '#eee',
+    marginBottom: 16,
   },
   nameText: {
-    fontSize: 22,
-    fontWeight: '700',
-    marginVertical: 10,
-    color: '#121217',
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 5,
+    color: "#333",
+    marginTop: 10,
   },
   subdomainText: {
-    fontSize: 16,
-    color: '#666',
+    color: "#665491",
+    fontSize: 14,
   },
   optionContainer: {
     flexDirection: 'row',
@@ -146,8 +200,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 16,
     paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderColor: '#F0F0F0',
   },
   optionDetails: {
     flexDirection: 'row',
@@ -164,10 +216,9 @@ const styles = StyleSheet.create({
   },
   optionText: {
     fontSize: 16,
-    color: '#121217',
+    color: "#333",
+    fontWeight: "700",
   },
 });
-
-
 
 
