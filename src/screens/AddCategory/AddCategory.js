@@ -14,6 +14,9 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API } from "@env";
+import { SafeAreaView } from 'react-native-safe-area-context';
+import AntDesign from "@expo/vector-icons/AntDesign";
+
 
 
 const AddCategory =  ({ navigation }) => {
@@ -90,8 +93,17 @@ const AddCategory =  ({ navigation }) => {
   };
 
   return (
+      <SafeAreaView style={{ flex: 1 }}>
+        
+
         <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={20}>
           <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+            <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={styles.backButton}
+      >
+        <AntDesign name="arrowleft" size={24} color="black" />
+      </TouchableOpacity>
       <Text style={styles.title}>Add Category</Text>
 
 
@@ -105,7 +117,7 @@ const AddCategory =  ({ navigation }) => {
           />
         ) : (
           <TouchableOpacity style={styles.imageUploadBox} onPress={pickImage}>
-                  <Text style={styles.title}>Add a Category image</Text>
+                  <Text style={styles.title2}>Add a Category image</Text>
                   <Text style={styles.imageUploadText}>Upload a photo of your category</Text>
                   <Text style={styles.imageUploadBtn}>Upload image</Text>
                 </TouchableOpacity>
@@ -114,7 +126,7 @@ const AddCategory =  ({ navigation }) => {
             <Text style={styles.label}>Category Name </Text>
       <TextInput
         placeholder="Category Name"
-        placeholderTextColor={"#4F479E"}
+        placeholderTextColor={"grey"}
         value={name}
         onChangeText={setName}
         style={styles.input}
@@ -138,6 +150,7 @@ const AddCategory =  ({ navigation }) => {
         )}
     </ScrollView>
         </KeyboardAvoidingView>
+      </SafeAreaView>
   );
 };
 
@@ -152,9 +165,19 @@ const styles = StyleSheet.create({
     // flex: 1,
   },
   title: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 15,
+    marginBottom: 20,
+    textAlign: "center",
+    color: "#333",
+    marginTop: 10
+  },
+  title2: {
+    fontSize: 18,
+    fontWeight: "700",
+    marginBottom: 20,
+    marginTop: 10,
+    color: "#333",
     textAlign: "center",
   },
   imageUploadBox: {
@@ -167,7 +190,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   imageUploadText: {
-    color: "#666",
+    color: "#665491",
     fontSize: 16,
   },
   imageUploadBtn: {
@@ -179,17 +202,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-//   imagePreviewContainer: {
-//     flexDirection: "row",
-//     flexWrap: "wrap",
-//     marginBottom: 15,
-//   },
-//   image: {
-//     width: 70,
-//     height: 70,
-//     margin: 5,
-//     borderRadius: 6,
-//   },
+
   label: {
     fontWeight: "bold",
     marginBottom: 4,
@@ -198,8 +211,8 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: "#ccc",
-    backgroundColor: "#E8E5F5",
+    borderColor: "#7569FA",
+    backgroundColor: "#fff",
     borderRadius: 10,
     paddingHorizontal: 15,
     paddingVertical: 10,
@@ -207,16 +220,23 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   saveBtn: {
-    backgroundColor: "#5E2BD9",
-    paddingVertical: 15,
-    borderRadius: 10,
+    backgroundColor: "#7569FA",
+    padding: 16,
+    borderRadius: 20,
     alignItems: "center",
-    marginTop: 5,
+    marginTop: 16,
   },
   saveBtnText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
+  },
+        backButton: {
+    position: "absolute",
+    top: 30,
+    left: 20,
+    zIndex: 3,
+    padding: 8,
   },
   
 });
