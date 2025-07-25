@@ -1,22 +1,22 @@
 // theme.js
 
 const colors = {
-  primary: '#5B67F3', // أزرق عصري
-  secondary: '#A259F7', // بنفسجي فاتح
-  accent: '#FFB86C', // برتقالي فاتح
-  background: '#F7F8FA', // خلفية فاتحة جدًا
-  card: '#FFFFFF', // أبيض للبطاقات
-  text: '#222B45', // نص داكن
-  textSecondary: '#6E7FAA', // نص ثانوي
-  border: '#E5E9F2', // حدود فاتحة
-  success: '#4CD964', // أخضر للنجاح
-  error: '#FF5A5F', // أحمر للأخطاء
-  warning: '#FFD600', // أصفر للتحذيرات
-  shadow: 'rgba(91, 103, 243, 0.08)', // ظل خفيف
+  primary: '#5B67F3',
+  secondary: '#A259F7',
+  accent: '#FFB86C',
+  background: '#F7F8FA',
+  card: '#FFFFFF',
+  text: '#222B45',
+  textSecondary: '#6E7FAA',
+  border: '#E5E9F2',
+  success: '#4CD964',
+  error: '#FF5A5F',
+  warning: '#FFD600',
+  shadow: 'rgba(91, 103, 243, 0.08)',
 };
 
 const fonts = {
-  regular: 'System', // يمكنك استبداله بخط Google Fonts لاحقًا
+  regular: 'System',
   bold: 'System',
   size: {
     xs: 12,
