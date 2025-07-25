@@ -58,19 +58,10 @@ export default function LoginScreen({ navigation }) {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 
           <ScrollView contentContainerStyle={styles.container} >
-            <View
-              style={styles.navigationContainer}
-            >
-              <TouchableOpacity onPress={() => navigation.goBack()}>
-                <AntDesign name="arrowleft" size={24} color={theme.colors.text} />
-              </TouchableOpacity>
-              <Text
-                style={styles.navigationTitle}
-              >
-                Login
-              </Text>
+            <View style={styles.logoCircleModern}>
+              <AntDesign name="user" size={48} color={theme.colors.primary} />
             </View>
-            <View style={styles.contentContainer}>
+            <View style={styles.loginCardModern}>
               <Text style={styles.title}>Login</Text>
               <View>
                 <Text style={styles.inputLabel}>Email</Text>
@@ -173,19 +164,7 @@ const styles = StyleSheet.create({
     color: theme.colors.text,
     fontFamily: theme.fonts.bold,
   },
-  inputContainer: {
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderColor: theme.colors.primary,
-    borderWidth: 1,
-    borderRadius: theme.radius.md,
-    paddingHorizontal: 10,
-    marginBottom: 10,
-    paddingVertical: 5,
-    backgroundColor: theme.colors.card,
-    ...theme.shadow,
-  },
+  inputContainer: { width: '100%', flexDirection: 'row', alignItems: 'center', borderColor: 'transparent', borderWidth: 0, borderRadius: theme.radius.lg, paddingHorizontal: 12, marginBottom: 14, paddingVertical: 8, backgroundColor: theme.colors.card, ...theme.shadow },
   inputLabel: {
     fontSize: theme.fonts.size.md,
     color: theme.colors.text,
@@ -193,12 +172,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     fontFamily: theme.fonts.bold,
   },
-  input: {
-    flex: 1,
-    color: theme.colors.textSecondary,
-    fontSize: theme.fonts.size.sm,
-    fontFamily: theme.fonts.regular,
-  },
+  input: { flex: 1, color: theme.colors.textSecondary, fontSize: theme.fonts.size.sm, fontFamily: theme.fonts.regular, backgroundColor: 'transparent' },
   icon: {
     marginRight: 5,
     width: 20,
@@ -214,21 +188,8 @@ const styles = StyleSheet.create({
     textAlign: 'start',
     paddingHorizontal: 10,
   },
-  button: {
-    width: '100%',
-    backgroundColor: theme.colors.primary,
-    padding: 16,
-    borderRadius: theme.radius.lg,
-    alignItems: 'center',
-    marginTop: 16,
-    ...theme.shadow,
-  },
-  buttonText: {
-    color: theme.colors.card,
-    fontSize: theme.fonts.size.md,
-    fontWeight: 'bold',
-    fontFamily: theme.fonts.bold,
-  },
+  button: { width: '100%', backgroundColor: theme.colors.primary, padding: 18, borderRadius: 30, alignItems: 'center', marginTop: 18, ...theme.strongShadow },
+  buttonText: { color: theme.colors.card, fontSize: theme.fonts.size.md, fontWeight: 'bold', fontFamily: theme.fonts.bold },
   link: {
     color: theme.colors.primary,
     fontSize: theme.fonts.size.sm,
@@ -238,4 +199,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textDecorationLine: 'underline',
   },
+  logoCircleModern: { backgroundColor: theme.colors.card, borderRadius: 48, width: 96, height: 96, alignItems: 'center', justifyContent: 'center', marginTop: 40, marginBottom: 24, shadowColor: '#000', shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.18, shadowRadius: 18, elevation: 10, alignSelf: 'center' },
+  loginCardModern: { backgroundColor: theme.colors.card, borderRadius: 32, padding: 28, marginBottom: 32, width: '100%', ...theme.strongShadow, alignItems: 'center' },
 });

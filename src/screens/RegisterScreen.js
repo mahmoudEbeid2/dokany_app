@@ -293,17 +293,8 @@ export default function RegisterScreen({ navigation }) {
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={styles.container}>
-          <View
-            style={styles.navigationContainer}
-          >
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <AntDesign name="arrowleft" size={24} color={theme.colors.text} />
-            </TouchableOpacity>
-            <Text
-              style={styles.navigationTitle}
-            >
-              Register
-            </Text>
+          <View style={styles.logoCircleModern}>
+            <AntDesign name="user" size={48} color={theme.colors.primary} />
           </View>
           <Text style={styles.header}>Create an Account</Text>
           {fields.map(({ name, label, icon, placeholder, isPassword }) => (
@@ -345,7 +336,12 @@ export default function RegisterScreen({ navigation }) {
 
 
           <TouchableOpacity onPress={handleRegister} style={styles.registerButton}>
-            <Text style={styles.buttonText}>Register</Text>
+            <Text style={styles.buttonText}>Create Account</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('Login')} style={{ marginTop: 18 }}>
+            <Text style={{ color: theme.colors.primary, fontSize: theme.fonts.size.sm, textAlign: 'center' }}>
+              Already have an account? <Text style={{ fontWeight: 'bold', textDecorationLine: 'underline' }}>Login</Text>
+            </Text>
           </TouchableOpacity>
         </ScrollView>
       </SafeAreaView>
@@ -394,12 +390,12 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderColor: theme.colors.primary,
-    borderWidth: 1,
-    borderRadius: theme.radius.md,
-    paddingHorizontal: 10,
-    marginBottom: 10,
-    paddingVertical: 5,
+    borderColor: 'transparent',
+    borderWidth: 0,
+    borderRadius: theme.radius.lg,
+    paddingHorizontal: 12,
+    marginBottom: 14,
+    paddingVertical: 8,
     backgroundColor: theme.colors.card,
     ...theme.shadow,
   },
@@ -449,11 +445,11 @@ const styles = StyleSheet.create({
   },
   registerButton: {
     backgroundColor: theme.colors.primary,
-    padding: 16,
-    borderRadius: theme.radius.lg,
+    padding: 18,
+    borderRadius: 30,
     alignItems: 'center',
-    marginTop: 16,
-    ...theme.shadow,
+    marginTop: 18,
+    ...theme.strongShadow,
   },
   buttonText: {
     color: theme.colors.card,
@@ -464,6 +460,22 @@ const styles = StyleSheet.create({
   errorText: {
     color: 'red',
     fontSize: 12,
+  },
+  logoCircleModern: {
+    backgroundColor: theme.colors.card,
+    borderRadius: 48,
+    width: 96,
+    height: 96,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 40,
+    marginBottom: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.18,
+    shadowRadius: 18,
+    elevation: 10,
+    alignSelf: 'center',
   },
 
 });
