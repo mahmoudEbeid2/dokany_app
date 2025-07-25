@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import theme from '../utils/theme';
 
 export default function BottomNav({ navigation }) {
   return (
@@ -17,7 +18,7 @@ export default function BottomNav({ navigation }) {
 function NavItem({ icon, label, onPress }) {
   return (
     <TouchableOpacity style={styles.item} onPress={onPress}>
-      <Ionicons name={icon} size={20} color="#4F479E" />
+      <Ionicons name={icon} size={22} color={theme.colors.primary} />
       <Text style={styles.label}>{label}</Text>
     </TouchableOpacity>
   );
@@ -28,15 +29,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     borderTopWidth: 1,
-    borderColor: '#ddd',
-    paddingVertical: 10,
-    backgroundColor: '#fff',
+    borderColor: theme.colors.border,
+    paddingVertical: 12,
+    backgroundColor: theme.colors.card,
+    ...theme.shadow,
   },
   item: {
     alignItems: 'center',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: theme.radius.sm,
   },
   label: {
-    fontSize: 10,
+    fontSize: theme.fonts.size.xs,
     marginTop: 4,
+    color: theme.colors.textSecondary,
+    fontFamily: theme.fonts.regular,
   },
 });

@@ -4,6 +4,7 @@ import { API } from "@env";
 import { loderStyles } from "./style";
 import OrderItem from "./OrderItem";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import theme from '../../utils/theme';
 
 function OrderByStatus({ status }) {
   const [orders, setOrders] = useState([]);
@@ -40,11 +41,11 @@ function OrderByStatus({ status }) {
     <View>
       {loading ? (
         <View style={loderStyles.loader}>
-          <ActivityIndicator size="large" color="#7569FA" />
+          <ActivityIndicator size="large" color={theme.colors.primary} />
         </View>
       ) : orders.length === 0 ? (
-        <View style={{ padding: 20, alignItems: "center" }}>
-          <Text style={{ color: "#999", fontSize: 16 }}>No orders found.</Text>
+        <View style={{ padding: 20, alignItems: 'center' }}>
+          <Text style={{ color: theme.colors.textSecondary, fontSize: theme.fonts.size.md, fontFamily: theme.fonts.regular }}>No orders found.</Text>
         </View>
       ) : (
         <FlatList

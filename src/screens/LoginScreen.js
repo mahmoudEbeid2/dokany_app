@@ -15,6 +15,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { authAPI } from "../utils/api/api";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
+import theme from '../utils/theme';
 
 
 
@@ -61,7 +62,7 @@ export default function LoginScreen({ navigation }) {
               style={styles.navigationContainer}
             >
               <TouchableOpacity onPress={() => navigation.goBack()}>
-                <AntDesign name="arrowleft" size={24} color="black" />
+                <AntDesign name="arrowleft" size={24} color={theme.colors.text} />
               </TouchableOpacity>
               <Text
                 style={styles.navigationTitle}
@@ -85,7 +86,7 @@ export default function LoginScreen({ navigation }) {
                     style={[styles.input, errors.email && styles.inputError]}
                     autoCapitalize="none"
                     keyboardType="email-address"
-                    placeholderTextColor="#665491"
+                    placeholderTextColor={theme.colors.textSecondary}
 
                   />
                 </View>
@@ -104,7 +105,7 @@ export default function LoginScreen({ navigation }) {
                     }}
                     style={[styles.input, errors.password && styles.inputError]}
                     secureTextEntry
-                    placeholderTextColor="#665491"
+                    placeholderTextColor={theme.colors.textSecondary}
 
                   />
                 </View>
@@ -140,7 +141,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 10,
     paddingBottom: 50,
-    backgroundColor: '#FAFAFA',
+    backgroundColor: theme.colors.background,
     flex: 1,
   },
   navigationContainer: {
@@ -149,86 +150,92 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   navigationTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
+    fontSize: theme.fonts.size.xl,
+    fontWeight: 'bold',
     marginBottom: 20,
-    color: "#333",
+    color: theme.colors.text,
     marginTop: 10,
     flex: 1,
-    textAlign: "center",
+    textAlign: 'center',
+    fontFamily: theme.fonts.bold,
   },
   contentContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
-    fontSize: 18,
+    fontSize: theme.fonts.size.lg,
     fontWeight: '700',
     marginBottom: 16,
     marginTop: 10,
     textAlign: 'center',
-    color: '#333',
+    color: theme.colors.text,
+    fontFamily: theme.fonts.bold,
   },
   inputContainer: {
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
-    borderColor: '#7569FA',
+    borderColor: theme.colors.primary,
     borderWidth: 1,
-    borderRadius: 8,
+    borderRadius: theme.radius.md,
     paddingHorizontal: 10,
     marginBottom: 10,
     paddingVertical: 5,
-    color: "#665491",
-    fontSize: 14,
+    backgroundColor: theme.colors.card,
+    ...theme.shadow,
   },
   inputLabel: {
-    fontSize: 16,
-    color: "#333",
-    fontWeight: "bold",
+    fontSize: theme.fonts.size.md,
+    color: theme.colors.text,
+    fontWeight: 'bold',
     marginBottom: 10,
+    fontFamily: theme.fonts.bold,
   },
   input: {
     flex: 1,
-    color: "#665491",
-    fontSize: 14,
+    color: theme.colors.textSecondary,
+    fontSize: theme.fonts.size.sm,
+    fontFamily: theme.fonts.regular,
   },
   icon: {
     marginRight: 5,
     width: 20,
   },
   inputError: {
-    borderColor: "red",
+    borderColor: theme.colors.error,
   },
   error: {
-    color: "red",
+    color: theme.colors.error,
     marginBottom: 8,
-    fontSize: 12,
-    width: "100%",
-    textAlign: "start",
+    fontSize: theme.fonts.size.xs,
+    width: '100%',
+    textAlign: 'start',
     paddingHorizontal: 10,
   },
   button: {
-    width: "100%",
-    backgroundColor: "#7569FA",
+    width: '100%',
+    backgroundColor: theme.colors.primary,
     padding: 16,
-    borderRadius: 20,
-    alignItems: "center",
+    borderRadius: theme.radius.lg,
+    alignItems: 'center',
     marginTop: 16,
+    ...theme.shadow,
   },
   buttonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
+    color: theme.colors.card,
+    fontSize: theme.fonts.size.md,
+    fontWeight: 'bold',
+    fontFamily: theme.fonts.bold,
   },
   link: {
-    color: "#665491",
-    fontSize: 14,
+    color: theme.colors.primary,
+    fontSize: theme.fonts.size.sm,
     marginTop: 18,
   },
   linkBold: {
-    fontWeight: "bold",
-    textDecorationLine: "underline",
+    fontWeight: 'bold',
+    textDecorationLine: 'underline',
   },
 });

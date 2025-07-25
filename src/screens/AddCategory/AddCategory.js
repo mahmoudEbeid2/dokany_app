@@ -16,7 +16,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API } from "@env";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AntDesign from "@expo/vector-icons/AntDesign";
-
+import theme from '../../utils/theme';
 
 
 const AddCategory =  ({ navigation }) => {
@@ -102,7 +102,7 @@ const AddCategory =  ({ navigation }) => {
         onPress={() => navigation.goBack()}
         style={styles.backButton}
       >
-        <AntDesign name="arrowleft" size={24} color="black" />
+        <AntDesign name="arrowleft" size={24} color={theme.colors.text} />
       </TouchableOpacity>
       <Text style={styles.title}>Add Category</Text>
 
@@ -126,7 +126,7 @@ const AddCategory =  ({ navigation }) => {
             <Text style={styles.label}>Category Name </Text>
       <TextInput
         placeholder="Category Name"
-        placeholderTextColor={"grey"}
+        placeholderTextColor={theme.colors.textSecondary}
         value={name}
         onChangeText={setName}
         style={styles.input}
@@ -135,7 +135,7 @@ const AddCategory =  ({ navigation }) => {
 
         {loading ? (
             <View style={styles.saveBtn}>
-          <ActivityIndicator color="#fff" />
+          <ActivityIndicator color={theme.colors.card} />
             </View>
         ) : (
             <TouchableOpacity
@@ -161,83 +161,91 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
     paddingBottom: 50,
-    backgroundColor: '#fff',
-    // flex: 1,
+    backgroundColor: theme.colors.card,
   },
   title: {
-    fontSize: 24,
-    fontWeight: "bold",
+    fontSize: theme.fonts.size.xl,
+    fontWeight: 'bold',
     marginBottom: 20,
-    textAlign: "center",
-    color: "#333",
-    marginTop: 10
+    textAlign: 'center',
+    color: theme.colors.text,
+    marginTop: 10,
+    fontFamily: theme.fonts.bold,
   },
   title2: {
-    fontSize: 18,
-    fontWeight: "700",
+    fontSize: theme.fonts.size.lg,
+    fontWeight: '700',
     marginBottom: 20,
     marginTop: 10,
-    color: "#333",
-    textAlign: "center",
+    color: theme.colors.text,
+    textAlign: 'center',
+    fontFamily: theme.fonts.bold,
   },
   imageUploadBox: {
     borderWidth: 1,
-    borderColor: "#aaa",
-    borderStyle: "dashed",
-    borderRadius: 10,
+    borderColor: theme.colors.border,
+    borderStyle: 'dashed',
+    borderRadius: theme.radius.md,
     padding: 20,
-    alignItems: "center",
+    alignItems: 'center',
     marginBottom: 15,
+    backgroundColor: theme.colors.background,
+    ...theme.shadow,
   },
   imageUploadText: {
-    color: "#665491",
-    fontSize: 16,
+    color: theme.colors.textSecondary,
+    fontSize: theme.fonts.size.md,
   },
   imageUploadBtn: {
-    backgroundColor: "#E8E5F5",
+    backgroundColor: theme.colors.background,
     padding: 15,
-    borderRadius: 10,
-    alignItems: "center",
+    borderRadius: theme.radius.md,
+    alignItems: 'center',
     marginTop: 15,
-    fontSize: 16,
-    fontWeight: "bold",
+    fontSize: theme.fonts.size.md,
+    fontWeight: 'bold',
+    ...theme.shadow,
   },
-
   label: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginBottom: 4,
-    // marginTop: 12,
-    color: "#333",
+    color: theme.colors.text,
+    fontFamily: theme.fonts.bold,
   },
   input: {
     borderWidth: 1,
-    borderColor: "#7569FA",
-    backgroundColor: "#fff",
-    borderRadius: 10,
+    borderColor: theme.colors.primary,
+    backgroundColor: theme.colors.card,
+    borderRadius: theme.radius.md,
     paddingHorizontal: 15,
     paddingVertical: 10,
     marginBottom: 15,
-    width: "100%",
+    width: '100%',
+    color: theme.colors.textSecondary,
+    fontSize: theme.fonts.size.md,
+    fontFamily: theme.fonts.regular,
+    ...theme.shadow,
   },
   saveBtn: {
-    backgroundColor: "#7569FA",
+    backgroundColor: theme.colors.primary,
     padding: 16,
-    borderRadius: 20,
-    alignItems: "center",
+    borderRadius: theme.radius.lg,
+    alignItems: 'center',
     marginTop: 16,
+    ...theme.shadow,
   },
   saveBtnText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
+    color: theme.colors.card,
+    fontSize: theme.fonts.size.md,
+    fontWeight: 'bold',
+    fontFamily: theme.fonts.bold,
   },
-        backButton: {
-    position: "absolute",
+  backButton: {
+    position: 'absolute',
     top: 30,
     left: 20,
     zIndex: 3,
     padding: 8,
   },
-  
 });
 

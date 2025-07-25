@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, TextInput, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import {authAPI} from '../utils/api/api';
+import theme from '../utils/theme';
 
 export default function ConfirmPasswordScreen({ route }) {
   const [newPassword, setNewPassword] = useState('');
@@ -64,48 +65,54 @@ const styles = StyleSheet.create({
     padding: 24,
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.card,
   },
   title: {
-    fontSize: 22,
+    fontSize: theme.fonts.size.lg,
     fontWeight: '700',
     marginBottom: 24,
     textAlign: 'center',
-    color: '#333',
+    color: theme.colors.text,
+    fontFamily: theme.fonts.bold,
   },
   inputContainer: {
     marginBottom: 16,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#DDD',
-    borderRadius: 8,
+    borderColor: theme.colors.border,
+    borderRadius: theme.radius.md,
     paddingVertical: 10,
     paddingHorizontal: 14,
-    fontSize: 16,
-    color: '#333',
+    fontSize: theme.fonts.size.md,
+    color: theme.colors.text,
+    backgroundColor: theme.colors.background,
+    fontFamily: theme.fonts.regular,
+    ...theme.shadow,
   },
   error: {
-    color: 'red',
+    color: theme.colors.error,
     marginTop: 6,
-    fontSize: 14,
+    fontSize: theme.fonts.size.sm,
   },
   success: {
-    color: 'green',
+    color: theme.colors.success,
     marginTop: 6,
-    fontSize: 14,
+    fontSize: theme.fonts.size.sm,
   },
   button: {
-    backgroundColor: '#7569FA',
+    backgroundColor: theme.colors.primary,
     paddingVertical: 12,
-    borderRadius: 8,
+    borderRadius: theme.radius.md,
     alignItems: 'center',
     marginTop: 12,
+    ...theme.shadow,
   },
   buttonText: {
-    color: '#fff',
-    fontWeight: '600',
-    fontSize: 16,
+    color: theme.colors.card,
+    fontWeight: 'bold',
+    fontSize: theme.fonts.size.md,
+    fontFamily: theme.fonts.bold,
   },
 });
 

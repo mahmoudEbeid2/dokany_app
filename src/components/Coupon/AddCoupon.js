@@ -10,6 +10,7 @@ import {
 import ProductDropdown from "./ProductDropdown";
 import { API } from "@env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import theme from '../../utils/theme';
 
 function AddCoupon({ onAddCoupon, onLoading }) {
   const [code, setCode] = useState("");
@@ -106,29 +107,37 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   title: {
-    fontSize: 18,
-    fontWeight: "bold",
+    fontSize: theme.fonts.size.lg,
+    fontWeight: 'bold',
     marginBottom: 10,
-    color: "#120F1A",
+    color: theme.colors.text,
+    fontFamily: theme.fonts.bold,
   },
   input: {
     borderWidth: 1,
-    borderColor: "#7569FA",
-    borderRadius: 20,
+    borderColor: theme.colors.primary,
+    borderRadius: theme.radius.lg,
     padding: 16,
     marginBottom: 16,
+    backgroundColor: theme.colors.card,
+    color: theme.colors.text,
+    fontSize: theme.fonts.size.md,
+    fontFamily: theme.fonts.regular,
+    ...theme.shadow,
   },
   button: {
-    backgroundColor: "#7569FA",
+    backgroundColor: theme.colors.primary,
     padding: 16,
-    borderRadius: 20,
-    alignItems: "center",
+    borderRadius: theme.radius.lg,
+    alignItems: 'center',
     marginTop: 16,
+    ...theme.shadow,
   },
   buttonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
+    color: theme.colors.card,
+    fontSize: theme.fonts.size.md,
+    fontWeight: 'bold',
+    fontFamily: theme.fonts.bold,
   },
 });
 

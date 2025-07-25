@@ -1,6 +1,7 @@
 import { View, Text, Image, StyleSheet } from "react-native";
 import Entypo from "@expo/vector-icons/Entypo";
 import { customerInfoStyle } from "../../components/Order/OrderDetailsStyle";
+import theme from '../../utils/theme';
 export default function CustomerInfo({ customer }) {
   return (
     <View>
@@ -24,7 +25,7 @@ export default function CustomerInfo({ customer }) {
       </View>
       <View style={customerInfoStyle.info}>
         <View style={customerInfoStyle.icon}>
-          <Entypo name="location-pin" size={30} color="black" />
+          <Entypo name="location-pin" size={30} color={theme.colors.primary} />
         </View>
         <View>
           {/* "city": "Cairo", "country": "Egypt" "governorate": "Cairo" */}

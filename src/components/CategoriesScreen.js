@@ -14,6 +14,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API } from '@env';
+import theme from '../utils/theme';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function CategoriesScreen() {
   const navigation = useNavigation();
@@ -64,21 +66,25 @@ export default function CategoriesScreen() {
   const renderItem = ({ item }) => (
     <View style={styles.card}>
       <Image source={{ uri: item.image }} style={styles.image} />
-      <Text style={styles.name}>{item.name}</Text>
-
-      <View style={styles.actions}>
+      <LinearGradient
+        colors={['rgba(0,0,0,0.01)', 'rgba(0,0,0,0.55)']}
+        style={styles.gradientOverlay}
+      />
+      <View style={styles.titleOverlay}>
+        <Text style={styles.name} numberOfLines={2}>{item.name}</Text>
+      </View>
+      <View style={styles.actionsOverlay}>
         <TouchableOpacity
           style={styles.actionBtn}
           onPress={() => navigation.navigate('EditCategory', { category: item })}
         >
-          <Ionicons name="create-outline" size={18} color="#4F479E" />
+          <Ionicons name="create-outline" size={18} color={theme.colors.card} />
         </TouchableOpacity>
-
         <TouchableOpacity
           style={styles.actionBtn}
           onPress={() => handleDelete(item.id)}
         >
-          <Ionicons name="trash-outline" size={18} color="red" />
+          <Ionicons name="trash-outline" size={18} color={theme.colors.error} />
         </TouchableOpacity>
       </View>
     </View>
@@ -90,12 +96,12 @@ export default function CategoriesScreen() {
         style={styles.fab}
         onPress={() => navigation.navigate('CreateCategory')}
       >
-        <Ionicons name="add" size={28} color="#fff" />
+        <Ionicons name="add" size={28} color={theme.colors.card} />
       </TouchableOpacity>
 
       {loading ? (
   <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#4F479E" />
+        <ActivityIndicator size="large" color={theme.colors.primary} />
       </View>      ) : (
         <FlatList
           data={categories}
@@ -110,57 +116,86 @@ export default function CategoriesScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 10,        backgroundColor: '#FAFAFA',
- },
+  container: { flex: 1, padding: 10, backgroundColor: theme.colors.background },
   card: {
     width: '48%',
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 10,
-    alignItems: 'center',
+    backgroundColor: theme.colors.card,
+    borderRadius: theme.radius.lg,
     marginBottom: 15,
-    elevation: 2,
+    ...theme.shadow,
+    overflow: 'hidden',
+    height: 140,
+    position: 'relative',
   },
   image: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    marginBottom: 8,
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+  },
+  gradientOverlay: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 60,
+  },
+  titleOverlay: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    paddingHorizontal: 10,
+    paddingBottom: 12,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
   },
   name: {
-    fontSize: 14,
+    fontSize: theme.fonts.size.lg,
     fontWeight: 'bold',
+    color: '#fff',
     textAlign: 'center',
+    fontFamily: theme.fonts.bold,
+    textShadowColor: 'rgba(0,0,0,0.7)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 8,
+    letterSpacing: 0.2,
+    paddingHorizontal: 2,
   },
-  actions: {
+  actionsOverlay: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
     flexDirection: 'row',
-    marginTop: 10,
+    backgroundColor: 'rgba(0,0,0,0.18)',
+    borderRadius: 16,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    alignItems: 'center',
+    gap: 4,
   },
   actionBtn: {
-    marginHorizontal: 8,
+    marginHorizontal: 2,
   },
   fab: {
     position: 'absolute',
     bottom: 60,
     right: 20,
-    backgroundColor: '#4F479E',
+    backgroundColor: theme.colors.primary,
     width: 60,
     height: 60,
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
+    ...theme.shadow,
     zIndex: 10,
   },
-  
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F7F7F7',
+    backgroundColor: theme.colors.background,
   }
 });

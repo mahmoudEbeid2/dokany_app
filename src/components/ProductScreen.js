@@ -14,6 +14,7 @@ import { useNavigation, useIsFocused } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API } from "@env";
 import ProductCard from './ProductCard';
+import theme from '../utils/theme';
 
 export default function ProductScreen() {
   const navigation = useNavigation();
@@ -105,22 +106,25 @@ export default function ProductScreen() {
         style={styles.fab}
         onPress={() => navigation.navigate('CreateProduct')}
       >
-        <Ionicons name="add" size={28} color="#fff" />
+        <Ionicons name="add" size={32} color="#fff" />
       </TouchableOpacity>
 
-      <TextInput
-        placeholder="Search products..."
-        value={searchText}
-        onChangeText={handleSearch}
-        style={styles.search}
-      />
+      <View style={styles.searchWrapper}>
+        <Ionicons name="search" size={22} color={theme.colors.textSecondary} />
+        <TextInput
+          placeholder="Search products..."
+          value={searchText}
+          onChangeText={handleSearch}
+          style={styles.searchInput}
+          placeholderTextColor={theme.colors.textSecondary}
+        />
+      </View>
 
       {loading ? (
-
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#4F479E" />
-      </View>
-        ) : (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={theme.colors.primary} />
+        </View>
+      ) : (
         <>
           <FlatList
             data={paginatedData}
@@ -138,7 +142,7 @@ export default function ProductScreen() {
               disabled={page === 1}
               style={page === 1 ? styles.disabled : {}}
             >
-              <Ionicons name="chevron-back" size={28} />
+              <Ionicons name="chevron-back-circle" size={32} color={theme.colors.primary} />
             </TouchableOpacity>
 
             <Text style={styles.pageText}>
@@ -150,7 +154,7 @@ export default function ProductScreen() {
               disabled={page === totalPages}
               style={page === totalPages ? styles.disabled : {}}
             >
-              <Ionicons name="chevron-forward" size={28} />
+              <Ionicons name="chevron-forward-circle" size={32} color={theme.colors.primary} />
             </TouchableOpacity>
           </View>
         </>
@@ -160,52 +164,61 @@ export default function ProductScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 10,        backgroundColor: '#FAFAFA',
-},
-  search: {
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 10,
+  container: { flex: 1, padding: 8, backgroundColor: theme.colors.background },
+  searchWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: theme.colors.card,
+    borderRadius: theme.radius.lg,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    marginBottom: 14,
+    ...theme.shadow,
+  },
+  searchInput: {
+    flex: 1,
+    color: theme.colors.text,
+    fontSize: theme.fonts.size.md,
+    backgroundColor: 'transparent',
+    marginLeft: 8,
   },
   list: {
     paddingBottom: 20,
+    paddingHorizontal: 2,
   },
   paginationContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 10,
+    paddingVertical: 14,
+    gap: 10,
   },
   disabled: {
     opacity: 0.4,
   },
   pageText: {
-    fontSize: 16,
+    fontSize: theme.fonts.size.md,
     fontWeight: '600',
-    marginHorizontal: 15,
+    marginHorizontal: 18,
+    color: theme.colors.text,
   },
   fab: {
     position: 'absolute',
     bottom: 60,
     right: 20,
-    backgroundColor: '#4F479E',
+    backgroundColor: theme.colors.primary,
     width: 60,
     height: 60,
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
+    ...theme.shadow,
     zIndex: 10,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F7F7F7',
+    backgroundColor: theme.colors.background,
   }
 });

@@ -4,6 +4,8 @@ import StatCard from './StatCard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API } from "@env";
 import { useIsFocused } from '@react-navigation/native';
+import theme from '../utils/theme';
+import { Ionicons, MaterialIcons, FontAwesome5, Feather } from '@expo/vector-icons';
 
 export default function StatsOverview() {
   const isFocused = useIsFocused();
@@ -37,10 +39,26 @@ export default function StatsOverview() {
 
   return (
     <View style={styles.container}>
-      <StatCard title="Total Sales" value={`$${stats.totalEarnings}`} />
-      <StatCard title="Orders" value={stats.totalOrders} />
-      <StatCard title="Customers" value={stats.totalCustomers} />
-      <StatCard title="Products" value={stats.totalProducts} />
+      <StatCard
+        title="Total Sales"
+        value={`$${stats.totalEarnings}`}
+        icon={<MaterialIcons name="attach-money" size={32} color={theme.colors.primary} />}
+      />
+      <StatCard
+        title="Orders"
+        value={stats.totalOrders}
+        icon={<Ionicons name="cart-outline" size={32} color={theme.colors.secondary} />}
+      />
+      <StatCard
+        title="Customers"
+        value={stats.totalCustomers}
+        icon={<FontAwesome5 name="users" size={28} color={theme.colors.accent} />}
+      />
+      <StatCard
+        title="Products"
+        value={stats.totalProducts}
+        icon={<Feather name="package" size={30} color={theme.colors.textSecondary} />}
+      />
     </View>
   );
 }
@@ -53,9 +71,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     rowGap: 10,
     margin: 10,
-    borderRadius: 30,
-        backgroundColor: '#FAFAFA',
-      
-
+    borderRadius: theme.radius.lg,
+    backgroundColor: theme.colors.background,
   },
 });

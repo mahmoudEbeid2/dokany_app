@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API } from "@env";
 import { AntDesign } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import theme from '../utils/theme';
 
 export default function EditSellerProfile() {
   const [token, setToken] = useState(null);
@@ -236,13 +237,8 @@ const validateForm = () => {
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 20, alignItems: 'center', marginTop: 20 ,backgroundColor:"#FAFAFA"},
-  header: {  fontSize: 24, 
-    fontWeight: "bold", 
-    marginBottom: 20, 
-    color: "#333", 
-    marginTop: 10, },
-
+  container: { padding: 20, alignItems: 'center', marginTop: 20, backgroundColor: theme.colors.background },
+  header: { fontSize: theme.fonts.size.xl, fontWeight: 'bold', marginBottom: 20, color: theme.colors.text, marginTop: 10, fontFamily: theme.fonts.bold },
   imageRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -255,28 +251,33 @@ const styles = StyleSheet.create({
   },
   profileImage: {
     width: 100, height: 100, borderRadius: 50, marginBottom: 6,
+    borderWidth: 2, borderColor: theme.colors.primary,
   },
   logoImage: {
     width: 100, height: 100, borderRadius: 10, marginBottom: 6,
+    borderWidth: 2, borderColor: theme.colors.primary,
   },
-  imageText: { fontSize: 12, color: '#666', textAlign: 'center' },
-
+  imageText: { fontSize: theme.fonts.size.sm, color: theme.colors.textSecondary, textAlign: 'center' },
   input: {
     width: '90%',
-    backgroundColor: '#f0f0f0',
+    backgroundColor: theme.colors.card,
     padding: 10,
     marginVertical: 6,
-    borderRadius: 8,
+    borderRadius: theme.radius.md,
+    color: theme.colors.text,
+    fontSize: theme.fonts.size.md,
+    fontFamily: theme.fonts.regular,
+    ...theme.shadow,
   },
-
   label: {
     fontWeight: 'bold',
     marginTop: 12,
     marginBottom: 4,
     alignSelf: 'flex-start',
     paddingLeft: 20,
+    color: theme.colors.text,
+    fontFamily: theme.fonts.bold,
   },
-
   payoutMethods: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -286,18 +287,19 @@ const styles = StyleSheet.create({
   payoutOption: {
     padding: 10,
     borderWidth: 1,
-    borderRadius: 8,
-    backgroundColor: '#f9f9f9',
+    borderRadius: theme.radius.md,
+    backgroundColor: theme.colors.background,
+    borderColor: theme.colors.border,
   },
   payoutSelected: {
-    backgroundColor: '#e1d5ff',
-    borderColor: '#6a0dad',
+    backgroundColor: theme.colors.secondary,
+    borderColor: theme.colors.primary,
   },
   payoutText: {
-    fontSize: 14,
+    fontSize: theme.fonts.size.sm,
     textTransform: 'capitalize',
+    color: theme.colors.text,
   },
-
   themeList: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -305,26 +307,28 @@ const styles = StyleSheet.create({
     gap: 12,
     marginBottom: 20,
   },
-
   themeCard: {
     width: 130,
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 10,
+    borderColor: theme.colors.border,
+    borderRadius: theme.radius.md,
     padding: 8,
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.card,
+    ...theme.shadow,
   },
   selectedThemeCard: {
-    borderColor: '#6a0dad',
+    borderColor: theme.colors.primary,
     borderWidth: 2,
-    backgroundColor: '#f4e8ff',
+    backgroundColor: theme.colors.background,
   },
   themeImage: {
     width: 100,
     height: 100,
-    borderRadius: 8,
+    borderRadius: theme.radius.sm,
     marginBottom: 6,
+    borderWidth: 2,
+    borderColor: theme.colors.primary,
   },
   themeName: {
     fontSize: 14,

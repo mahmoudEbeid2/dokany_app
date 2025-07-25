@@ -3,6 +3,7 @@ import { View, ActivityIndicator, StyleSheet } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { API } from "@env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import theme from '../../utils/theme';
 
 const ProductDropdown = ({ id, value, onChange }) => {
   const [products, setProducts] = useState([]);
@@ -77,8 +78,17 @@ const ProductDropdown = ({ id, value, onChange }) => {
           searchable
           listMode="MODAL"
           searchPlaceholder="Search Here"
-          style={styles.dropdown}
-          dropDownContainerStyle={styles.dropdownContainer}
+          style={styles.dropdownModern}
+          dropDownContainerStyle={styles.dropdownContainerModern}
+          textStyle={styles.dropdownTextModern}
+          placeholderStyle={styles.placeholderModern}
+          ArrowDownIconComponent={({ style }) => (
+            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+              <View style={{ width: 0, height: 0, borderLeftWidth: 8, borderRightWidth: 8, borderTopWidth: 12, borderLeftColor: 'transparent', borderRightColor: 'transparent', borderTopColor: theme.colors.primary, marginLeft: 6 }} />
+            </View>
+          )}
+          searchContainerStyle={styles.searchContainerModern}
+          searchTextInputStyle={styles.searchInputModern}
         />
       )}
     </View>
@@ -92,12 +102,18 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
   dropdown: {
-    borderColor: "#7569FA",
-    borderRadius: 20,
+    borderColor: theme.colors.primary,
+    borderRadius: theme.radius.lg,
   },
   dropdownContainer: {
-    borderColor: "#7569FA",
+    borderColor: theme.colors.primary,
   },
+  dropdownModern: { backgroundColor: theme.colors.card, borderColor: 'transparent', borderRadius: 22, minHeight: 52, elevation: 8, ...theme.strongShadow, marginBottom: 16, paddingHorizontal: 16 },
+  dropdownContainerModern: { borderColor: 'transparent', borderRadius: 22, backgroundColor: theme.colors.card, ...theme.strongShadow },
+  dropdownTextModern: { color: theme.colors.text, fontSize: theme.fonts.size.md, fontWeight: 'bold', letterSpacing: 0.2 },
+  placeholderModern: { color: theme.colors.textSecondary, fontSize: theme.fonts.size.md, fontWeight: '600' },
+  searchContainerModern: { borderBottomColor: theme.colors.primary, borderBottomWidth: 1, backgroundColor: theme.colors.card, borderRadius: theme.radius.md, marginBottom: 6 },
+  searchInputModern: { color: theme.colors.text, fontSize: theme.fonts.size.md, borderColor: theme.colors.primary, borderWidth: 1, borderRadius: theme.radius.md, padding: 8, backgroundColor: theme.colors.card },
 });
 
 export default ProductDropdown;

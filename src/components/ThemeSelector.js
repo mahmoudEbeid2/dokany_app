@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { themeAPI } from '../utils/api/api';
+import theme from '../utils/theme';
 
 const backupThemes = [
   {
@@ -104,12 +105,16 @@ export default function ThemeSelector({ selectedTheme, onSelectTheme }) {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
+    backgroundColor: theme.colors.background,
+    borderRadius: theme.radius.md,
+    ...theme.shadow,
   },
   subHeader: {
-    fontSize: 16,
-    color: "#333",
-    fontWeight: "bold",
+    fontSize: theme.fonts.size.md,
+    color: theme.colors.text,
+    fontWeight: 'bold',
     marginBottom: 10,
+    fontFamily: theme.fonts.bold,
   },
   themesRow: {
     flexDirection: 'row',
@@ -119,23 +124,27 @@ const styles = StyleSheet.create({
   },
   themeBox: {
     width: '48%',
-    borderRadius: 12,
+    borderRadius: theme.radius.md,
     borderWidth: 2,
-    borderColor: '#eee',
+    borderColor: theme.colors.border,
     padding: 5,
     alignItems: 'center',
+    backgroundColor: theme.colors.card,
+    ...theme.shadow,
   },
   selectedBox: {
-    borderColor: '#578FCA',
+    borderColor: theme.colors.primary,
   },
   themeImage: {
     width: '100%',
     height: 120,
-    borderRadius: 8,
+    borderRadius: theme.radius.sm,
   },
   themeName: {
     marginTop: 8,
     fontWeight: '500',
+    color: theme.colors.text,
+    fontFamily: theme.fonts.regular,
   },
   modalBackground: {
     flex: 1,
@@ -144,35 +153,39 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalContent: {
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.card,
     padding: 16,
-    borderRadius: 12,
+    borderRadius: theme.radius.md,
     width: '90%',
     alignItems: 'center',
+    ...theme.shadow,
   },
   modalTitle: {
-    fontSize: 18,
-    fontWeight: "700",
+    fontSize: theme.fonts.size.lg,
+    fontWeight: '700',
     marginBottom: 16,
-    color: "#333",
+    color: theme.colors.text,
     marginTop: 10,
+    fontFamily: theme.fonts.bold,
   },
   modalImage: {
     width: '100%',
     height: 200,
-    borderRadius: 8,
+    borderRadius: theme.radius.sm,
   },
   closeButton: {
-    backgroundColor: "#7569FA",
+    backgroundColor: theme.colors.primary,
     padding: 16,
-    borderRadius: 20,
-    alignItems: "center",
+    borderRadius: theme.radius.lg,
+    alignItems: 'center',
     marginTop: 16,
+    ...theme.shadow,
   },
   closeButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
+    color: theme.colors.card,
+    fontSize: theme.fonts.size.md,
+    fontWeight: 'bold',
+    fontFamily: theme.fonts.bold,
   },
 });
 

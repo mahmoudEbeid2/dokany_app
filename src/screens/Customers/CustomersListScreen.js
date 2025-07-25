@@ -12,8 +12,10 @@ import {
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { AntDesign, Feather } from "@expo/vector-icons";
+import { Ionicons } from '@expo/vector-icons';
 import { sellerAPI } from "../../utils/api/api";
 import { SafeAreaView } from "react-native-safe-area-context";
+import theme from '../../utils/theme';
 
 const CustomersListScreen = ({ navigation }) => {
   const [customers, setCustomers] = useState([]);
@@ -91,24 +93,18 @@ const CustomersListScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <AntDesign name="arrowleft" size={24} color="black" />
-        </TouchableOpacity>
+        {/* لا تعرض زر العودة هنا */}
         <Text style={styles.title}>Customers</Text>
         <View style={{ width: 24 }} />
       </View>
-      <View style={styles.searchContainer}>
-        <Feather
-          name="search"
-          size={20}
-          color="#888"
-          style={styles.searchIcon}
-        />
+      <View style={styles.searchWrapper}>
+        <Ionicons name="search" size={22} color={theme.colors.textSecondary} />
         <TextInput
-          style={styles.searchInput}
-          placeholder="Search customers"
+          placeholder="Search customers..."
           value={searchQuery}
           onChangeText={setSearchQuery}
+          style={styles.searchInput}
+          placeholderTextColor={theme.colors.textSecondary}
         />
       </View>
       <FlatList
@@ -130,53 +126,41 @@ const CustomersListScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FAFAFA",
+    backgroundColor: theme.colors.background,
     paddingInline: 50,
   },
-  headerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingVertical: 10,
-    paddingHorizontal: 10,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#333",
-  },
+  headerContainer: { flexDirection: 'row', alignItems: 'center', backgroundColor: 'transparent', paddingVertical: 12, marginBottom: 18, marginTop: 8, justifyContent: 'center' },
+  title: { fontSize: theme.fonts.size.lg, color: theme.colors.text, fontWeight: 'bold', fontFamily: theme.fonts.bold, textAlign: 'center' },
+  backButton: { padding: 4, marginRight: 8, position: 'absolute', left: 8, zIndex: 2, backgroundColor: theme.colors.card, borderRadius: 20, ...theme.shadow },
   centered: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#FFF",
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: theme.colors.card,
   },
-  searchContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#ffffff",
-    borderColor: "#7569FA",
-    borderWidth: 1,
-    borderRadius: 12,
-    marginHorizontal: 20,
-    paddingHorizontal: 15,
-    marginTop: 20,
-    marginBottom: 10,
-  },
-  searchIcon: {
-    marginRight: 10,
+  searchWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: theme.colors.card,
+    borderRadius: theme.radius.lg,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    marginBottom: 14,
+    ...theme.shadow,
   },
   searchInput: {
     flex: 1,
-    height: 50,
-    fontSize: 16,
+    color: theme.colors.text,
+    fontSize: theme.fonts.size.md,
+    backgroundColor: 'transparent',
+    marginLeft: 8,
   },
   listContainer: {
     paddingHorizontal: 20,
   },
   customerItem: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingVertical: 15,
   },
   avatar: {
@@ -184,34 +168,33 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 25,
     marginRight: 15,
+    borderWidth: 2,
+    borderColor: theme.colors.primary,
   },
   customerInfo: {
     flex: 1,
   },
   customerName: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#333",
+    fontSize: theme.fonts.size.md,
+    fontWeight: 'bold',
+    color: theme.colors.text,
+    fontFamily: theme.fonts.bold,
   },
   customerRegistered: {
-    fontSize: 14,
-    color: "#665491",
+    fontSize: theme.fonts.size.sm,
+    color: theme.colors.textSecondary,
     marginTop: 4,
   },
   fab: {
-    position: "absolute",
+    position: 'absolute',
     right: 30,
     bottom: 30,
-    backgroundColor: "#7569FA",
+    backgroundColor: theme.colors.primary,
     padding: 16,
     borderRadius: 30,
-    justifyContent: "center",
-    alignItems: "center",
-    elevation: 8,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    justifyContent: 'center',
+    alignItems: 'center',
+    ...theme.shadow,
   },
 });
 

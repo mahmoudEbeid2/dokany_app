@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import theme from '../../utils/theme';
 
 function CouponItem({ coupon, onDeleteCoupon, onSelectCoupon }) {
   return (
@@ -17,7 +18,7 @@ function CouponItem({ coupon, onDeleteCoupon, onSelectCoupon }) {
       </View>
       <View style={styles.icons}>
         <TouchableOpacity onPress={() => onSelectCoupon({ ...coupon })}>
-          <MaterialIcons name="edit" size={28} color="#7569FA" />
+          <MaterialIcons name="edit" size={28} color={theme.colors.primary} />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => onDeleteCoupon(coupon.id)}>
           <MaterialIcons name="delete-forever" size={28} color="tomato" />
@@ -29,36 +30,30 @@ function CouponItem({ coupon, onDeleteCoupon, onSelectCoupon }) {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginVertical: 10,
     padding: 20,
-    borderRadius: 12,
-    backgroundColor: "#fff",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    borderRadius: theme.radius.md,
+    backgroundColor: theme.colors.card,
+    ...theme.shadow,
   },
   icons: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 16,
   },
   code: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "black",
+    fontSize: theme.fonts.size.md,
+    fontWeight: 'bold',
+    color: theme.colors.text,
     marginBottom: 1,
+    fontFamily: theme.fonts.bold,
   },
   date: {
-    fontSize: 14,
-    color: "#6E6387",
+    fontSize: theme.fonts.size.sm,
+    color: theme.colors.textSecondary,
   },
 });
 

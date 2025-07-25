@@ -19,6 +19,7 @@ import {
 } from "../../utils/validation";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AntDesign } from "@expo/vector-icons";
+import theme from '../../utils/theme';
 
 const AddCustomerScreen = ({ navigation }) => {
   const [f_name, setFName] = useState("");
@@ -224,84 +225,87 @@ const AddCustomerScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   formContainer: {
     flex: 1,
-    backgroundColor: "#FAFAFA",
+    backgroundColor: theme.colors.background,
     padding: 10,
   },
   headerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingVertical: 10,
     paddingHorizontal: 10,
   },
-
   title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#333",
+    fontSize: theme.fonts.size.xl,
+    fontWeight: 'bold',
+    color: theme.colors.text,
+    fontFamily: theme.fonts.bold,
   },
   form: {
     padding: 20,
   },
   label: {
-    fontSize: 16,
-    color: "#333",
+    fontSize: theme.fonts.size.md,
+    color: theme.colors.text,
     marginBottom: 8,
-    fontWeight: "bold",
+    fontWeight: 'bold',
+    fontFamily: theme.fonts.bold,
   },
-
   input: {
-    backgroundColor: "#fff",
+    backgroundColor: theme.colors.card,
     borderWidth: 1,
-    borderColor: "#7569FA",
-    borderRadius: 8,
+    borderColor: theme.colors.primary,
+    borderRadius: theme.radius.md,
     padding: 15,
-    fontSize: 16,
+    fontSize: theme.fonts.size.md,
     marginBottom: 20,
-    color: "gray",
+    color: theme.colors.textSecondary,
+    fontFamily: theme.fonts.regular,
+    ...theme.shadow,
   },
   formFooter: {
     padding: 20,
     borderTopWidth: 1,
-    borderTopColor: "#F0F2F5",
+    borderTopColor: theme.colors.border,
   },
-
   button: {
-    backgroundColor: "#7569FA",
+    backgroundColor: theme.colors.primary,
     padding: 16,
-    borderRadius: 20,
-    alignItems: "center",
+    borderRadius: theme.radius.lg,
+    alignItems: 'center',
+    ...theme.shadow,
   },
   buttonText: {
-    color: "#FFF",
-    fontSize: 16,
-    fontWeight: "bold",
+    color: theme.colors.card,
+    fontSize: theme.fonts.size.md,
+    fontWeight: 'bold',
+    fontFamily: theme.fonts.bold,
   },
   editAvatarContainer: {
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     paddingVertical: 20,
   },
   editAvatar: {
-    margin: "auto",
+    margin: 'auto',
     width: 100,
     height: 100,
     borderRadius: 50,
     marginBottom: 10,
-    backgroundColor: "#F0F2F5",
+    backgroundColor: theme.colors.border,
     borderWidth: 1,
-    borderColor: "#DDD",
+    borderColor: theme.colors.border,
   },
   editAvatarSubtitle: {
-    fontSize: 14,
-    color: "#718096",
+    fontSize: theme.fonts.size.sm,
+    color: theme.colors.textSecondary,
     marginTop: 4,
   },
   errorText: {
-    color: "red",
+    color: theme.colors.error,
     marginTop: -15,
     marginBottom: 10,
-    fontSize: 12,
+    fontSize: theme.fonts.size.xs,
   },
 });
 

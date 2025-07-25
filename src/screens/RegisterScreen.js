@@ -16,6 +16,7 @@ import { authAPI } from '../utils/api/api';
 import ThemeSelector from '../components/ThemeSelector';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
+import theme from '../utils/theme';
 
 const fields = [
   { name: 'user_name', label: 'Username', placeholder: 'Enter Username', icon: <FontAwesome name="user" size={20} /> },
@@ -296,7 +297,7 @@ export default function RegisterScreen({ navigation }) {
             style={styles.navigationContainer}
           >
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <AntDesign name="arrowleft" size={24} color="black" />
+              <AntDesign name="arrowleft" size={24} color={theme.colors.text} />
             </TouchableOpacity>
             <Text
               style={styles.navigationTitle}
@@ -316,7 +317,7 @@ export default function RegisterScreen({ navigation }) {
                   secureTextEntry={!!isPassword}
                   onChangeText={(val) => handleChange(name, val)}
                   style={styles.input}
-                  placeholderTextColor="#665491"
+                  placeholderTextColor={theme.colors.textSecondary}
 
                 />
               </View>
@@ -356,7 +357,7 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 10,
     paddingBottom: 50,
-    backgroundColor: '#FAFAFA',
+    backgroundColor: theme.colors.background,
   },
   navigationContainer: {
     flexDirection: 'row',
@@ -365,39 +366,42 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   navigationTitle: {
-    fontSize: 24,
+    fontSize: theme.fonts.size.xl,
     fontWeight: 'bold',
-    color: '#333',
+    color: theme.colors.text,
     flex: 1,
     textAlign: 'center',
     marginBottom: 20,
     marginTop: 10,
+    fontFamily: theme.fonts.bold,
   },
   header: {
-    fontSize: 18,
+    fontSize: theme.fonts.size.lg,
     fontWeight: '700',
     marginBottom: 16,
     marginTop: 10,
     textAlign: 'center',
-    color: '#333',
+    color: theme.colors.text,
+    fontFamily: theme.fonts.bold,
   },
   inputLabel: {
-    fontSize: 16,
-    color: "#333",
-    fontWeight: "bold",
+    fontSize: theme.fonts.size.md,
+    color: theme.colors.text,
+    fontWeight: 'bold',
     marginBottom: 10,
+    fontFamily: theme.fonts.bold,
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderColor: '#7569FA',
+    borderColor: theme.colors.primary,
     borderWidth: 1,
-    borderRadius: 8,
+    borderRadius: theme.radius.md,
     paddingHorizontal: 10,
     marginBottom: 10,
     paddingVertical: 5,
-    color: "#665491",
-    fontSize: 14,
+    backgroundColor: theme.colors.card,
+    ...theme.shadow,
   },
   icon: {
     marginRight: 5,
@@ -405,8 +409,9 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    color: "#665491",
-    fontSize: 14,
+    color: theme.colors.textSecondary,
+    fontSize: theme.fonts.size.sm,
+    fontFamily: theme.fonts.regular,
     paddingTop: 10,
   },
   uploadContainer: {
@@ -415,42 +420,46 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 15,
-    borderColor: '#7569FA',
+    borderColor: theme.colors.primary,
     borderWidth: 1,
-    borderRadius: 6,
+    borderRadius: theme.radius.sm,
     borderStyle: 'dashed',
     paddingVertical: 20,
+    backgroundColor: theme.colors.card,
   },
   uploadHeader: {
-    fontSize: 16,
-    color: "#333",
-    fontWeight: "bold",
+    fontSize: theme.fonts.size.md,
+    color: theme.colors.text,
+    fontWeight: 'bold',
+    fontFamily: theme.fonts.bold,
   },
   uploadDescription: {
-    color: "#665491",
-    fontSize: 14,
+    color: theme.colors.textSecondary,
+    fontSize: theme.fonts.size.sm,
     marginBottom: 20,
   },
   uploadButton: {
-    backgroundColor: '#f0f0f0',
+    backgroundColor: theme.colors.background,
     padding: 10,
-    borderRadius: 10,
+    borderRadius: theme.radius.md,
     alignItems: 'center',
-    color: "#665491",
-    fontSize: 14,
+    color: theme.colors.textSecondary,
+    fontSize: theme.fonts.size.sm,
+    ...theme.shadow,
   },
   registerButton: {
-    backgroundColor: "#7569FA",
+    backgroundColor: theme.colors.primary,
     padding: 16,
-    borderRadius: 20,
-    alignItems: "center",
+    borderRadius: theme.radius.lg,
+    alignItems: 'center',
     marginTop: 16,
-
+    ...theme.shadow,
   },
   buttonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
+    color: theme.colors.card,
+    fontSize: theme.fonts.size.md,
+    fontWeight: 'bold',
+    fontFamily: theme.fonts.bold,
   },
   errorText: {
     color: 'red',

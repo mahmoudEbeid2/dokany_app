@@ -4,6 +4,7 @@ import { useState } from "react";
 import { statusStyle as styles } from "./OrderDetailsStyle";
 import { API } from "@env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import theme from '../../utils/theme';
 
 function OrderStatus({ status, order_id }) {
   const [open, setOpen] = useState(false);
@@ -41,19 +42,21 @@ function OrderStatus({ status, order_id }) {
     }
   }
   const buttonStyle = {
-    width: "100%",
-    backgroundColor: "#7569FA",
+    width: '100%',
+    backgroundColor: theme.colors.primary,
     marginTop: 40,
     height: 50,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: theme.radius.lg,
+    ...theme.shadow,
   };
 
   const buttonTextStyle = {
-    color: "white",
-    fontWeight: "bold",
-    fontSize: 16,
+    color: theme.colors.card,
+    fontWeight: 'bold',
+    fontSize: theme.fonts.size.md,
+    fontFamily: theme.fonts.bold,
   };
 
   return (

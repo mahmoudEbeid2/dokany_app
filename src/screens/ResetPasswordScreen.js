@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, TextInput, Text, TouchableOpacity, StyleSheet, StatusBar, SafeAreaView, ScrollView } from 'react-native';
 import { authAPI } from '../utils/api/api';
 import { AntDesign } from '@expo/vector-icons';
+import theme from '../utils/theme';
 
 export default function ResetPasswordScreen({ navigation }) {
   const [email, setEmail] = useState('');
@@ -44,7 +45,7 @@ export default function ResetPasswordScreen({ navigation }) {
             style={styles.navigationContainer}
           >
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <AntDesign name="arrowleft" size={24} color="black" />
+              <AntDesign name="arrowleft" size={24} color={theme.colors.text} />
             </TouchableOpacity>
             <Text
               style={styles.navigationTitle}
@@ -67,7 +68,7 @@ export default function ResetPasswordScreen({ navigation }) {
                   }}
                   keyboardType="email-address"
                   autoCapitalize="none"
-                  placeholderTextColor="#665491"
+                  placeholderTextColor={theme.colors.textSecondary}
                 />
                 {error ? <Text style={styles.error}>{error}</Text> : null}
                 
@@ -88,7 +89,7 @@ const styles = StyleSheet.create({
   container: {
     paddingVertical: 20,
     paddingHorizontal: 10,
-    backgroundColor: '#FAFAFA',
+    backgroundColor: theme.colors.background,
     flex: 1,
   },
   navigationContainer: {
@@ -97,59 +98,66 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   navigationTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
+    fontSize: theme.fonts.size.xl,
+    fontWeight: 'bold',
     marginBottom: 20,
-    color: "#333",
+    color: theme.colors.text,
     marginTop: 10,
     flex: 1,
-    textAlign: "center",
+    textAlign: 'center',
+    fontFamily: theme.fonts.bold,
   },
   contentContainer: {
     flex: 1,
-    width: "100%",
-    justifyContent: "center",
-    alignItems: "center",
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
-    fontSize: 18,
+    fontSize: theme.fonts.size.lg,
     fontWeight: '700',
     marginBottom: 16,
     marginTop: 10,
     textAlign: 'center',
-    color: '#333',
+    color: theme.colors.text,
+    fontFamily: theme.fonts.bold,
   },
   inputContainer: {
-    width: "100%",
+    width: '100%',
     borderWidth: 1,
-    borderColor: "#7569FA",
-    borderRadius: 8,
+    borderColor: theme.colors.primary,
+    borderRadius: theme.radius.md,
     paddingVertical: 5,
     paddingHorizontal: 10,
+    backgroundColor: theme.colors.card,
+    ...theme.shadow,
   },
   input: {
-    color: "#665491",
-    fontSize: 14,
+    color: theme.colors.textSecondary,
+    fontSize: theme.fonts.size.sm,
+    fontFamily: theme.fonts.regular,
   },
   inputError: {
-    borderColor: "red",
+    borderColor: theme.colors.error,
   },
   error: {
-    color: "red",
+    color: theme.colors.error,
     marginBottom: 8,
-    fontSize: 12,
+    fontSize: theme.fonts.size.xs,
   },
   button: {
-    width: "100%",
-    backgroundColor: "#7569FA",
+    width: '100%',
+    backgroundColor: theme.colors.primary,
     padding: 16,
-    borderRadius: 20,
-    alignItems: "center",
+    borderRadius: theme.radius.lg,
+    alignItems: 'center',
     marginTop: 16,
+    ...theme.shadow,
   },
   buttonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
+    color: theme.colors.card,
+    fontSize: theme.fonts.size.md,
+    fontWeight: 'bold',
+    fontFamily: theme.fonts.bold,
   },
 });

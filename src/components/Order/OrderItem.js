@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useNavigation } from "@react-navigation/native";
+import theme from '../../utils/theme';
 function OrderItem({ order }) {
   const navigation = useNavigation();
 
@@ -38,30 +39,35 @@ function OrderItem({ order }) {
 
 const styles = StyleSheet.create({
   continuer: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingVertical: 8,
-    width: "100%",
+    width: '100%',
   },
   image: {
     width: 56,
     height: 56,
-    borderRadius: 40,
+    borderRadius: theme.radius.lg,
+    borderWidth: 2,
+    borderColor: theme.colors.primary,
   },
   contentContinuer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 16,
   },
   name: {
-    fontWeight: "bold",
-    fontSize: 16,
+    fontWeight: 'bold',
+    fontSize: theme.fonts.size.md,
+    color: theme.colors.text,
+    fontFamily: theme.fonts.bold,
   },
   price: {
-    color: "#6E6387",
-    fontSize: 14,
+    color: theme.colors.primary,
+    fontSize: theme.fonts.size.sm,
+    fontFamily: theme.fonts.regular,
   },
 });
 

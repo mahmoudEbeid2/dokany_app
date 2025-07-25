@@ -5,6 +5,7 @@ import OrderItem from "./OrderItem";
 import { loderStyles } from "./style";
 import { API } from "@env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import theme from '../../utils/theme';
 
 export default function AllOrder() {
   const [loading, setLoading] = useState(true);
@@ -46,13 +47,11 @@ export default function AllOrder() {
     <View style={{ flex: 1 }}>
       {loading ? (
         <View style={loderStyles.loader}>
-          <ActivityIndicator size="large" color="#7569FA" />
+          <ActivityIndicator size="large" color={theme.colors.primary} />
         </View>
       ) : orders.length === 0 ? (
-        <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
-          <Text style={{ fontSize: 18, color: "#999" }}>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ fontSize: theme.fonts.size.lg, color: theme.colors.textSecondary, fontFamily: theme.fonts.bold }}>
             📦 No Orders found
           </Text>
         </View>

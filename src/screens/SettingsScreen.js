@@ -21,6 +21,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { sellerAPI } from '../utils/api/api';
 import defaultProfile from '../../assets/Seller.png';
 import * as Clipboard from 'expo-clipboard';
+import theme from '../utils/theme';
 
 const settings = [
   {
@@ -82,64 +83,56 @@ export default function SettingsScreen({ navigation }) {
   }
   return (
     <>
-      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-      <SafeAreaView style={{ flex: 1 }}>
+      <StatusBar barStyle="dark-content" backgroundColor={theme.colors.background} />
+      <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
         <ScrollView contentContainerStyle={styles.container}>
-          <View
-            style={styles.navigationContainer}
-          >
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <AntDesign name="arrowleft" size={24} color="black" />
+          {/* هيدر علوي ثابت: */}
+          <View style={styles.headerBar}>
+            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+              <AntDesign name="arrowleft" size={22} color={theme.colors.primary} />
             </TouchableOpacity>
-            <Text
-              style={styles.navigationTitle}
-            >
-              Settings
-            </Text>
+            <Text style={styles.headerTitle}>Settings</Text>
           </View>
-          <View style={styles.profileContainer}>
-            <Image
-              source={seller?.profile_imge ? { uri: seller.profile_imge } : defaultProfile}
-              style={styles.profileImage}
-            />
-            <Text style={styles.nameText}>{seller?.user_name || seller?.f_name || 'Your Name'}</Text>
-            <TouchableOpacity
-              onPress={() => {
-                Clipboard.setStringAsync(`@${seller?.subdomain || 'subdomain'}`);
-                if (Platform.OS === 'android') {
-                  ToastAndroid.show('Copied to clipboard', ToastAndroid.SHORT);
-                } else {
-                  Alert.alert('Copied!', 'Subdomain copied to clipboard.');
-                }
-              }}
-            >
-              <Text style={styles.subdomainText}>@{seller?.subdomain || 'subdomain'}</Text>
-            </TouchableOpacity>
-
-          </View>
-
-          {settings.map((setting, index) => (
-            <TouchableOpacity
-              key={index}
-              style={styles.optionContainer}
-              onPress={() => {
-                if (setting.GoToPage === 'Logout') {
-                  handleLogout();
-                } else {
-                  navigation.navigate(setting.GoToPage, { sellerId: seller?.id, payoutMethod: seller?.payout_method });
-                }
-              }}
-            >
-              <View style={styles.optionDetails}>
-                <View style={styles.optionIconContainer}>
-                  {setting.icon}
-                </View>
-                <Text style={styles.optionText}>{setting.content}</Text>
+          {/* صورة البروفايل: */}
+          <View style={styles.profileSection}>
+            <View style={styles.profileImageWrapper}>
+              <Image source={seller?.profile_imge ? { uri: seller.profile_imge } : defaultProfile} style={styles.profileImage} />
+              <View style={styles.cameraOverlay}>
+                <MaterialIcons name="photo-camera" size={20} color={theme.colors.card} />
               </View>
-              <AntDesign name="arrowright" size={24} color="black" />
-            </TouchableOpacity>
+            </View>
+            <Text style={styles.nameText}>{seller?.user_name || seller?.f_name || 'Your Name'}</Text>
+            <View style={styles.subdomainCard}>
+              <Text style={styles.subdomainText}>@{seller?.subdomain || 'subdomain'}</Text>
+              <TouchableOpacity onPress={() => { Clipboard.setStringAsync(`@${seller?.subdomain || 'subdomain'}`); if (Platform.OS === 'android') { ToastAndroid.show('Copied to clipboard', ToastAndroid.SHORT); } else { Alert.alert('Copied!', 'Subdomain copied to clipboard.'); } }} style={styles.copyIconBtn}>
+                <MaterialIcons name="content-copy" size={16} color={theme.colors.primary} />
+              </TouchableOpacity>
+            </View>
+          </View>
+          {/* كروت الخيارات: */}
+          {settings.map((setting, index) => (
+            <View key={index} style={styles.optionCard}>
+              <TouchableOpacity
+                style={styles.optionRow}
+                activeOpacity={0.7}
+                onPress={() => {
+                  if (setting.GoToPage === 'Logout') {
+                    handleLogout();
+                  } else {
+                    navigation.navigate(setting.GoToPage, { sellerId: seller?.id, payoutMethod: seller?.payout_method });
+                  }
+                }}
+              >
+                <View style={styles.optionDetails}>
+                  <View style={[styles.optionIconCircle, { backgroundColor: index === 0 ? theme.colors.primary : index === 1 ? theme.colors.success : theme.colors.error }]}> 
+                    {React.cloneElement(setting.icon, { size: 20, color: '#FFF' })}
+                  </View>
+                  <Text style={styles.optionText}>{setting.content}</Text>
+                </View>
+                <AntDesign name="arrowright" size={22} color={theme.colors.primary} />
+              </TouchableOpacity>
+            </View>
           ))}
-
         </ScrollView>
       </SafeAreaView>
     </>
@@ -150,7 +143,7 @@ const styles = StyleSheet.create({
   container: {
     paddingVertical: 20,
     paddingHorizontal: 10,
-    backgroundColor: '#FAFAFA',
+    backgroundColor: theme.colors.background,
     flex: 1,
   },
   navigationContainer: {
@@ -159,13 +152,14 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   navigationTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
+    fontSize: theme.fonts.size.xl,
+    fontWeight: 'bold',
     marginBottom: 20,
-    color: "#333",
+    color: theme.colors.text,
     marginTop: 10,
     flex: 1,
-    textAlign: "center",
+    textAlign: 'center',
+    fontFamily: theme.fonts.bold,
   },
   loadingContainer: {
     flex: 1,
@@ -176,24 +170,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: 30,
   },
-  profileImage: {
-    width: 128,
-    height: 128,
-    borderRadius: 64,
-    backgroundColor: '#eee',
-    marginBottom: 16,
-  },
-  nameText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 5,
-    color: "#333",
-    marginTop: 10,
-  },
-  subdomainText: {
-    color: "#665491",
-    fontSize: 14,
-  },
+  profileImageWrapper: { position: 'relative', alignItems: 'center', justifyContent: 'center' },
+  profileImage: { width: 110, height: 110, borderRadius: 55, backgroundColor: theme.colors.card, marginBottom: 10, borderWidth: 3, borderColor: theme.colors.primary, ...theme.shadow },
+  cameraOverlay: { position: 'absolute', bottom: 6, right: 10, backgroundColor: theme.colors.primary, borderRadius: 16, padding: 4, borderWidth: 2, borderColor: theme.colors.card, alignItems: 'center', justifyContent: 'center' },
+  nameText: { fontSize: theme.fonts.size.xl, fontWeight: 'bold', color: theme.colors.text, marginTop: 8, fontFamily: theme.fonts.bold, textAlign: 'center' },
+  subdomainCard: { backgroundColor: theme.colors.card, borderRadius: theme.radius.md, paddingVertical: 4, paddingHorizontal: 14, marginTop: 4, alignSelf: 'center', flexDirection: 'row', alignItems: 'center', ...theme.shadow },
+  subdomainText: { color: theme.colors.textSecondary, fontSize: theme.fonts.size.md, fontWeight: 'bold', textAlign: 'center' },
   optionContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -206,19 +188,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 12,
   },
-  optionIconContainer: {
-    width: 32,
-    height: 32,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F2F0F5',
-    borderRadius: 8,
-  },
-  optionText: {
-    fontSize: 16,
-    color: "#333",
-    fontWeight: "700",
-  },
+  optionIconContainer: { width: 36, height: 36, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.background, borderRadius: theme.radius.lg, marginRight: 14, ...theme.shadow },
+  optionIconCircle: { width: 36, height: 36, borderRadius: 18, backgroundColor: theme.colors.background, justifyContent: 'center', alignItems: 'center', marginRight: 14, ...theme.shadow },
+  optionText: { fontSize: theme.fonts.size.lg, color: theme.colors.text, fontWeight: 'bold', fontFamily: theme.fonts.bold },
+  optionCard: { backgroundColor: theme.colors.card, borderRadius: theme.radius.lg, marginBottom: 14, ...theme.shadow },
+  optionRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 16, paddingHorizontal: 16 },
+  optionRowPressed: { backgroundColor: theme.colors.background },
+  backButton: { padding: 4, marginRight: 8 },
+  headerBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: 'transparent', paddingVertical: 12, paddingHorizontal: 0, marginBottom: 18, marginTop: 8, justifyContent: 'center', shadowColor: 'transparent', borderRadius: 0 },
+  backButton: { padding: 4, marginRight: 8, position: 'absolute', left: 8, zIndex: 2 },
+  headerTitle: { fontSize: theme.fonts.size.lg, color: theme.colors.text, fontWeight: 'bold', fontFamily: theme.fonts.bold, textAlign: 'center' },
+  profileSection: { alignItems: 'center', marginBottom: 18 },
+  profileImageWrapper: { position: 'relative', alignItems: 'center', justifyContent: 'center', marginBottom: 8 },
+  profileImage: { width: 110, height: 110, borderRadius: 55, borderWidth: 3, borderColor: theme.colors.primary, ...theme.strongShadow },
+  cameraOverlay: { position: 'absolute', bottom: 8, right: 10, backgroundColor: theme.colors.primary, borderRadius: 16, padding: 4, borderWidth: 2, borderColor: theme.colors.card, alignItems: 'center', justifyContent: 'center' },
+  nameText: { fontSize: theme.fonts.size.md, fontWeight: 'bold', color: theme.colors.text, marginTop: 8, fontFamily: theme.fonts.bold, textAlign: 'center' },
+  subdomainCard: { backgroundColor: theme.colors.card, borderRadius: theme.radius.md, paddingVertical: 4, paddingHorizontal: 14, marginTop: 4, alignSelf: 'center', flexDirection: 'row', alignItems: 'center', ...theme.shadow },
+  subdomainText: { color: theme.colors.textSecondary, fontSize: theme.fonts.size.sm, fontWeight: 'bold', textAlign: 'center' },
+  copyIconBtn: { marginLeft: 8, padding: 2 },
+  optionCard: { backgroundColor: theme.colors.card, borderRadius: 24, marginBottom: 18, ...theme.strongShadow },
+  optionRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 18, paddingHorizontal: 18, borderRadius: 24 },
+  optionIconCircle: { width: 44, height: 44, borderRadius: 22, justifyContent: 'center', alignItems: 'center', marginRight: 14 },
+  optionText: { fontSize: theme.fonts.size.md, color: theme.colors.text, fontWeight: 'bold', fontFamily: theme.fonts.bold },
 });
 
 

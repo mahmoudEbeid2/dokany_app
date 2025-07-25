@@ -1,100 +1,105 @@
 import { StyleSheet } from "react-native";
 import { Button } from "react-native-paper";
+import theme from '../../utils/theme';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 16,
     paddingVertical: 0,
-    width: "100%",
-    backgroundColor: "#FAFAFA",
+    width: '100%',
+    backgroundColor: theme.colors.background,
   },
   title: {
-    textAlign: "center",
-    fontSize: 24,
-    fontWeight: "bold",
+    textAlign: 'center',
+    fontSize: theme.fonts.size.xl,
+    fontWeight: 'bold',
     marginBottom: 20,
-    color: "#333",
+    color: theme.colors.text,
     marginTop: 10,
+    fontFamily: theme.fonts.bold,
   },
-
   pikerContinuer: {
     borderWidth: 1,
-    borderColor: "#7569FA",
-    borderRadius: 60,
-    backgroundColor: "#fff",
+    borderColor: theme.colors.primary,
+    borderRadius: theme.radius.lg,
+    backgroundColor: theme.colors.card,
     paddingHorizontal: 10,
     marginBottom: 20,
-    width: "100%",
+    width: '100%',
+    ...theme.shadow,
   },
 });
 
 const pickerSelectStyles = {
   inputIOS: {
-    fontSize: 20,
+    fontSize: theme.fonts.size.lg,
     paddingVertical: 5,
-    color: "#333",
+    color: theme.colors.text,
+    fontFamily: theme.fonts.regular,
   },
   inputAndroid: {
-    fontSize: 20,
+    fontSize: theme.fonts.size.lg,
     paddingVertical: 5,
-    color: "#333",
+    color: theme.colors.text,
+    fontFamily: theme.fonts.regular,
   },
   placeholder: {
-    color: "#aaa",
+    color: theme.colors.textSecondary,
   },
 };
 
 const customerInfoStyle = StyleSheet.create({
   title: {
-    fontSize: 18,
-    fontWeight: "700",
+    fontSize: theme.fonts.size.lg,
+    fontWeight: '700',
     marginBottom: 16,
-    color: "#333",
+    color: theme.colors.text,
     marginTop: 10,
+    fontFamily: theme.fonts.bold,
   },
   info: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 16,
     marginBottom: 12,
   },
   image: {
     width: 50,
     height: 50,
-    borderRadius: 40,
+    borderRadius: theme.radius.lg,
   },
   name: {
-    fontSize: 16,
-    color: "#333",
-    fontWeight: "bold",
+    fontSize: theme.fonts.size.md,
+    color: theme.colors.text,
+    fontWeight: 'bold',
+    fontFamily: theme.fonts.bold,
   },
   data: {
-    color: "#665491",
-    fontSize: 14,
+    color: theme.colors.primary,
+    fontSize: theme.fonts.size.sm,
   },
   icon: {
     width: 50,
     height: 50,
-    backgroundColor: "#EBE8F2",
-    borderRadius: 15,
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: theme.colors.background,
+    borderRadius: theme.radius.md,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 
 const summaryItemStyle = StyleSheet.create({
   continuer: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingVertical: 8,
-    width: "100%",
+    width: '100%',
     gap: 16,
   },
-
-  image: { width: 70, height: 70, borderRadius: 8 },
-  name: { fontWeight: "500", fontSize: 16, color: "#120F1A" },
-  data: { color: "#6E6387", fontSize: 14 },
+  image: { width: 70, height: 70, borderRadius: theme.radius.md },
+  name: { fontWeight: '500', fontSize: theme.fonts.size.md, color: theme.colors.text },
+  data: { color: theme.colors.textSecondary, fontSize: theme.fonts.size.sm },
 });
 
 const statusStyle = StyleSheet.create({
@@ -131,10 +136,4 @@ const statusStyle = StyleSheet.create({
   },
 });
 
-export {
-  styles,
-  pickerSelectStyles,
-  customerInfoStyle,
-  summaryItemStyle,
-  statusStyle,
-};
+export { styles, pickerSelectStyles, customerInfoStyle, summaryItemStyle, statusStyle };

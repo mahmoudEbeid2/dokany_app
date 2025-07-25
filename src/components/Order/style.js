@@ -1,53 +1,57 @@
+import theme from '../../utils/theme';
 import { StyleSheet } from "react-native";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
+    alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 0,
-    width: "100%",
-    backgroundColor: "#FAFAFA",
+    width: '100%',
+    backgroundColor: theme.colors.background,
   },
   title: {
-    fontSize: 24,
-    fontWeight: "bold",
+    fontSize: theme.fonts.size.xl,
+    fontWeight: 'bold',
     marginBottom: 20,
-    color: "#333",
+    color: theme.colors.text,
     marginTop: 10,
+    fontFamily: theme.fonts.bold,
   },
-
   pikerContinuer: {
     borderWidth: 1,
-    borderColor: "#7569FA",
-    borderRadius: 60,
-    backgroundColor: "#fff",
+    borderColor: theme.colors.primary,
+    borderRadius: theme.radius.lg,
+    backgroundColor: theme.colors.card,
     paddingHorizontal: 10,
     marginBottom: 20,
-    width: "100%",
+    width: '100%',
+    ...theme.shadow,
   },
 });
 
 const pickerSelectStyles = {
   inputIOS: {
-    fontSize: 20,
+    fontSize: theme.fonts.size.lg,
     paddingVertical: 5,
-    color: "#333",
+    color: theme.colors.text,
+    fontFamily: theme.fonts.regular,
   },
   inputAndroid: {
-    fontSize: 20,
+    fontSize: theme.fonts.size.lg,
     paddingVertical: 5,
-    color: "#333",
+    color: theme.colors.text,
+    fontFamily: theme.fonts.regular,
   },
   placeholder: {
-    color: "#aaa",
+    color: theme.colors.textSecondary,
   },
 };
 
 const loderStyles = StyleSheet.create({
   loader: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

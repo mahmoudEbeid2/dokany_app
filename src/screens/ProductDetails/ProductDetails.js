@@ -17,6 +17,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API } from "@env";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from "expo-status-bar";
+import theme from '../../utils/theme';
+import { LinearGradient } from 'expo-linear-gradient';
+import { MaterialIcons } from '@expo/vector-icons';
 
 // { route, navigation }
 const ProductDetails = ({ navigation, route}) => {
@@ -140,120 +143,148 @@ const handleDeleteReview = async (reviewId) => {
   if (loading) return <ActivityIndicator style={{ flex: 1 }} size="large" color="#7B5CFA" />;
 
   return (
-      <SafeAreaView style={{ flex: 1 }}>
-        <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-
-    <ScrollView contentContainerStyle={styles.container}>
-        <TouchableOpacity
-        onPress={() => navigation.goBack()}
-        style={styles.backButton}
-      >
-        <AntDesign name="arrowleft" size={24} color="black" />
-      </TouchableOpacity>
-      <Image
-        source={{ uri: product?.images?.[0].image }}
-        style={styles.image}
-        resizeMode="cover"
-      />
-      <View style={styles.container2}>
-        <Text style={styles.name}>{product?.title}</Text>
-        {product?.discount ? (
-          <View style={styles.flex}>
-            <Text style={styles.price}>${product?.price}</Text>
-            <Text style={styles.price}>Discount: {product?.discount}</Text>
+    <SafeAreaView style={{ flex: 1 }}>
+      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+      <LinearGradient colors={[theme.colors.background, '#e8eaf6']} style={styles.gradientBg}>
+        <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.backButtonModern}
+          >
+            <AntDesign name="arrowleft" size={20} color={'#fff'} />
+          </TouchableOpacity>
+          
+          <View style={styles.imageContainer}>
+            <Image
+              source={{ uri: product?.images?.[0].image }}
+              style={styles.image}
+              resizeMode="cover"
+            />
           </View>
-        ) : (
-          <Text style={styles.price}>${product?.price}</Text>
-        )}
-        <Text style={styles.description}>{product?.description}</Text>
-        <Text style={styles.category}>
-          Category: {product?.category?.name || "N/A"}
-        </Text>
-
-        <Text style={styles.status}>
-          Status: {product?.status }
-        </Text>
-        <View style={styles.flex}>
-          <TouchableOpacity
-            style={styles.editButton}
-            onPress={() => handleEdit()}
-          >
-            <Text style={styles.buttonText}>Edit</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.deleteButton}
-            onPress={() => handleDelete()}
-          >
-            <Text style={styles.buttonTextd}>Delete</Text>
-          </TouchableOpacity>
-          {/* reviews */}
-        </View>
-        <Text style={[styles.name, { marginTop: 20 }]}>Reviews</Text>
-
-        {reviews?.length > 0 ? (
+          
+          <View style={styles.contentContainer}>
+            <Text style={styles.name}>{product?.title}</Text>
             
-            <View style={styles.reviews}>
-          {reviews.map((review) => (
-            <View key={review.id} style={styles.reviewItem}>
-              <View style={styles.flex}>
-                <View style={styles.reviewContent}>
-                  <Image
-                    source={{
-                      uri:
-                        review?.customer?.profile_imge ||
-                        "https://i.pravatar.cc/150?img=12",
-                    }}
-                    style={styles.reviewImage}
-                  />
-
-                  <Text style={styles.reviewName}>
-                    {review?.customer?.f_name + " " + review?.customer?.l_name}
-                  </Text>
+            <View style={styles.priceCard}>
+              {product?.discount ? (
+                <View style={styles.priceRow}>
+                  <View style={styles.priceInfo}>
+                    <MaterialIcons name="attach-money" size={24} color={theme.colors.primary} />
+                    <Text style={styles.price}>${product?.price}</Text>
+                  </View>
+                  <View style={styles.discountInfo}>
+                    <MaterialIcons name="local-offer" size={20} color={theme.colors.error} />
+                    <Text style={styles.discountText}>Discount: {product?.discount}%</Text>
+                  </View>
                 </View>
-                <TouchableOpacity
-                style={styles.reviewTextx}
-                  onPress={() => {
-                    Alert.alert(
-                      "Delete Review",
-                      "Are you sure you want to delete this review?",
-                      [
-                        {
-                          text: "Cancel",
-                          style: "cancel",
-                        },
-                        {
-                          text: "Delete",
-                          onPress: () => handleDeleteReview(review.id),
-                          style: "destructive",
-                        },
-                      ]
-                    );
-                }}
-                >
-                    <AntDesign name="delete" size={20} color="black" />
-                </TouchableOpacity>
-                
-              </View>
-              <View style={styles.rating}>
-                {[...Array(5)].map((_, i) => (
-                  <AntDesign
-                    key={i}
-                    name="star"
-                    size={20}
-                    color={i < review?.rating ? "#black" : "#ccc"}
-                    style={styles.iconStar}
-                  />
-                ))}
-              </View>
-              <Text style={styles.reviewText}>{review?.comment}</Text>
+              ) : (
+                <View style={styles.priceInfo}>
+                  <MaterialIcons name="attach-money" size={24} color={theme.colors.primary} />
+                  <Text style={styles.price}>${product?.price}</Text>
+                </View>
+              )}
             </View>
-          ))}
-        </View>) : (
-          <Text style={styles.noReviews}>No reviews yet</Text>
-        )}
-      </View>
-    </ScrollView>
+            
+            <View style={styles.descriptionCard}>
+              <Text style={styles.descriptionTitle}>Description</Text>
+              <Text style={styles.description}>{product?.description}</Text>
+            </View>
+            
+            <View style={styles.infoRow}>
+              <View style={styles.infoCard}>
+                <MaterialIcons name="category" size={20} color={theme.colors.primary} />
+                <Text style={styles.infoLabel}>Category</Text>
+                <Text style={styles.infoValue}>{product?.category?.name || "N/A"}</Text>
+              </View>
+              <View style={styles.infoCard}>
+                <MaterialIcons name="check-circle" size={20} color={theme.colors.success} />
+                <Text style={styles.infoLabel}>Status</Text>
+                <Text style={styles.infoValue}>{product?.status}</Text>
+              </View>
+            </View>
+            
+            <View style={styles.actionsRow}>
+              <TouchableOpacity
+                style={styles.editButton}
+                activeOpacity={0.7}
+                onPress={() => handleEdit()}
+              >
+                <MaterialIcons name="edit" size={20} color={theme.colors.card} />
+                <Text style={styles.editButtonText}>Edit</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.deleteButton}
+                activeOpacity={0.7}
+                onPress={() => handleDelete()}
+              >
+                <MaterialIcons name="delete" size={20} color={'#FFF'} />
+                <Text style={styles.deleteButtonText}>Delete</Text>
+              </TouchableOpacity>
+            </View>
+            
+            <View style={styles.reviewsSection}>
+              <Text style={styles.reviewsTitle}>Reviews</Text>
+              {reviews?.length > 0 ? (
+                <View style={styles.reviews}>
+                  {reviews.map((review) => (
+                    <View key={review.id} style={styles.reviewCard}>
+                      <View style={styles.reviewHeader}>
+                        <View style={styles.reviewUser}>
+                          <Image
+                            source={{
+                              uri: review?.customer?.profile_imge || "https://i.pravatar.cc/150?img=12",
+                            }}
+                            style={styles.reviewImage}
+                          />
+                          <Text style={styles.reviewName}>
+                            {review?.customer?.f_name + " " + review?.customer?.l_name}
+                          </Text>
+                        </View>
+                        <TouchableOpacity
+                          style={styles.deleteReviewButton}
+                          onPress={() => {
+                            Alert.alert(
+                              "Delete Review",
+                              "Are you sure you want to delete this review?",
+                              [
+                                { text: "Cancel", style: "cancel" },
+                                {
+                                  text: "Delete",
+                                  onPress: () => handleDeleteReview(review.id),
+                                  style: "destructive",
+                                },
+                              ]
+                            );
+                          }}
+                        >
+                          <AntDesign name="delete" size={16} color={theme.colors.error} />
+                        </TouchableOpacity>
+                      </View>
+                      <View style={styles.rating}>
+                        {[...Array(5)].map((_, i) => (
+                          <AntDesign
+                            key={i}
+                            name="star"
+                            size={18}
+                            color={i < review?.rating ? theme.colors.warning : "#ccc"}
+                            style={styles.iconStar}
+                          />
+                        ))}
+                      </View>
+                      <Text style={styles.reviewText}>{review?.comment}</Text>
+                    </View>
+                  ))}
+                </View>
+              ) : (
+                <View style={styles.noReviewsCard}>
+                  <MaterialIcons name="rate-review" size={48} color={theme.colors.textSecondary} />
+                  <Text style={styles.noReviews}>No reviews yet</Text>
+                </View>
+              )}
+            </View>
+          </View>
+        </ScrollView>
+      </LinearGradient>
     </SafeAreaView>
   );
 };
@@ -263,83 +294,98 @@ export default ProductDetails;
 const styles = StyleSheet.create({
   container: {
     paddingBottom: 16,
-    backgroundColor: "#fff",
+    backgroundColor: theme.colors.card,
   },
   image: {
     width: 420,
     height: 350,
-    // borderRadius: 10,
+    borderRadius: theme.radius.md,
     marginBottom: 16,
-    marginHorizontal: "auto",
+    marginHorizontal: 'auto',
   },
   container2: {
-    // padding:16,
     paddingHorizontal: 25,
   },
   flex: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   name: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#333",
-    // textAlign: '',
+    fontSize: theme.fonts.size.xl,
+    fontWeight: 'bold',
+    color: theme.colors.text,
+    fontFamily: theme.fonts.bold,
   },
   price: {
-    fontSize: 16,
+    fontSize: theme.fonts.size.md,
     marginVertical: 8,
-    color: "#665491",
+    color: theme.colors.primary,
+    fontFamily: theme.fonts.bold,
   },
   category: {
-    fontSize: 16,
-    color: "#555",
+    fontSize: theme.fonts.size.md,
+    color: theme.colors.textSecondary,
     marginBottom: 8,
   },
   seller: {
-    fontSize: 16,
-    color: "#555",
+    fontSize: theme.fonts.size.md,
+    color: theme.colors.textSecondary,
   },
   status: {
-    fontSize: 16,
-    color: "green",
+    fontSize: theme.fonts.size.md,
+    color: theme.colors.success,
   },
   description: {
     marginVertical: 10,
-    fontSize: 16,
-    color: "#121217",
+    fontSize: theme.fonts.size.md,
+    color: theme.colors.text,
   },
   backButton: {
-    marginTop: 20,
-    backgroundColor: "#000",
-    paddingVertical: 10,
-    paddingHorizontal: 24,
-    borderRadius: 8,
+    position: "absolute",
+    top: 20,
+    left: 20,
+    zIndex: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderRadius: 25,
+    width: 50,
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 8,
+    borderWidth: 2,
+    borderColor: theme.colors.primary,
   },
-
   editButton: {
-    backgroundColor: "#F2F0F5",
+    backgroundColor: theme.colors.background,
     padding: 10,
-    borderRadius: 8,
+    borderRadius: theme.radius.md,
     marginTop: 10,
+    ...theme.shadow,
   },
   deleteButton: {
-    backgroundColor: "#7569fa",
+    backgroundColor: theme.colors.primary,
     padding: 10,
-    borderRadius: 8,
+    borderRadius: theme.radius.md,
     marginTop: 10,
+    ...theme.shadow,
   },
   buttonText: {
-    color: "#121217",
-    fontSize: 16,
-    textAlign: "center",
-    fontWeight: "bold",
+    color: theme.colors.text,
+    fontSize: theme.fonts.size.md,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontFamily: theme.fonts.bold,
   },
   buttonTextd: {
-    color: "#fff",
-    fontSize: 16,
-    textAlign: "center",
-    fontWeight: "bold",
+    color: theme.colors.card,
+    fontSize: theme.fonts.size.md,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontFamily: theme.fonts.bold,
   },
   reviews: {
     marginTop: 20,
@@ -353,20 +399,22 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 25,
     marginRight: 10,
+    borderWidth: 2,
+    borderColor: theme.colors.primary,
   },
   reviewName: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginBottom: 5,
-    color:"#333",
-    fontSize:16,
+    color: theme.colors.text,
+    fontSize: theme.fonts.size.md,
+    fontFamily: theme.fonts.bold,
   },
-
   reviewText: {
-    color: "#666",
+    color: theme.colors.textSecondary,
   },
   reviewContent: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   reviewTextx: {
     color: "#121217",
@@ -405,5 +453,58 @@ const styles = StyleSheet.create({
     // borderRadius: 50,
     // alignItems: "center",
     // justifyContent: "center",  
+  },
+  gradientBg: { flex: 1 },
+  imageContainer: { alignItems: 'center', marginTop: 20, marginBottom: 20 },
+  image: { width: '90%', height: 300, borderRadius: theme.radius.lg, ...theme.shadow },
+  contentContainer: { paddingHorizontal: 20, paddingBottom: 32 },
+  name: { fontSize: theme.fonts.size.xxl, fontWeight: 'bold', color: theme.colors.text, fontFamily: theme.fonts.bold, marginBottom: 16, textAlign: 'center' },
+  priceCard: { backgroundColor: theme.colors.card, borderRadius: theme.radius.lg, padding: 16, marginBottom: 16, ...theme.shadow },
+  priceRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  priceInfo: { flexDirection: 'row', alignItems: 'center' },
+  price: { fontSize: theme.fonts.size.xl, color: theme.colors.primary, fontFamily: theme.fonts.bold, marginLeft: 4 },
+  discountInfo: { flexDirection: 'row', alignItems: 'center' },
+  discountText: { fontSize: theme.fonts.size.md, color: theme.colors.error, fontFamily: theme.fonts.bold, marginLeft: 4 },
+  descriptionCard: { backgroundColor: theme.colors.card, borderRadius: theme.radius.lg, padding: 16, marginBottom: 16, ...theme.shadow },
+  descriptionTitle: { fontSize: theme.fonts.size.lg, fontWeight: 'bold', color: theme.colors.text, marginBottom: 8, fontFamily: theme.fonts.bold },
+  description: { fontSize: theme.fonts.size.md, color: theme.colors.textSecondary, lineHeight: 22 },
+  infoRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 16 },
+  infoCard: { flex: 1, backgroundColor: theme.colors.card, borderRadius: theme.radius.lg, padding: 12, marginHorizontal: 4, alignItems: 'center', ...theme.shadow },
+  infoLabel: { fontSize: theme.fonts.size.sm, color: theme.colors.textSecondary, marginTop: 4, fontFamily: theme.fonts.bold },
+  infoValue: { fontSize: theme.fonts.size.md, color: theme.colors.text, fontWeight: 'bold', marginTop: 2, fontFamily: theme.fonts.bold },
+  actionsRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 24 },
+  editButton: { flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.primary, borderRadius: 30, paddingVertical: 14, marginHorizontal: 4, ...theme.shadow },
+  editButtonText: { color: theme.colors.card, fontSize: theme.fonts.size.md, fontWeight: 'bold', fontFamily: theme.fonts.bold, marginLeft: 6 },
+  deleteButton: { flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.error, borderRadius: 30, paddingVertical: 14, marginHorizontal: 4, ...theme.shadow },
+  deleteButtonText: { color: '#FFF', fontSize: theme.fonts.size.md, fontWeight: 'bold', fontFamily: theme.fonts.bold, marginLeft: 6 },
+  reviewsSection: { marginTop: 8 },
+  reviewsTitle: { fontSize: theme.fonts.size.xl, fontWeight: 'bold', color: theme.colors.text, marginBottom: 16, fontFamily: theme.fonts.bold },
+  reviewCard: { backgroundColor: theme.colors.card, borderRadius: theme.radius.lg, padding: 16, marginBottom: 12, ...theme.shadow },
+  reviewHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
+  reviewUser: { flexDirection: 'row', alignItems: 'center' },
+  reviewImage: { width: 40, height: 40, borderRadius: 20, marginRight: 10, borderWidth: 2, borderColor: theme.colors.primary },
+  reviewName: { fontWeight: 'bold', color: theme.colors.text, fontSize: theme.fonts.size.md, fontFamily: theme.fonts.bold },
+  deleteReviewButton: { padding: 8, backgroundColor: theme.colors.background, borderRadius: 20, ...theme.shadow },
+  rating: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
+  iconStar: { marginHorizontal: 1 },
+  reviewText: { color: theme.colors.textSecondary, fontSize: theme.fonts.size.sm, lineHeight: 18 },
+  noReviewsCard: { backgroundColor: theme.colors.card, borderRadius: theme.radius.lg, padding: 32, alignItems: 'center', ...theme.shadow },
+  noReviews: { marginTop: 12, fontSize: theme.fonts.size.md, color: theme.colors.textSecondary, textAlign: 'center', fontFamily: theme.fonts.bold },
+  backButtonModern: {
+    position: "absolute",
+    top: 28,
+    left: 18,
+    zIndex: 10,
+    backgroundColor: theme.colors.primary,
+    borderRadius: 20,
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.13,
+    shadowRadius: 8,
+    elevation: 6,
   },
 });
