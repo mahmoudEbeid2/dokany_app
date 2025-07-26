@@ -13,6 +13,8 @@ import {
   ActivityIndicator,
   FlatList,
   StatusBar,
+  Dimensions,
+  Platform,
 } from "react-native";
 import { launchImageLibrary } from "react-native-image-picker";
 import * as ImagePicker from "expo-image-picker";
@@ -34,6 +36,17 @@ const CreateProduct = ({ navigation }) => {
   const [status, setStatus] = useState("");
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
+
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener('change', ({ window }) => {
+      setScreenHeight(window.height);
+    });
+
+    return () => {
+      subscription?.remove();
+    };
+  }, []);
 
   const pickImages = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -102,15 +115,7 @@ const CreateProduct = ({ navigation }) => {
           {
             text: "OK",
             onPress: () => {
-              //   navigation.goBack();
-              setProductName("");
-              setPrice("");
-              setDescription("");
-              setDiscount("");
-              setCategory("");
-              setStock("");
-              setStatus("");
-              setImages([]);
+              navigation.goBack();
             },
           },
         ]);
@@ -153,21 +158,28 @@ const CreateProduct = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <KeyboardAvoidingView behavior={"padding"} keyboardVerticalOffset={20}>
-        <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar barStyle="dark-content" backgroundColor={theme.colors.background} />
+      <KeyboardAvoidingView 
+        style={styles.keyboardAvoidingView}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+      >
         <ScrollView
           contentContainerStyle={styles.container}
           keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
         >
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={styles.backButton}
-          >
-            <AntDesign name="arrowleft" size={24} color="black" />
-          </TouchableOpacity>
-          <Text style={styles.title}>Add Product</Text>
+          <View style={styles.headerContainer}>
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={theme.header.backButton}
+            >
+              <AntDesign name="arrowleft" size={22} color={theme.colors.primary} />
+            </TouchableOpacity>
+            <Text style={styles.title}>Add Product</Text>
+            <View style={{ width: 40 }} />
+          </View>
 
           {categories?.length > 0 ? null : (
             <View style={styles.loadingContainer}>
@@ -307,7 +319,7 @@ const CreateProduct = ({ navigation }) => {
 
           {loading ? (
             <View style={styles.saveBtn}>
-              <ActivityIndicator size="large" color="#fff" />
+              <ActivityIndicator size="large" color={theme.colors.card} />
             </View>
           ) : (
             <TouchableOpacity style={styles.saveBtn} onPress={handleSave}>
@@ -323,19 +335,35 @@ const CreateProduct = ({ navigation }) => {
 export default CreateProduct;
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
+  keyboardAvoidingView: {
+    flex: 1,
+  },
   container: {
     padding: 20,
     paddingBottom: 50,
-    backgroundColor: theme.colors.card,
+    backgroundColor: theme.colors.background,
+    minHeight: Dimensions.get('window').height - 100,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 30,
+    marginBottom: 10,
+    width: '100%',
+    paddingHorizontal: 0,
   },
   title: {
-    fontSize: theme.fonts.size.xl,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    marginTop: 10,
-    color: theme.colors.text,
+    ...theme.header.title,
+    marginTop: 0,
+    marginBottom: 0,
+    alignSelf: 'center',
+    flex: 1,
     textAlign: 'center',
-    fontFamily: theme.fonts.bold,
   },
   title2: {
     fontSize: theme.fonts.size.lg,
@@ -344,7 +372,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     color: theme.colors.text,
     textAlign: 'center',
-    fontFamily: theme.fonts.bold,
   },
   imageUploadBox: {
     borderWidth: 1,
@@ -354,22 +381,31 @@ const styles = StyleSheet.create({
     padding: 20,
     alignItems: 'center',
     marginBottom: 15,
-    backgroundColor: theme.colors.background,
-    ...theme.shadow,
+    backgroundColor: theme.colors.card,
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
   },
   imageUploadText: {
     color: theme.colors.textSecondary,
     fontSize: theme.fonts.size.sm,
   },
   imageUploadBtn: {
-    backgroundColor: theme.colors.background,
+    backgroundColor: theme.colors.primary,
     padding: 15,
     borderRadius: theme.radius.md,
     alignItems: 'center',
     marginTop: 15,
     fontSize: theme.fonts.size.md,
     fontWeight: 'bold',
-    ...theme.shadow,
+    color: theme.colors.card,
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
   },
   imagePreviewContainer: {
     flexDirection: 'row',
@@ -388,7 +424,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 4,
     color: theme.colors.text,
-    fontFamily: theme.fonts.bold,
   },
   input: {
     borderWidth: 1,
@@ -401,8 +436,11 @@ const styles = StyleSheet.create({
     width: '100%',
     color: theme.colors.textSecondary,
     fontSize: theme.fonts.size.md,
-    fontFamily: theme.fonts.regular,
-    ...theme.shadow,
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
   },
   saveBtn: {
     backgroundColor: theme.colors.primary,
@@ -410,13 +448,16 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius.lg,
     alignItems: 'center',
     marginTop: 16,
-    ...theme.shadow,
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
   },
   saveBtnText: {
     color: theme.colors.card,
     fontSize: theme.fonts.size.md,
     fontWeight: 'bold',
-    fontFamily: theme.fonts.bold,
   },
   pickerWrapper: {
     borderWidth: 1,
@@ -424,7 +465,11 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius.sm,
     marginBottom: 15,
     backgroundColor: theme.colors.card,
-    ...theme.shadow,
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
   },
   picker: {
     height: 60,

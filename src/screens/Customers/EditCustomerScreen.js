@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Text,
   View,
@@ -9,6 +9,10 @@ import {
   Alert,
   ScrollView,
   StyleSheet,
+  Dimensions,
+  Platform,
+  StatusBar,
+  KeyboardAvoidingView,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { sellerAPI } from "../../utils/api/api";
@@ -36,6 +40,17 @@ const EditCustomerScreen = ({ route, navigation }) => {
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
+
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener('change', ({ window }) => {
+      setScreenHeight(window.height);
+    });
+
+    return () => {
+      subscription?.remove();
+    };
+  }, []);
 
   const handleSaveChanges = async () => {
     const nameError = validateName(f_name, "First Name");
@@ -87,7 +102,7 @@ const EditCustomerScreen = ({ route, navigation }) => {
         headers: { "Content-Type": "multipart/form-data" },
       });
       Alert.alert("Success", "Customer details updated!");
-      navigation.navigate("CustomersList");
+      navigation.goBack();
     } catch (error) {
       Alert.alert(
         "Error",
@@ -105,17 +120,28 @@ const EditCustomerScreen = ({ route, navigation }) => {
     : require("../../../assets/CustomerImage.png");
 
   return (
-    <SafeAreaView style={styles.formContainer}>
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar barStyle="dark-content" backgroundColor={theme.colors.background} />
+      <KeyboardAvoidingView 
+        style={styles.keyboardAvoidingView}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+      >
       <View style={styles.headerContainer}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <AntDesign name="arrowleft" size={24} color="black" />
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={theme.header.backButton}
+        >
+          <AntDesign name="arrowleft" size={22} color={theme.colors.primary} />
         </TouchableOpacity>
-
         <Text style={styles.title}>Edit Customer</Text>
-
-        <View style={{ width: 24 }} />
+        <View style={{ width: 40 }} />
       </View>
-      <ScrollView>
+        <ScrollView 
+          contentContainerStyle={styles.container}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
         <TouchableOpacity
           style={styles.editAvatarContainer}
           onPress={async () => {
@@ -182,11 +208,11 @@ const EditCustomerScreen = ({ route, navigation }) => {
             keyboardType="phone-pad"
           />
 
-          <Text style={styles.label}>Country</Text>
+            <Text style={styles.label}>City</Text>
           <TextInput
             style={styles.input}
-            value={country}
-            onChangeText={setCountry}
+              value={city}
+              onChangeText={setCity}
           />
 
           <Text style={styles.label}>Governorate</Text>
@@ -196,13 +222,16 @@ const EditCustomerScreen = ({ route, navigation }) => {
             onChangeText={setGovernorate}
           />
 
-          <Text style={styles.label}>City</Text>
-          <TextInput style={styles.input} value={city} onChangeText={setCity} />
+            <Text style={styles.label}>Country</Text>
+            <TextInput
+              style={styles.input}
+              value={country}
+              onChangeText={setCountry}
+            />
 
-          <Text style={styles.label}>New Password</Text>
+            <Text style={styles.label}>New Password (Optional)</Text>
           <TextInput
             style={styles.input}
-            placeholder="Leave blank to keep current password"
             value={password}
             onChangeText={setPassword}
             secureTextEntry
@@ -219,17 +248,31 @@ const EditCustomerScreen = ({ route, navigation }) => {
           disabled={loading}
         >
           {loading ? (
-            <ActivityIndicator color="#FFF" />
+              <ActivityIndicator color={theme.colors.card} />
           ) : (
-            <Text style={styles.buttonText}>Save changes</Text>
+              <Text style={styles.buttonText}>Save Changes</Text>
           )}
         </TouchableOpacity>
       </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
+  keyboardAvoidingView: {
+    flex: 1,
+  },
+  container: {
+    padding: 20,
+    paddingBottom: 50,
+    backgroundColor: theme.colors.background,
+    minHeight: Dimensions.get('window').height - 100,
+  },
   formContainer: {
     flex: 1,
     backgroundColor: theme.colors.background,
@@ -239,14 +282,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 10,
-    paddingHorizontal: 10,
+    marginTop: 30,
+    marginBottom: 10,
+    width: '100%',
+    paddingHorizontal: 0,
   },
   title: {
-    fontSize: theme.fonts.size.xl,
-    fontWeight: 'bold',
-    color: theme.colors.text,
-    fontFamily: theme.fonts.bold,
+    ...theme.header.title,
+    marginTop: 0,
+    marginBottom: 0,
+    alignSelf: 'center',
+    flex: 1,
+    textAlign: 'center',
   },
   form: {
     padding: 10,
@@ -256,7 +303,6 @@ const styles = StyleSheet.create({
     color: theme.colors.text,
     marginBottom: 8,
     fontWeight: 'bold',
-    fontFamily: theme.fonts.bold,
   },
   input: {
     backgroundColor: theme.colors.card,
@@ -267,8 +313,11 @@ const styles = StyleSheet.create({
     fontSize: theme.fonts.size.md,
     marginBottom: 20,
     color: theme.colors.textSecondary,
-    fontFamily: theme.fonts.regular,
-    ...theme.shadow,
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
   },
   formFooter: {
     padding: 10,
@@ -280,13 +329,16 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: theme.radius.lg,
     alignItems: 'center',
-    ...theme.shadow,
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
   },
   buttonText: {
     color: theme.colors.card,
     fontSize: theme.fonts.size.md,
     fontWeight: 'bold',
-    fontFamily: theme.fonts.bold,
   },
   editAvatarContainer: {
     justifyContent: 'center',

@@ -9,6 +9,8 @@ import {
   ActivityIndicator,
   Alert,
   StyleSheet,
+  Dimensions,
+  StatusBar,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { AntDesign, Feather } from "@expo/vector-icons";
@@ -22,6 +24,17 @@ const CustomersListScreen = ({ navigation }) => {
   const [filteredCustomers, setFilteredCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
+
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener('change', ({ window }) => {
+      setScreenHeight(window.height);
+    });
+
+    return () => {
+      subscription?.remove();
+    };
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
@@ -85,34 +98,49 @@ const CustomersListScreen = ({ navigation }) => {
   if (loading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#6200EE" />
+        <ActivityIndicator size="large" color={theme.colors.primary} />
       </View>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.headerContainer}>
-        {/* لا تعرض زر العودة هنا */}
-        <Text style={styles.title}>Customers</Text>
-        <View style={{ width: 24 }} />
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar barStyle="dark-content" backgroundColor={theme.colors.background} />
+      <View style={{ paddingTop: 8, paddingBottom: 8, minHeight: 120 }}>
+        <Text style={styles.mainTitle}>Customers</Text>
+        <View style={styles.searchWrapper}>
+          <Ionicons name="search" size={22} color={theme.colors.textSecondary} />
+          <TextInput
+            placeholder="Search customers..."
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            style={styles.searchInput}
+            placeholderTextColor={theme.colors.textSecondary}
+          />
+        </View>
       </View>
-      <View style={styles.searchWrapper}>
-        <Ionicons name="search" size={22} color={theme.colors.textSecondary} />
-        <TextInput
-          placeholder="Search customers..."
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-          style={styles.searchInput}
-          placeholderTextColor={theme.colors.textSecondary}
+      
+      {filteredCustomers.length === 0 && !loading ? (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ 
+            textAlign: 'center', 
+            color: theme.colors.textSecondary, 
+            fontSize: theme.fonts.size.lg,
+            fontWeight: 'bold'
+          }}>
+            No customers found.
+          </Text>
+        </View>
+      ) : (
+        <FlatList
+          data={filteredCustomers}
+          renderItem={renderCustomerItem}
+          keyExtractor={(item) => item.id.toString()}
+          contentContainerStyle={{ paddingBottom: 20, paddingTop: 0, paddingHorizontal: 15 }}
+          style={{ flex: 1 }}
         />
-      </View>
-      <FlatList
-        data={filteredCustomers}
-        renderItem={renderCustomerItem}
-        keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={styles.listContainer}
-      />
+      )}
+      
       <TouchableOpacity
         style={styles.fab}
         onPress={() => navigation.navigate("AddCustomer")}
@@ -124,19 +152,50 @@ const CustomersListScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
   container: {
     flex: 1,
     backgroundColor: theme.colors.background,
-    paddingInline: 50,
   },
-  headerContainer: { flexDirection: 'row', alignItems: 'center', backgroundColor: 'transparent', paddingVertical: 12, marginBottom: 18, marginTop: 8, justifyContent: 'center' },
-  title: { fontSize: theme.fonts.size.lg, color: theme.colors.text, fontWeight: 'bold', fontFamily: theme.fonts.bold, textAlign: 'center' },
-  backButton: { padding: 4, marginRight: 8, position: 'absolute', left: 8, zIndex: 2, backgroundColor: theme.colors.card, borderRadius: 20, ...theme.shadow },
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 30,
+    marginBottom: 10,
+    width: '100%',
+    paddingHorizontal: 0,
+  },
+  title: {
+    ...theme.header.title,
+    marginTop: 0,
+    marginBottom: 0,
+    alignSelf: 'center',
+    flex: 1,
+    textAlign: 'center',
+  },
+  backButton: { 
+    padding: 4, 
+    marginRight: 8, 
+    position: 'absolute', 
+    left: 8, 
+    zIndex: 2, 
+    backgroundColor: theme.colors.card, 
+    borderRadius: 20, 
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
+  },
   centered: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: theme.colors.card,
+    backgroundColor: theme.colors.background,
   },
   searchWrapper: {
     flexDirection: 'row',
@@ -146,7 +205,15 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 16,
     marginBottom: 14,
-    ...theme.shadow,
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
+    marginLeft: 20,
+    marginRight: 20,
+    alignSelf: 'stretch',
+    marginTop: 0,
   },
   searchInput: {
     flex: 1,
@@ -178,7 +245,6 @@ const styles = StyleSheet.create({
     fontSize: theme.fonts.size.md,
     fontWeight: 'bold',
     color: theme.colors.text,
-    fontFamily: theme.fonts.bold,
   },
   customerRegistered: {
     fontSize: theme.fonts.size.sm,
@@ -186,15 +252,15 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   fab: {
-    position: 'absolute',
-    right: 30,
-    bottom: 30,
-    backgroundColor: theme.colors.primary,
-    padding: 16,
-    borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    ...theme.shadow,
+    ...theme.fab,
+  },
+  mainTitle: {
+    fontSize: theme.fonts.size.xl,
+    fontWeight: 'bold',
+    color: theme.colors.primary,
+    marginTop: 8,
+    marginBottom: 16,
+    textAlign: 'center',
   },
 });
 

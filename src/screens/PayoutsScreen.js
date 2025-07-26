@@ -3,17 +3,17 @@ import {
     View,
     Text,
     TextInput,
-    Button,
     FlatList,
     StyleSheet,
     Alert,
     ActivityIndicator,
     Modal,
-    Pressable,
     TouchableOpacity,
     SafeAreaView,
     StatusBar,
+    Dimensions,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { sellerAPI } from '../utils/api/api';
 import { AntDesign } from '@expo/vector-icons';
 import theme from '../utils/theme';
@@ -27,6 +27,17 @@ export default function PayoutsScreen({ route, navigation }) {
     const [submitting, setSubmitting] = useState(false);
     const [summary, setSummary] = useState(null);
     const [modalVisible, setModalVisible] = useState(false);
+    const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
+
+    useEffect(() => {
+        const subscription = Dimensions.addEventListener('change', ({ window }) => {
+            setScreenHeight(window.height);
+        });
+
+        return () => {
+            subscription?.remove();
+        };
+    }, []);
 
     const fetchPayouts = async () => {
         setLoading(true);
@@ -86,55 +97,12 @@ export default function PayoutsScreen({ route, navigation }) {
         fetchPayouts();
     }, []);
 
-    return (
-        <>
-            <StatusBar barStyle="dark-content" backgroundColor={theme.colors.background} />
-            <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
-                <View style={styles.appBar}>
-                    <TouchableOpacity
-                        onPress={() => navigation.goBack()}
-                        style={styles.backButton}
-                        activeOpacity={0.7}
-                    >
-                        <AntDesign name="arrowleft" size={22} color={theme.colors.primary} />
-                    </TouchableOpacity>
-                    <Text style={styles.navigationTitle}>Payouts</Text>
-                </View>
-                {loading ? (
-                    <ActivityIndicator size="large" color={theme.colors.primary} style={{ marginTop: 20 }} />
-                ) : (
-                    <FlatList
-                        contentContainerStyle={styles.container}
-                        data={payouts}
-                        keyExtractor={(item) => item.id}
-                        ListHeaderComponent={
-                            <>
-                                <Text style={styles.heading}>Earnings</Text>
-                                {summary && (
-                                    <View style={styles.summaryContainer}>
-                                        <View style={styles.balanceInfo}>
-                                            <MaterialIcons name="account-balance-wallet" size={24} color={theme.colors.primary} />
-                                            <Text style={styles.summaryText}>$ {summary.remaining_balance}</Text>
-                                            <Text style={styles.balanceLabel}>Available Balance</Text>
-                                        </View>
-                                        <TouchableOpacity
-                                            style={styles.requestPayoutButton}
-                                            activeOpacity={0.8}
-                                            onPress={() => setModalVisible(true)}
-                                        >
-                                            <MaterialIcons name="account-balance" size={20} color={theme.colors.card} />
-                                            <Text style={styles.requestPayoutButtonText}>Request Withdrawal</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                )}
-                                <Text style={styles.historyTitle}>Withdrawal History</Text>
-                            </>
-                        }
-                        renderItem={({ item }) => {
+    const renderPayoutItem = ({ item }) => {
                             const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
                             const status = item.status.toLowerCase();
                             const displayStatus = capitalize(item.status);
                             let statusColor, statusIcon, statusBg;
+        
                             if (status === 'pending') {
                                 statusColor = theme.colors.warning;
                                 statusBg = '#FFF9E5';
@@ -148,6 +116,7 @@ export default function PayoutsScreen({ route, navigation }) {
                                 statusBg = '#FFE6E6';
                                 statusIcon = <View style={[styles.statusCircle, { backgroundColor: statusBg }]}><MaterialIcons name="error" size={18} color={statusColor} /></View>;
                             }
+        
                             return (
                                 <View style={styles.payoutCard}>
                                     <View style={[styles.statusBar, { backgroundColor: statusColor }]} />
@@ -162,10 +131,64 @@ export default function PayoutsScreen({ route, navigation }) {
                                     </View>
                                 </View>
                             );
-                        }}
-                    />
-                )}
-                {/* MODAL */}
+    };
+
+    return (
+        <SafeAreaView style={styles.safeArea}>
+            <StatusBar backgroundColor={theme.colors.background} barStyle="dark-content" />
+            
+            {/* Simple Header */}
+            <View style={styles.header}>
+                <TouchableOpacity
+                    onPress={() => navigation.goBack()}
+                    style={theme.header.backButton}
+                    activeOpacity={0.7}
+                >
+                    <AntDesign name="arrowleft" size={22} color={theme.colors.primary} />
+                </TouchableOpacity>
+                <Text style={styles.title}>Payouts</Text>
+                <View style={{ width: 40 }} />
+            </View>
+
+            {/* Content */}
+            {loading ? (
+                <View style={styles.loadingContainer}>
+                    <ActivityIndicator size="large" color={theme.colors.primary} />
+                </View>
+            ) : (
+                <FlatList
+                    style={styles.list}
+                    contentContainerStyle={styles.listContent}
+                    data={payouts}
+                    keyExtractor={(item) => item.id}
+                    showsVerticalScrollIndicator={false}
+                    ListHeaderComponent={
+                        <View style={styles.headerContent}>
+                            <Text style={styles.sectionTitle}>Earnings</Text>
+                            {summary && (
+                                <View style={styles.summaryContainer}>
+                                    <View style={styles.balanceInfo}>
+                                        <Text style={styles.summaryText}>$ {summary.remaining_balance}</Text>
+                                        <Text style={styles.balanceLabel}>Available Balance</Text>
+                                    </View>
+                                    <TouchableOpacity
+                                        style={styles.requestPayoutButton}
+                                        activeOpacity={0.8}
+                                        onPress={() => setModalVisible(true)}
+                                    >
+                                        <MaterialIcons name="account-balance" size={20} color={theme.colors.card} />
+                                        <Text style={styles.requestPayoutButtonText}>Request Withdrawal</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            )}
+                            <Text style={styles.historyTitle}>Withdrawal History</Text>
+                        </View>
+                    }
+                    renderItem={renderPayoutItem}
+                />
+            )}
+
+            {/* Modal */}
                 <Modal visible={modalVisible} animationType="slide" transparent={true}>
                     <View style={styles.modalOverlay}>
                         <View style={styles.modalContainer}>
@@ -178,206 +201,256 @@ export default function PayoutsScreen({ route, navigation }) {
                                 keyboardType="numeric"
                                 value={amount}
                                 onChangeText={setAmount}
-                                style={styles.input}
-                            />
+                            style={styles.modalInput}
+                            placeholderTextColor={theme.colors.textSecondary}
+                        />
+                        <View style={styles.modalButtons}>
                             <TouchableOpacity
+                                style={styles.cancelButton}
+                                onPress={() => setModalVisible(false)}
+                                activeOpacity={0.7}
+                            >
+                                <Text style={styles.cancelButtonText}>Cancel</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={styles.submitButton}
                                 onPress={handleSubmit}
                                 disabled={submitting}
-                                style={styles.submitButton}
-                                activeOpacity={0.8}
+                                activeOpacity={0.7}
                             >
-                                <Text style={styles.submitButtonText}>{submitting ? 'Submitting...' : 'Submit Request'}</Text>
+                                {submitting ? (
+                                    <ActivityIndicator color={theme.colors.card} />
+                                ) : (
+                                    <Text style={styles.submitButtonText}>Submit</Text>
+                                )}
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.closeBtn}>
-                                <Text style={styles.closeText}>Cancel</Text>
-                            </TouchableOpacity>
+                        </View>
                         </View>
                     </View>
                 </Modal>
             </SafeAreaView>
-        </>
     );
 }
 
-
 const styles = StyleSheet.create({
-    container: {
-        paddingVertical: 20,
-        paddingHorizontal: 10,
-        backgroundColor: theme.colors.background,
+    safeArea: {
         flex: 1,
+        backgroundColor: theme.colors.background,
+        paddingTop: 10,
     },
-    appBar: {
+    header: {
+        ...theme.header.container,
         flexDirection: 'row',
         alignItems: 'center',
-        paddingVertical: 10,
-        paddingHorizontal: 15,
-        backgroundColor: theme.colors.card,
-        borderBottomWidth: 1,
-        borderBottomColor: theme.colors.border,
+        justifyContent: 'space-between',
+        marginTop: 30,
+        marginBottom: 10,
+        width: '100%',
+        paddingHorizontal: 0,
+        paddingLeft: 15,
     },
     backButton: {
-        padding: 5,
+        ...theme.header.backButton,
     },
-    navigationTitle: {
-        fontSize: theme.fonts.size.xl,
-        fontWeight: 'bold',
-        marginBottom: 20,
-        color: theme.colors.text,
-        marginTop: 10,
+    title: {
+        ...theme.header.title,
+        marginTop: 0,
+        marginBottom: 0,
+        alignSelf: 'center',
         flex: 1,
         textAlign: 'center',
-        fontFamily: theme.fonts.bold,
     },
-    heading: {
-        fontSize: theme.fonts.size.lg,
-        fontWeight: '700',
-        marginBottom: 16,
-        color: theme.colors.text,
-        marginTop: 10,
-        fontFamily: theme.fonts.bold,
+    placeholder: {
+        ...theme.header.placeholder,
     },
-    summaryContainer: {
-        paddingVertical: 24,
-        paddingHorizontal: 16,
-        borderRadius: theme.radius.lg,
-        marginBottom: 16,
-        backgroundColor: theme.colors.card,
-        alignItems: 'center',
-        ...theme.shadow,
-    },
-    balanceInfo: {
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
         alignItems: 'center',
     },
-    balanceLabel: {
-        fontSize: theme.fonts.size.sm,
-        color: theme.colors.textSecondary,
-        marginTop: 4,
+    list: {
+        flex: 1,
     },
-    summaryText: {
-        fontSize: theme.fonts.size.xl,
+    listContent: {
+        paddingHorizontal: 20,
+        paddingBottom: 20,
+    },
+    headerContent: {
+        paddingTop: 20,
+    },
+    sectionTitle: {
+        fontSize: 18,
         fontWeight: 'bold',
         color: theme.colors.text,
-        textAlign: 'center',
-        marginTop: 10,
-        fontFamily: theme.fonts.bold,
-    },
-    historyTitle: {
-        fontSize: theme.fonts.size.lg,
-        fontWeight: '700',
         marginBottom: 16,
-        color: theme.colors.text,
-        marginTop: 10,
-        fontFamily: theme.fonts.bold,
+    },
+    summaryContainer: {
+        backgroundColor: theme.colors.card,
+        borderRadius: 16,
+        padding: 20,
+        marginBottom: 20,
+        shadowColor: theme.colors.shadow || '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
+        elevation: 4,
+    },
+    balanceInfo: {
+        flexDirection: 'column',
+        alignItems: 'center',
+        marginBottom: 16,
+        paddingVertical: 16,
+    },
+    summaryText: {
+        fontSize: 28,
+        fontWeight: 'bold',
+        color: theme.colors.primary,
+        marginBottom: 8,
+    },
+    balanceLabel: {
+        fontSize: 14,
+        color: theme.colors.textSecondary,
+        fontWeight: '500',
     },
     requestPayoutButton: {
         flexDirection: 'row',
-        justifyContent: 'center',
         alignItems: 'center',
+        justifyContent: 'center',
         backgroundColor: theme.colors.primary,
-        paddingVertical: 12,
-        paddingHorizontal: 18,
-        borderRadius: 30,
-        marginTop: 12,
-        ...theme.shadow,
+        borderRadius: 12,
+        paddingVertical: 14,
+        paddingHorizontal: 20,
     },
     requestPayoutButtonText: {
         color: theme.colors.card,
-        fontSize: theme.fonts.size.md,
-        fontWeight: 'bold',
-        fontFamily: theme.fonts.bold,
+        fontSize: 16,
+        fontWeight: '600',
         marginLeft: 8,
     },
-    payoutItem: {
-        paddingVertical: 16,
-        paddingHorizontal: 10,
-        marginBottom: 10,
-        borderRadius: theme.radius.md,
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        backgroundColor: theme.colors.card,
-        ...theme.shadow,
+    historyTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: theme.colors.text,
+        marginTop: 20,
+        marginBottom: 16,
     },
-    payoutCard: { backgroundColor: theme.colors.card, borderRadius: theme.radius.lg, padding: 14, marginBottom: 12, flexDirection: 'row', alignItems: 'center', ...theme.shadow, position: 'relative' },
-    statusBar: { position: 'absolute', left: 0, top: 0, bottom: 0, width: 6, borderTopLeftRadius: theme.radius.lg, borderBottomLeftRadius: theme.radius.lg },
-    statusCircle: { width: 32, height: 32, borderRadius: 16, alignItems: 'center', justifyContent: 'center', marginRight: 8 },
-    payoutRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%' },
-    statusIcon: { marginRight: 16 },
-    payoutInfoCol: { flex: 1, flexDirection: 'column', justifyContent: 'center' },
-    payoutAmountRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start' },
-    payoutAmount: { fontSize: theme.fonts.size.xl, fontWeight: 'bold', color: theme.colors.text, fontFamily: theme.fonts.bold },
-    statusBadge: { borderRadius: 12, borderWidth: 1, paddingHorizontal: 12, paddingVertical: 2, marginLeft: 0, alignSelf: 'center' },
-    payoutStatus: { fontSize: theme.fonts.size.sm, fontWeight: 'bold' },
-    input: {
-        borderWidth: 1,
-        padding: 10,
-        marginBottom: 12,
-        borderRadius: theme.radius.md,
-        width: '100%',
-        color: theme.colors.textSecondary,
-        fontSize: theme.fonts.size.md,
-        borderColor: theme.colors.primary,
+    payoutCard: {
         backgroundColor: theme.colors.card,
-        fontFamily: theme.fonts.regular,
-        ...theme.shadow,
+        borderRadius: 12,
+        marginBottom: 12,
+        shadowColor: theme.colors.shadow || '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 2,
+        overflow: 'hidden',
+    },
+    statusBar: {
+        height: 4,
+        width: '100%',
+    },
+    payoutRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: 16,
+    },
+    amountIconGroup: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    statusCircle: {
+        width: 32,
+        height: 32,
+        borderRadius: 16,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginRight: 12,
+    },
+    payoutAmount: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: theme.colors.text,
+    },
+    statusBadge: {
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        borderRadius: 16,
+        borderWidth: 1,
+    },
+    payoutStatus: {
+        fontSize: 12,
+        fontWeight: '600',
     },
     modalOverlay: {
         flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.4)',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
         justifyContent: 'center',
         alignItems: 'center',
     },
     modalContainer: {
         backgroundColor: theme.colors.card,
-        padding: 20,
-        borderRadius: theme.radius.lg,
-        width: '90%',
-        ...theme.shadow,
+        borderRadius: 12,
+        padding: 24,
+        width: '85%',
+        shadowColor: theme.colors.shadow || '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.25,
+        shadowRadius: 8,
+        elevation: 5,
     },
     modalHeader: {
+        flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 12,
+        marginBottom: 20,
     },
     modalTitle: {
-        fontSize: theme.fonts.size.lg,
+        fontSize: 18,
         fontWeight: 'bold',
-        marginBottom: 12,
-        textAlign: 'center',
-        fontFamily: theme.fonts.bold,
+        color: theme.colors.text,
+        marginLeft: 12,
     },
-    submitButton: {
-        backgroundColor: theme.colors.primary,
-        borderRadius: 30,
+    modalInput: {
+        borderWidth: 1,
+        borderColor: theme.colors.border,
+        borderRadius: 8,
+        paddingHorizontal: 16,
+        paddingVertical: 12,
+        fontSize: 16,
+        color: theme.colors.text,
+        marginBottom: 20,
+        backgroundColor: theme.colors.background,
+    },
+    modalButtons: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    cancelButton: {
+        flex: 1,
+        backgroundColor: theme.colors.border,
+        borderRadius: 8,
         paddingVertical: 12,
         alignItems: 'center',
-        marginTop: 10,
-        ...theme.shadow,
+        marginRight: 8,
+    },
+    cancelButtonText: {
+        color: theme.colors.text,
+        fontSize: 16,
+        fontWeight: '600',
+    },
+    submitButton: {
+        flex: 1,
+        backgroundColor: theme.colors.primary,
+        borderRadius: 8,
+        paddingVertical: 12,
+        alignItems: 'center',
+        marginLeft: 8,
     },
     submitButtonText: {
         color: theme.colors.card,
-        fontSize: theme.fonts.size.md,
-        fontWeight: 'bold',
-        fontFamily: theme.fonts.bold,
+        fontSize: 16,
+        fontWeight: '600',
     },
-    closeBtn: {
-        marginTop: 12,
-        alignItems: 'center',
-    },
-    closeText: {
-        color: theme.colors.error,
-        fontSize: theme.fonts.size.md,
-        fontFamily: theme.fonts.bold,
-    },
-    shadow: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 3,
-    },
-    amountIconGroup: { flexDirection: 'row', alignItems: 'center' },
 });
 
 

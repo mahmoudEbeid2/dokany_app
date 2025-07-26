@@ -2,6 +2,8 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
+import { SafeAreaView, StatusBar } from "react-native";
+import theme from "../utils/theme";
 
 import ProductsAndCategories from "../screens/ProductsAndCategoriesScreen";
 import OrdersScreen from "../screens/Orders/OrderScreen";
@@ -13,7 +15,9 @@ const Tab = createBottomTabNavigator();
 
 export default function BottomTabs() {
   return (
-    <Tab.Navigator
+    <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
+      <StatusBar barStyle="dark-content" backgroundColor={theme.colors.background} />
+      <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarIcon: ({ color, size }) => {
@@ -51,5 +55,6 @@ export default function BottomTabs() {
       <Tab.Screen name="Customers" component={CustomersScreen} />
       <Tab.Screen name="Coupons" component={CouponsScreen} />
     </Tab.Navigator>
+    </SafeAreaView>
   );
 }

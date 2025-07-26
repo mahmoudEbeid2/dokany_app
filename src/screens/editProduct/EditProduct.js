@@ -4,6 +4,8 @@ import {
   Image, ScrollView, Alert, KeyboardAvoidingView, ActivityIndicator,
   FlatList,
   StatusBar,
+  Dimensions,
+  Platform,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Picker } from "@react-native-picker/picker";
@@ -34,6 +36,17 @@ const EditProduct = ({ navigation , route}) => {
   const [stock, setStock] = useState("");
   const [status, setStatus] = useState("");
   const [images, setImages] = useState([]);
+  const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
+
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener('change', ({ window }) => {
+      setScreenHeight(window.height);
+    });
+
+    return () => {
+      subscription?.remove();
+    };
+  }, []);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -159,10 +172,18 @@ const EditProduct = ({ navigation , route}) => {
 };
 
   return (
-      <SafeAreaView style={{ flex: 1 }}>
-
-    <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={20}>
-      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar barStyle="dark-content" backgroundColor={theme.colors.background} />
+      <KeyboardAvoidingView 
+        style={styles.keyboardAvoidingView}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+      >
+        <ScrollView 
+          contentContainerStyle={styles.container} 
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
         <TouchableOpacity
         onPress={() => navigation.goBack()}
         style={styles.backButton}
@@ -171,7 +192,6 @@ const EditProduct = ({ navigation , route}) => {
       </TouchableOpacity>
 
         <Text style={styles.title}>Edit Product</Text>
-<StatusBar barStyle="dark-content" backgroundColor="#fff" />
         <TouchableOpacity style={styles.imageUploadBox} onPress={pickImages}>
            <Text style={styles.title2}>Update a product image</Text>
                   <Text style={styles.imageUploadText}>Upload a photo of your product</Text>
@@ -250,32 +270,36 @@ const EditProduct = ({ navigation , route}) => {
 
         {saving ? (
             <View style={styles.saveBtn}>
-          <ActivityIndicator size="large" color="#fff" />
+          <ActivityIndicator size="large" color={theme.colors.card} />
         </View>
         ):(
             <TouchableOpacity style={styles.saveBtn} onPress={handleUpdate} disabled={saving}>
           <Text style={styles.saveBtnText}>{saving ? "Updating..." : "Update Product"}</Text>
         </TouchableOpacity>)}
-      </ScrollView>
-    </KeyboardAvoidingView>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
+  keyboardAvoidingView: {
+    flex: 1,
+  },
   container: {
     padding: 20,
     paddingBottom: 50,
-    backgroundColor: theme.colors.card,
+    backgroundColor: theme.colors.background,
+    minHeight: Dimensions.get('window').height - 100,
   },
   title: {
-    fontSize: theme.fonts.size.xl,
-    fontWeight: 'bold',
+    ...theme.header.title,
     marginBottom: 20,
     marginTop: 10,
-    color: theme.colors.text,
-    textAlign: 'center',
-    fontFamily: theme.fonts.bold,
   },
   title2: {
     fontSize: theme.fonts.size.lg,
@@ -284,7 +308,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     color: theme.colors.text,
     textAlign: 'center',
-    fontFamily: theme.fonts.bold,
   },
   imageUploadBox: {
     borderWidth: 1,
@@ -294,22 +317,31 @@ const styles = StyleSheet.create({
     padding: 20,
     alignItems: 'center',
     marginBottom: 15,
-    backgroundColor: theme.colors.background,
-    ...theme.shadow,
+    backgroundColor: theme.colors.card,
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
   },
   imageUploadText: {
     color: theme.colors.textSecondary,
     fontSize: theme.fonts.size.sm,
   },
   imageUploadBtn: {
-    backgroundColor: theme.colors.background,
+    backgroundColor: theme.colors.primary,
     padding: 15,
     borderRadius: theme.radius.md,
     alignItems: 'center',
     marginTop: 15,
     fontSize: theme.fonts.size.md,
     fontWeight: 'bold',
-    ...theme.shadow,
+    color: theme.colors.card,
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
   },
   imagePreviewContainer: {
     flexDirection: 'row',
@@ -328,7 +360,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 4,
     color: theme.colors.text,
-    fontFamily: theme.fonts.bold,
   },
   input: {
     borderWidth: 1,
@@ -341,8 +372,11 @@ const styles = StyleSheet.create({
     width: '100%',
     color: theme.colors.textSecondary,
     fontSize: theme.fonts.size.md,
-    fontFamily: theme.fonts.regular,
-    ...theme.shadow,
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
   },
   saveBtn: {
     backgroundColor: theme.colors.primary,
@@ -350,13 +384,16 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius.lg,
     alignItems: 'center',
     marginTop: 16,
-    ...theme.shadow,
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
   },
   saveBtnText: {
     color: theme.colors.card,
     fontSize: theme.fonts.size.md,
     fontWeight: 'bold',
-    fontFamily: theme.fonts.bold,
   },
   pickerWrapper: {
     borderWidth: 1,
@@ -364,7 +401,11 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius.sm,
     marginBottom: 15,
     backgroundColor: theme.colors.card,
-    ...theme.shadow,
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
   },
   picker: {
     height: 60,

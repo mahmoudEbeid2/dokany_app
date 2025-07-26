@@ -124,6 +124,10 @@ export default function ProductScreen() {
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={theme.colors.primary} />
         </View>
+      ) : paginatedData.length === 0 ? (
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>No products found</Text>
+        </View>
       ) : (
         <>
           <FlatList
@@ -164,7 +168,12 @@ export default function ProductScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 8, backgroundColor: theme.colors.background },
+  container: { 
+    flex: 1, 
+    padding: 8, 
+    paddingHorizontal: 15,
+    backgroundColor: theme.colors.background 
+  },
   searchWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -203,22 +212,23 @@ const styles = StyleSheet.create({
     color: theme.colors.text,
   },
   fab: {
-    position: 'absolute',
-    bottom: 60,
-    right: 20,
-    backgroundColor: theme.colors.primary,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    ...theme.shadow,
-    zIndex: 10,
+    ...theme.fab,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: theme.colors.background,
-  }
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 20,
+  },
+  emptyText: {
+    fontSize: theme.fonts.size.lg,
+    color: theme.colors.textSecondary,
+    fontWeight: '500',
+  },
 });

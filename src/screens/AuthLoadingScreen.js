@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
-import { View, ActivityIndicator, StyleSheet } from "react-native";
+import { View, ActivityIndicator, StyleSheet, SafeAreaView, StatusBar } from "react-native";
+import theme from '../utils/theme';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function AuthLoadingScreen({ navigation }) {
@@ -30,16 +31,26 @@ export default function AuthLoadingScreen({ navigation }) {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <ActivityIndicator size="large" color="#7569FA" />
-    </View>
+    <>
+      <StatusBar barStyle="dark-content" backgroundColor={theme.colors.background} />
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.container}>
+          <ActivityIndicator size="large" color={theme.colors.primary} />
+        </View>
+      </SafeAreaView>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
   container: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: theme.colors.background,
   },
 });

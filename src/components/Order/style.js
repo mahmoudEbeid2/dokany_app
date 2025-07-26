@@ -15,7 +15,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     color: theme.colors.text,
     marginTop: 10,
-    fontFamily: theme.fonts.bold,
   },
   pikerContinuer: {
     borderWidth: 1,
@@ -25,7 +24,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 20,
     width: '100%',
-    ...theme.shadow,
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
   },
 });
 
@@ -34,13 +37,11 @@ const pickerSelectStyles = {
     fontSize: theme.fonts.size.lg,
     paddingVertical: 5,
     color: theme.colors.text,
-    fontFamily: theme.fonts.regular,
   },
   inputAndroid: {
     fontSize: theme.fonts.size.lg,
     paddingVertical: 5,
     color: theme.colors.text,
-    fontFamily: theme.fonts.regular,
   },
   placeholder: {
     color: theme.colors.textSecondary,

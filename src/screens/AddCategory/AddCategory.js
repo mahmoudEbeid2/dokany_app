@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,9 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Alert,
+  Dimensions,
+  Platform,
+  StatusBar,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -20,11 +23,20 @@ import theme from '../../utils/theme';
 
 
 const AddCategory =  ({ navigation }) => {
-
-
   const [name, setName] = useState('');
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
+
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener('change', ({ window }) => {
+      setScreenHeight(window.height);
+    });
+
+    return () => {
+      subscription?.remove();
+    };
+  }, []);
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -75,9 +87,7 @@ const AddCategory =  ({ navigation }) => {
         Alert.alert('success','category added successfully',[
             {text:'ok',
             onPress:()=>{
-                // navigation.goBack();
-                setImage(null);
-                setName('');
+                navigation.goBack();
             }}
         ]);
         // navigation.goBack();
@@ -93,18 +103,28 @@ const AddCategory =  ({ navigation }) => {
   };
 
   return (
-      <SafeAreaView style={{ flex: 1 }}>
-        
-
-        <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={20}>
-          <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-            <TouchableOpacity
-        onPress={() => navigation.goBack()}
-        style={styles.backButton}
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar barStyle="dark-content" backgroundColor={theme.colors.background} />
+      <KeyboardAvoidingView 
+        style={styles.keyboardAvoidingView}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
       >
-        <AntDesign name="arrowleft" size={24} color={theme.colors.text} />
-      </TouchableOpacity>
-      <Text style={styles.title}>Add Category</Text>
+        <ScrollView 
+          contentContainerStyle={styles.container} 
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+            <View style={styles.headerContainer}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={theme.header.backButton}
+        >
+          <AntDesign name="arrowleft" size={22} color={theme.colors.primary} />
+        </TouchableOpacity>
+        <Text style={styles.title}>Add Category</Text>
+        <View style={{ width: 40 }} />
+      </View>
 
 
 
@@ -158,19 +178,35 @@ export default AddCategory;
 
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
+  keyboardAvoidingView: {
+    flex: 1,
+  },
   container: {
     padding: 20,
     paddingBottom: 50,
-    backgroundColor: theme.colors.card,
+    backgroundColor: theme.colors.background,
+    minHeight: Dimensions.get('window').height - 100,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 30,
+    marginBottom: 10,
+    width: '100%',
+    paddingHorizontal: 0,
   },
   title: {
-    fontSize: theme.fonts.size.xl,
-    fontWeight: 'bold',
-    marginBottom: 20,
+    ...theme.header.title,
+    marginTop: 0,
+    marginBottom: 0,
+    alignSelf: 'center',
+    flex: 1,
     textAlign: 'center',
-    color: theme.colors.text,
-    marginTop: 10,
-    fontFamily: theme.fonts.bold,
   },
   title2: {
     fontSize: theme.fonts.size.lg,
@@ -179,7 +215,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     color: theme.colors.text,
     textAlign: 'center',
-    fontFamily: theme.fonts.bold,
   },
   imageUploadBox: {
     borderWidth: 1,
@@ -189,28 +224,36 @@ const styles = StyleSheet.create({
     padding: 20,
     alignItems: 'center',
     marginBottom: 15,
-    backgroundColor: theme.colors.background,
-    ...theme.shadow,
+    backgroundColor: theme.colors.card,
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
   },
   imageUploadText: {
     color: theme.colors.textSecondary,
     fontSize: theme.fonts.size.md,
   },
   imageUploadBtn: {
-    backgroundColor: theme.colors.background,
+    backgroundColor: theme.colors.primary,
     padding: 15,
     borderRadius: theme.radius.md,
     alignItems: 'center',
     marginTop: 15,
     fontSize: theme.fonts.size.md,
     fontWeight: 'bold',
-    ...theme.shadow,
+    color: theme.colors.card,
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
   },
   label: {
     fontWeight: 'bold',
     marginBottom: 4,
     color: theme.colors.text,
-    fontFamily: theme.fonts.bold,
   },
   input: {
     borderWidth: 1,
@@ -223,8 +266,11 @@ const styles = StyleSheet.create({
     width: '100%',
     color: theme.colors.textSecondary,
     fontSize: theme.fonts.size.md,
-    fontFamily: theme.fonts.regular,
-    ...theme.shadow,
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
   },
   saveBtn: {
     backgroundColor: theme.colors.primary,

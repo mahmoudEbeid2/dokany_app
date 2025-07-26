@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ScrollView,
   View,
@@ -9,6 +9,10 @@ import {
   StatusBar,
   Image,
   TouchableOpacity,
+  Dimensions,
+  KeyboardAvoidingView,
+  Platform,
+  Alert,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons, MaterialIcons, FontAwesome, AntDesign } from '@expo/vector-icons';
@@ -40,6 +44,17 @@ export default function RegisterScreen({ navigation }) {
   const [logo, setLogo] = useState(null);
   const [profileImage, setProfileImage] = useState(null);
   const [selectedTheme, setSelectedTheme] = useState(null);
+  const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
+
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener('change', ({ window }) => {
+      setScreenHeight(window.height);
+    });
+
+    return () => {
+      subscription?.remove();
+    };
+  }, []);
 
   const handleChange = (field, value) => {
     const trimmedValue = value.trimStart();
@@ -260,7 +275,7 @@ export default function RegisterScreen({ navigation }) {
           'Content-Type': 'multipart/form-data',
         },
       });
-      alert('Registration successful');
+      Alert.alert('Success', 'Registration successful! Please login with your new account.');
       navigation.navigate('Login');
     } catch (err) {
       console.log(err?.response?.data);
@@ -282,7 +297,7 @@ export default function RegisterScreen({ navigation }) {
 
 
       // ممكن تشيل alert خالص لو مش عاوزها
-      alert(err?.response?.data?.error || 'Registration failed');
+      Alert.alert('Error', err?.response?.data?.error || 'Registration failed. Please try again.');
     }
 
 
@@ -290,9 +305,18 @@ export default function RegisterScreen({ navigation }) {
 
   return (
     <>
-      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-      <SafeAreaView style={{ flex: 1 }}>
-        <ScrollView contentContainerStyle={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor={theme.colors.background} />
+      <SafeAreaView style={styles.safeArea}>
+        <KeyboardAvoidingView 
+          style={styles.keyboardAvoidingView}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+        >
+          <ScrollView 
+            contentContainerStyle={styles.container}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+          >
           <View style={styles.logoCircleModern}>
             <AntDesign name="user" size={48} color={theme.colors.primary} />
           </View>
@@ -343,17 +367,27 @@ export default function RegisterScreen({ navigation }) {
               Already have an account? <Text style={{ fontWeight: 'bold', textDecorationLine: 'underline' }}>Login</Text>
             </Text>
           </TouchableOpacity>
-        </ScrollView>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     </>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
+  keyboardAvoidingView: {
+    flex: 1,
+  },
   container: {
-    paddingHorizontal: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 20,
     paddingBottom: 50,
     backgroundColor: theme.colors.background,
+    minHeight: Dimensions.get('window').height - 100,
   },
   navigationContainer: {
     flexDirection: 'row',
@@ -385,7 +419,6 @@ const styles = StyleSheet.create({
     color: theme.colors.text,
     fontWeight: 'bold',
     marginBottom: 10,
-    fontFamily: theme.fonts.bold,
   },
   inputContainer: {
     flexDirection: 'row',
@@ -397,7 +430,11 @@ const styles = StyleSheet.create({
     marginBottom: 14,
     paddingVertical: 8,
     backgroundColor: theme.colors.card,
-    ...theme.shadow,
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
   },
   icon: {
     marginRight: 5,
@@ -407,7 +444,6 @@ const styles = StyleSheet.create({
     flex: 1,
     color: theme.colors.textSecondary,
     fontSize: theme.fonts.size.sm,
-    fontFamily: theme.fonts.regular,
     paddingTop: 10,
   },
   uploadContainer: {
@@ -427,7 +463,6 @@ const styles = StyleSheet.create({
     fontSize: theme.fonts.size.md,
     color: theme.colors.text,
     fontWeight: 'bold',
-    fontFamily: theme.fonts.bold,
   },
   uploadDescription: {
     color: theme.colors.textSecondary,
@@ -441,7 +476,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     color: theme.colors.textSecondary,
     fontSize: theme.fonts.size.sm,
-    ...theme.shadow,
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
   },
   registerButton: {
     backgroundColor: theme.colors.primary,
@@ -449,13 +488,16 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     alignItems: 'center',
     marginTop: 18,
-    ...theme.strongShadow,
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.25,
+    shadowRadius: 16,
+    elevation: 8,
   },
   buttonText: {
     color: theme.colors.card,
     fontSize: theme.fonts.size.md,
     fontWeight: 'bold',
-    fontFamily: theme.fonts.bold,
   },
   errorText: {
     color: 'red',

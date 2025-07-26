@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, TextInput, Text, TouchableOpacity, StyleSheet, StatusBar, SafeAreaView, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, TextInput, Text, TouchableOpacity, StyleSheet, StatusBar, SafeAreaView, ScrollView, Dimensions, KeyboardAvoidingView, Platform } from 'react-native';
 import { authAPI } from '../utils/api/api';
 import { AntDesign } from '@expo/vector-icons';
 import theme from '../utils/theme';
@@ -8,6 +8,17 @@ export default function ResetPasswordScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
+  const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
+
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener('change', ({ window }) => {
+      setScreenHeight(window.height);
+    });
+
+    return () => {
+      subscription?.remove();
+    };
+  }, []);
 
   const validateEmail = (email) => {
     const regex = /^\S+@\S+\.\S+$/;
@@ -38,9 +49,18 @@ export default function ResetPasswordScreen({ navigation }) {
 
   return (
     <>
-      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-      <SafeAreaView style={{ flex: 1 }}>
-        <ScrollView contentContainerStyle={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor={theme.colors.background} />
+      <SafeAreaView style={styles.safeArea}>
+        <KeyboardAvoidingView 
+          style={styles.keyboardAvoidingView}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+        >
+          <ScrollView 
+            contentContainerStyle={styles.container}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+          >
           <View
             style={styles.navigationContainer}
           >
@@ -79,18 +99,27 @@ export default function ResetPasswordScreen({ navigation }) {
                 <Text style={styles.buttonText}>Send Reset Link</Text>
               </TouchableOpacity>
             </View>
-        </ScrollView>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     </>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
+  keyboardAvoidingView: {
+    flex: 1,
+  },
   container: {
     paddingVertical: 20,
-    paddingHorizontal: 10,
+    paddingHorizontal: 16,
     backgroundColor: theme.colors.background,
     flex: 1,
+    minHeight: Dimensions.get('window').height - 100,
   },
   navigationContainer: {
     flexDirection: 'row',
@@ -105,7 +134,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     flex: 1,
     textAlign: 'center',
-    fontFamily: theme.fonts.bold,
   },
   contentContainer: {
     flex: 1,
@@ -120,7 +148,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     textAlign: 'center',
     color: theme.colors.text,
-    fontFamily: theme.fonts.bold,
   },
   inputContainer: {
     width: '100%',
@@ -130,12 +157,15 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 10,
     backgroundColor: theme.colors.card,
-    ...theme.shadow,
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
   },
   input: {
     color: theme.colors.textSecondary,
     fontSize: theme.fonts.size.sm,
-    fontFamily: theme.fonts.regular,
   },
   inputError: {
     borderColor: theme.colors.error,
@@ -152,12 +182,15 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius.lg,
     alignItems: 'center',
     marginTop: 16,
-    ...theme.shadow,
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
   },
   buttonText: {
     color: theme.colors.card,
     fontSize: theme.fonts.size.md,
     fontWeight: 'bold',
-    fontFamily: theme.fonts.bold,
   },
 });

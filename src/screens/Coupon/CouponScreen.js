@@ -7,7 +7,10 @@ import {
   Text,
   Alert,
   ActivityIndicator,
+  Dimensions,
+  StyleSheet,
 } from "react-native";
+import theme from '../../utils/theme';
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback } from "react";
 import AddCoupon from "../../components/Coupon/AddCoupon";
@@ -19,6 +22,17 @@ function CouponScreen() {
   const [coupon, setCoupon] = useState([]);
   const [selectedCoupon, setSelectedCoupon] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
+
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener('change', ({ window }) => {
+      setScreenHeight(window.height);
+    });
+
+    return () => {
+      subscription?.remove();
+    };
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
@@ -104,23 +118,20 @@ function CouponScreen() {
 
   return (
     <>
-      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-      <SafeAreaView style={{ flex: 1, backgroundColor: "#FAFAFA" }}>
-        <ScrollView>
-          <Text
-            style={{
-              fontSize: 24,
-              fontWeight: "bold",
-              textAlign: "center",
-              marginBottom: 20,
-              marginTop: 10,
-            }}
-          >
-            Coupon
-          </Text>
+      <StatusBar barStyle="dark-content" backgroundColor={theme.colors.background} />
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.header}>
+          <View style={styles.placeholder} />
+          <Text style={styles.title}>Coupon</Text>
+          <View style={styles.placeholder} />
+        </View>
+        <ScrollView 
+          contentContainerStyle={styles.container}
+          showsVerticalScrollIndicator={false}
+        >
 
           {loading ? (
-            <ActivityIndicator size="large" color="#6c63ff" />
+            <ActivityIndicator size="large" color={theme.colors.primary} />
           ) : (
             <>
               {selectedCoupon ? (
@@ -148,5 +159,27 @@ function CouponScreen() {
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
+  container: {
+    padding: 20,
+    paddingBottom: 50,
+    backgroundColor: theme.colors.background,
+    minHeight: Dimensions.get('window').height - 100,
+  },
+  header: {
+    ...theme.header.container,
+  },
+  title: {
+    ...theme.header.title,
+  },
+  placeholder: {
+    ...theme.header.placeholder,
+  },
+});
 
 export default CouponScreen;

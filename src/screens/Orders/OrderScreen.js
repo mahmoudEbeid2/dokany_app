@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { View, Text, StatusBar, SafeAreaView, TouchableOpacity } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, StatusBar, SafeAreaView, TouchableOpacity, Dimensions, StyleSheet } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
-import { styles, pickerSelectStyles } from "../../components/Order/style";
+import { styles as orderStyles, pickerSelectStyles } from "../../components/Order/style";
 import AllOrder from "../../components/Order/AllOrder";
 import OrderByStatus from "../../components/Order/OrderByStatus";
 import theme from '../../utils/theme';
@@ -11,16 +11,31 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 export default function OrdersScreen() {
   const navigation = useNavigation();
   const [selectedValue, setSelectedValue] = useState("all");
+  const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
+
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener('change', ({ window }) => {
+      setScreenHeight(window.height);
+    });
+
+    return () => {
+      subscription?.remove();
+    };
+  }, []);
 
   return (
     <>
-      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-      <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.card }}>
+      <StatusBar barStyle="dark-content" backgroundColor={theme.colors.background} />
+      <SafeAreaView style={styles.safeArea}>
         <View style={styles.headerBar}>
         </View>
-        <View style={styles.container}>
-          <Text style={styles.title}>Orders</Text>
-          <View style={styles.pikerContinuer}>
+        <View style={orderStyles.container}>
+          <View style={styles.header}>
+            <View style={styles.placeholder} />
+            <Text style={styles.title}>Orders</Text>
+            <View style={styles.placeholder} />
+          </View>
+          <View style={orderStyles.pikerContinuer}>
             <RNPickerSelect
               value={selectedValue}
               onValueChange={(value) => setSelectedValue(value)}
@@ -47,3 +62,19 @@ export default function OrdersScreen() {
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
+  header: {
+    ...theme.header.container,
+  },
+  title: {
+    ...theme.header.title,
+  },
+  placeholder: {
+    ...theme.header.placeholder,
+  },
+});

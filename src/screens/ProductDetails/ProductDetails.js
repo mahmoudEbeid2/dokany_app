@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Alert,
   ActivityIndicator,
+  Dimensions,
 } from "react-native";
 import { useFocusEffect } from '@react-navigation/native';
 
@@ -28,6 +29,17 @@ const ProductDetails = ({ navigation, route}) => {
   const [product, setProduct] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
+
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener('change', ({ window }) => {
+      setScreenHeight(window.height);
+    });
+
+    return () => {
+      subscription?.remove();
+    };
+  }, []);
 
   //   const { product } = route.params;
   const productId = route.params.productId;
@@ -140,19 +152,23 @@ const handleDeleteReview = async (reviewId) => {
   }
 }
 
-  if (loading) return <ActivityIndicator style={{ flex: 1 }} size="large" color="#7B5CFA" />;
+  if (loading) return <ActivityIndicator style={{ flex: 1 }} size="large" color={theme.colors.primary} />;
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar barStyle="dark-content" backgroundColor={theme.colors.background} />
       <LinearGradient colors={[theme.colors.background, '#e8eaf6']} style={styles.gradientBg}>
         <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={styles.backButtonModern}
-          >
-            <AntDesign name="arrowleft" size={20} color={'#fff'} />
-          </TouchableOpacity>
+          <View style={styles.headerContainer}>
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={theme.header.backButton}
+            >
+              <AntDesign name="arrowleft" size={22} color={theme.colors.primary} />
+            </TouchableOpacity>
+            <Text style={styles.title}>Product Details</Text>
+            <View style={{ width: 40 }} />
+          </View>
           
           <View style={styles.imageContainer}>
             <Image
@@ -292,9 +308,14 @@ const handleDeleteReview = async (reviewId) => {
 export default ProductDetails;
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
   container: {
     paddingBottom: 16,
-    backgroundColor: theme.colors.card,
+    backgroundColor: theme.colors.background,
+    minHeight: Dimensions.get('window').height - 100,
   },
   image: {
     width: 420,
@@ -314,13 +335,11 @@ const styles = StyleSheet.create({
     fontSize: theme.fonts.size.xl,
     fontWeight: 'bold',
     color: theme.colors.text,
-    fontFamily: theme.fonts.bold,
   },
   price: {
     fontSize: theme.fonts.size.md,
     marginVertical: 8,
     color: theme.colors.primary,
-    fontFamily: theme.fonts.bold,
   },
   category: {
     fontSize: theme.fonts.size.md,
@@ -360,32 +379,38 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.primary,
   },
   editButton: {
-    backgroundColor: theme.colors.background,
-    padding: 10,
-    borderRadius: theme.radius.md,
-    marginTop: 10,
-    ...theme.shadow,
-  },
-  deleteButton: {
     backgroundColor: theme.colors.primary,
     padding: 10,
     borderRadius: theme.radius.md,
     marginTop: 10,
-    ...theme.shadow,
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
+  },
+  deleteButton: {
+    backgroundColor: theme.colors.error,
+    padding: 10,
+    borderRadius: theme.radius.md,
+    marginTop: 10,
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
   },
   buttonText: {
-    color: theme.colors.text,
+    color: theme.colors.card,
     fontSize: theme.fonts.size.md,
     textAlign: 'center',
     fontWeight: 'bold',
-    fontFamily: theme.fonts.bold,
   },
   buttonTextd: {
     color: theme.colors.card,
     fontSize: theme.fonts.size.md,
     textAlign: 'center',
     fontWeight: 'bold',
-    fontFamily: theme.fonts.bold,
   },
   reviews: {
     marginTop: 20,
@@ -506,5 +531,24 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.13,
     shadowRadius: 8,
     elevation: 6,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingLeft: 15,
+    paddingTop: 20,
+    paddingBottom: 10,
+    backgroundColor: theme.colors.background,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.border,
+  },
+  title: {
+    fontSize: theme.fonts.size.lg,
+    fontWeight: 'bold',
+    color: theme.colors.primary,
+    flex: 1,
+    textAlign: 'center',
   },
 });

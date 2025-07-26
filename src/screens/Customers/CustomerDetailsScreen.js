@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Text,
   View,
@@ -7,6 +7,8 @@ import {
   Alert,
   ScrollView,
   StyleSheet,
+  Dimensions,
+  StatusBar,
 } from "react-native";
 import { sellerAPI } from "../../utils/api/api";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -17,6 +19,17 @@ import { MaterialIcons } from '@expo/vector-icons';
 
 const CustomerDetailsScreen = ({ route, navigation }) => {
   const { customer } = route.params;
+  const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
+
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener('change', ({ window }) => {
+      setScreenHeight(window.height);
+    });
+
+    return () => {
+      subscription?.remove();
+    };
+  }, []);
 
   const handleDelete = () => {
     Alert.alert(
@@ -31,7 +44,7 @@ const CustomerDetailsScreen = ({ route, navigation }) => {
             try {
               await sellerAPI.delete(`/api/seller/customers/${customer.id}`);
               Alert.alert("Success", "Customer deleted successfully.");
-              navigation.goBack();
+              navigation.navigate('MainTabs', { screen: 'Customers' });
             } catch (error) {
               console.error(
                 "Failed to delete customer:",
@@ -50,7 +63,8 @@ const CustomerDetailsScreen = ({ route, navigation }) => {
 
   if (!customer) {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.safeArea}>
+        <StatusBar barStyle="dark-content" backgroundColor={theme.colors.background} />
         <Text style={styles.headerTitle}>Customer not found.</Text>
       </SafeAreaView>
     );
@@ -61,16 +75,23 @@ const CustomerDetailsScreen = ({ route, navigation }) => {
     : require("../../../assets/CustomerImage.png");
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar barStyle="dark-content" backgroundColor={theme.colors.background} />
       <LinearGradient colors={[theme.colors.background, '#e8eaf6']} style={styles.gradientBg}>
         <View style={styles.headerContainer}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <AntDesign name="arrowleft" size={24} color={theme.colors.text} />
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={theme.header.backButton}
+          >
+            <AntDesign name="arrowleft" size={22} color={theme.colors.primary} />
           </TouchableOpacity>
           <Text style={styles.title}>Customer Details</Text>
-          <View style={{ width: 24 }} />
+          <View style={{ width: 40 }} />
         </View>
-        <ScrollView contentContainerStyle={{ alignItems: 'center', paddingBottom: 32 }} showsVerticalScrollIndicator={false}>
+        <ScrollView 
+          contentContainerStyle={styles.container} 
+          showsVerticalScrollIndicator={true}
+        >
           <View style={styles.avatarWrapper}>
             <Image source={imageSource} style={styles.detailsAvatar} />
           </View>
@@ -133,22 +154,33 @@ const CustomerDetailsScreen = ({ route, navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
     backgroundColor: theme.colors.background,
+  },
+  container: {
+    alignItems: 'center', 
+    paddingBottom: 100,
+    backgroundColor: 'transparent',
+    minHeight: Dimensions.get('window').height - 100,
   },
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 10,
-    paddingHorizontal: 10,
+    marginTop: 30,
+    marginBottom: 10,
+    width: '100%',
+    paddingHorizontal: 0,
+    paddingLeft: 15,
   },
   title: {
-    fontSize: theme.fonts.size.xl,
-    fontWeight: 'bold',
-    color: theme.colors.text,
-    fontFamily: theme.fonts.bold,
+    ...theme.header.title,
+    marginTop: 0,
+    marginBottom: 0,
+    alignSelf: 'center',
+    flex: 1,
+    textAlign: 'center',
   },
   headerTitle: {
     fontSize: theme.fonts.size.xxl,
@@ -156,14 +188,23 @@ const styles = StyleSheet.create({
     color: theme.colors.primary,
     textAlign: 'center',
     marginTop: 40,
-    fontFamily: theme.fonts.bold,
   },
   detailsContainer: {
     flex: 1,
     backgroundColor: theme.colors.background,
     padding: 0,
   },
-  avatarWrapper: { marginTop: 24, marginBottom: 12, alignItems: 'center', justifyContent: 'center', ...theme.shadow },
+  avatarWrapper: { 
+    marginTop: 24, 
+    marginBottom: 12, 
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
+  },
   detailsAvatar: {
     alignSelf: 'center',
     width: 140,
@@ -172,15 +213,49 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderColor: theme.colors.primary,
     backgroundColor: theme.colors.card,
-    ...theme.shadow,
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
   },
   detailsContent: {
     padding: 10,
     alignItems: 'center',
   },
-  detailsName: { fontSize: theme.fonts.size.xxl, fontWeight: 'bold', color: theme.colors.text, marginBottom: 2, marginTop: 10, fontFamily: theme.fonts.bold, textAlign: 'center', letterSpacing: 0.5 },
-  detailsEmail: { fontSize: theme.fonts.size.md, color: theme.colors.textSecondary, marginTop: 2, fontWeight: 'bold', textAlign: 'center', marginBottom: 8 },
-  infoCard: { backgroundColor: theme.colors.card, borderRadius: theme.radius.md, paddingVertical: 14, paddingHorizontal: 16, marginVertical: 8, width: '92%', alignSelf: 'center', borderWidth: 1, borderColor: theme.colors.border, ...theme.shadow },
+  detailsName: { 
+    fontSize: theme.fonts.size.xxl, 
+    fontWeight: 'bold', 
+    color: theme.colors.text, 
+    marginBottom: 2, 
+    marginTop: 10, 
+    textAlign: 'center', 
+    letterSpacing: 0.5 
+  },
+  detailsEmail: { 
+    fontSize: theme.fonts.size.md, 
+    color: theme.colors.textSecondary, 
+    marginTop: 2, 
+    fontWeight: 'bold', 
+    textAlign: 'center', 
+    marginBottom: 8 
+  },
+  infoCard: { 
+    backgroundColor: theme.colors.card, 
+    borderRadius: theme.radius.md, 
+    paddingVertical: 14, 
+    paddingHorizontal: 16, 
+    marginVertical: 8, 
+    width: '92%', 
+    alignSelf: 'center', 
+    borderWidth: 1, 
+    borderColor: theme.colors.border, 
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
+  },
   infoRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -191,7 +266,6 @@ const styles = StyleSheet.create({
     fontSize: theme.fonts.size.md,
     color: theme.colors.textSecondary,
     fontWeight: 'bold',
-    fontFamily: theme.fonts.bold,
     flex: 1,
     marginLeft: 6,
   },
@@ -199,25 +273,74 @@ const styles = StyleSheet.create({
     fontSize: theme.fonts.size.md,
     color: theme.colors.primary,
     fontWeight: 'bold',
-    fontFamily: theme.fonts.bold,
     alignSelf: 'flex-end',
     marginLeft: 12,
   },
-  detailsFooter: { flexDirection: 'row', borderTopWidth: 1, borderTopColor: theme.colors.border, backgroundColor: theme.colors.background, paddingVertical: 14, paddingHorizontal: 10, position: 'absolute', bottom: 0, left: 0, right: 0, ...theme.shadow, zIndex: 10 },
-  editButton: { flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.primary, borderRadius: 30, paddingVertical: 14, marginHorizontal: 8, ...theme.shadow },
+  detailsFooter: { 
+    flexDirection: 'row', 
+    borderTopWidth: 1, 
+    borderTopColor: theme.colors.border, 
+    backgroundColor: theme.colors.background, 
+    paddingVertical: 14, 
+    paddingHorizontal: 10, 
+    position: 'absolute', 
+    bottom: 0, 
+    left: 0, 
+    right: 0, 
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
+    zIndex: 10 
+  },
+  editButton: { 
+    flex: 1, 
+    flexDirection: 'row', 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    backgroundColor: theme.colors.primary, 
+    borderRadius: 30, 
+    paddingVertical: 14, 
+    marginHorizontal: 8, 
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
+  },
   editButtonText: {
     color: theme.colors.card,
     fontSize: theme.fonts.size.md,
     fontWeight: 'bold',
-    fontFamily: theme.fonts.bold,
   },
-  deleteButton: { flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.error, borderRadius: 30, paddingVertical: 14, marginHorizontal: 8, ...theme.shadow },
+  deleteButton: { 
+    flex: 1, 
+    flexDirection: 'row', 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    backgroundColor: theme.colors.error, 
+    borderRadius: 30, 
+    paddingVertical: 14, 
+    marginHorizontal: 8, 
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
+  },
   buttonText: {
     color: '#FFF',
     fontSize: 16,
     fontWeight: 'bold',
   },
-  divider: { height: 1, backgroundColor: theme.colors.border, width: '80%', alignSelf: 'center', marginVertical: 2 },
+  divider: { 
+    height: 1, 
+    backgroundColor: theme.colors.border, 
+    width: '80%', 
+    alignSelf: 'center', 
+    marginVertical: 2 
+  },
   gradientBg: { flex: 1 },
 });
 

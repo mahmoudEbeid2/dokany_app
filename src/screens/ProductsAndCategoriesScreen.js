@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { AntDesign } from '@expo/vector-icons'; // ✅ استيراد أيقونة السهم
 import { useNavigation } from '@react-navigation/native';
 import ProductsScreen from '../components/ProductScreen';
@@ -8,12 +8,22 @@ import theme from '../utils/theme';
 
 export default function ProductsAndCategoriesScreen() {
   const [activeTab, setActiveTab] = useState('products');
-  const navigation = useNavigation(); 
+  const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener('change', ({ window }) => {
+      setScreenHeight(window.height);
+    });
+
+    return () => {
+      subscription?.remove();
+    };
+  }, []); 
 
   return (
     <View style={styles.container}>
       <View style={styles.headerBar}>
-        {/* لا تعرض زر العودة هنا */}
         <Text style={styles.headerTitle}>Products & Categories</Text>
       </View>
 
@@ -45,7 +55,11 @@ export default function ProductsAndCategoriesScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: theme.colors.background },
+  container: { 
+    flex: 1, 
+    backgroundColor: theme.colors.background,
+    paddingTop: 20,
+  },
   tabContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -66,17 +80,32 @@ const styles = StyleSheet.create({
     color: theme.colors.textSecondary,
     fontSize: theme.fonts.size.md,
     fontWeight: 'bold',
-    fontFamily: theme.fonts.bold,
   },
   activeText: {
     color: theme.colors.card,
     fontWeight: 'bold',
-    fontFamily: theme.fonts.bold,
   },
   content: {
     flex: 1,
   },
-  backButton: { padding: 4, marginRight: 8, position: 'absolute', left: 8, zIndex: 2, backgroundColor: theme.colors.card, borderRadius: 20, ...theme.shadow },
-  headerBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: 'transparent', paddingVertical: 12, marginBottom: 18, marginTop: 8, justifyContent: 'center' },
-  headerTitle: { fontSize: theme.fonts.size.lg, color: theme.colors.text, fontWeight: 'bold', fontFamily: theme.fonts.bold, textAlign: 'center' },
+  backButton: { 
+    padding: 4, 
+    marginRight: 8, 
+    position: 'absolute', 
+    left: 8, 
+    zIndex: 2, 
+    backgroundColor: theme.colors.card, 
+    borderRadius: 20, 
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
+  },
+  headerBar: { 
+    ...theme.header.container,
+  },
+  headerTitle: { 
+    ...theme.header.title,
+  },
 });

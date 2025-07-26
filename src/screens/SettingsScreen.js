@@ -11,8 +11,9 @@ import {
   FlatList,
   SafeAreaView,
   StatusBar,
-  Platform, ToastAndroid,
-
+  Platform, 
+  ToastAndroid,
+  Dimensions,
 } from 'react-native';
 
 import { Ionicons, FontAwesome, MaterialIcons } from '@expo/vector-icons';
@@ -44,6 +45,7 @@ const settings = [
 export default function SettingsScreen({ navigation }) {
   const [seller, setSeller] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
 
   const fetchSeller = async () => {
     try {
@@ -72,26 +74,41 @@ export default function SettingsScreen({ navigation }) {
 
   useEffect(() => {
     fetchSeller();
+    
+    const subscription = Dimensions.addEventListener('change', ({ window }) => {
+      setScreenHeight(window.height);
+    });
+
+    return () => {
+      subscription?.remove();
+    };
   }, []);
 
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#7569FA" />
+        <ActivityIndicator size="large" color={theme.colors.primary} />
       </View>
     );
   }
   return (
     <>
       <StatusBar barStyle="dark-content" backgroundColor={theme.colors.background} />
-      <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
-        <ScrollView contentContainerStyle={styles.container}>
+      <SafeAreaView style={styles.safeArea}>
+        <ScrollView 
+          contentContainerStyle={styles.container}
+          showsVerticalScrollIndicator={false}
+        >
           {/* هيدر علوي ثابت: */}
           <View style={styles.headerBar}>
-            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={theme.header.backButton}
+            >
               <AntDesign name="arrowleft" size={22} color={theme.colors.primary} />
             </TouchableOpacity>
             <Text style={styles.headerTitle}>Settings</Text>
+            <View style={{ width: 40 }} />
           </View>
           {/* صورة البروفايل: */}
           <View style={styles.profileSection}>
@@ -140,11 +157,16 @@ export default function SettingsScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
   container: {
     paddingVertical: 20,
-    paddingHorizontal: 10,
+    paddingHorizontal: 16,
     backgroundColor: theme.colors.background,
     flex: 1,
+    minHeight: Dimensions.get('window').height - 100,
   },
   navigationContainer: {
     flexDirection: 'row',
@@ -159,7 +181,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     flex: 1,
     textAlign: 'center',
-    fontFamily: theme.fonts.bold,
   },
   loadingContainer: {
     flex: 1,
@@ -171,10 +192,37 @@ const styles = StyleSheet.create({
     marginVertical: 30,
   },
   profileImageWrapper: { position: 'relative', alignItems: 'center', justifyContent: 'center' },
-  profileImage: { width: 110, height: 110, borderRadius: 55, backgroundColor: theme.colors.card, marginBottom: 10, borderWidth: 3, borderColor: theme.colors.primary, ...theme.shadow },
+  profileImage: { 
+    width: 110, 
+    height: 110, 
+    borderRadius: 55, 
+    backgroundColor: theme.colors.card, 
+    marginBottom: 10, 
+    borderWidth: 3, 
+    borderColor: theme.colors.primary, 
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
+  },
   cameraOverlay: { position: 'absolute', bottom: 6, right: 10, backgroundColor: theme.colors.primary, borderRadius: 16, padding: 4, borderWidth: 2, borderColor: theme.colors.card, alignItems: 'center', justifyContent: 'center' },
-  nameText: { fontSize: theme.fonts.size.xl, fontWeight: 'bold', color: theme.colors.text, marginTop: 8, fontFamily: theme.fonts.bold, textAlign: 'center' },
-  subdomainCard: { backgroundColor: theme.colors.card, borderRadius: theme.radius.md, paddingVertical: 4, paddingHorizontal: 14, marginTop: 4, alignSelf: 'center', flexDirection: 'row', alignItems: 'center', ...theme.shadow },
+  nameText: { fontSize: theme.fonts.size.xl, fontWeight: 'bold', color: theme.colors.text, marginTop: 8, textAlign: 'center' },
+  subdomainCard: { 
+    backgroundColor: theme.colors.card, 
+    borderRadius: theme.radius.md, 
+    paddingVertical: 4, 
+    paddingHorizontal: 14, 
+    marginTop: 4, 
+    alignSelf: 'center', 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
+  },
   subdomainText: { color: theme.colors.textSecondary, fontSize: theme.fonts.size.md, fontWeight: 'bold', textAlign: 'center' },
   optionContainer: {
     flexDirection: 'row',
@@ -188,28 +236,111 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 12,
   },
-  optionIconContainer: { width: 36, height: 36, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.background, borderRadius: theme.radius.lg, marginRight: 14, ...theme.shadow },
-  optionIconCircle: { width: 36, height: 36, borderRadius: 18, backgroundColor: theme.colors.background, justifyContent: 'center', alignItems: 'center', marginRight: 14, ...theme.shadow },
-  optionText: { fontSize: theme.fonts.size.lg, color: theme.colors.text, fontWeight: 'bold', fontFamily: theme.fonts.bold },
-  optionCard: { backgroundColor: theme.colors.card, borderRadius: theme.radius.lg, marginBottom: 14, ...theme.shadow },
+  optionIconContainer: { 
+    width: 36, 
+    height: 36, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    backgroundColor: theme.colors.background, 
+    borderRadius: theme.radius.lg, 
+    marginRight: 14, 
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
+  },
+  optionIconCircle: { 
+    width: 36, 
+    height: 36, 
+    borderRadius: 18, 
+    backgroundColor: theme.colors.background, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    marginRight: 14, 
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
+  },
+  optionText: { fontSize: theme.fonts.size.lg, color: theme.colors.text, fontWeight: 'bold' },
+  optionCard: { 
+    backgroundColor: theme.colors.card, 
+    borderRadius: theme.radius.lg, 
+    marginBottom: 14, 
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
+  },
   optionRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 16, paddingHorizontal: 16 },
   optionRowPressed: { backgroundColor: theme.colors.background },
   backButton: { padding: 4, marginRight: 8 },
-  headerBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: 'transparent', paddingVertical: 12, paddingHorizontal: 0, marginBottom: 18, marginTop: 8, justifyContent: 'center', shadowColor: 'transparent', borderRadius: 0 },
-  backButton: { padding: 4, marginRight: 8, position: 'absolute', left: 8, zIndex: 2 },
-  headerTitle: { fontSize: theme.fonts.size.lg, color: theme.colors.text, fontWeight: 'bold', fontFamily: theme.fonts.bold, textAlign: 'center' },
+  headerBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 30,
+    marginBottom: 10,
+    width: '100%',
+    paddingHorizontal: 0,
+  },
+  headerTitle: {
+    ...theme.header.title,
+    marginTop: 0,
+    marginBottom: 0,
+    alignSelf: 'center',
+    flex: 1,
+    textAlign: 'center',
+  },
   profileSection: { alignItems: 'center', marginBottom: 18 },
   profileImageWrapper: { position: 'relative', alignItems: 'center', justifyContent: 'center', marginBottom: 8 },
-  profileImage: { width: 110, height: 110, borderRadius: 55, borderWidth: 3, borderColor: theme.colors.primary, ...theme.strongShadow },
+  profileImage: { 
+    width: 110, 
+    height: 110, 
+    borderRadius: 55, 
+    borderWidth: 3, 
+    borderColor: theme.colors.primary, 
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.25,
+    shadowRadius: 16,
+    elevation: 8,
+  },
   cameraOverlay: { position: 'absolute', bottom: 8, right: 10, backgroundColor: theme.colors.primary, borderRadius: 16, padding: 4, borderWidth: 2, borderColor: theme.colors.card, alignItems: 'center', justifyContent: 'center' },
-  nameText: { fontSize: theme.fonts.size.md, fontWeight: 'bold', color: theme.colors.text, marginTop: 8, fontFamily: theme.fonts.bold, textAlign: 'center' },
-  subdomainCard: { backgroundColor: theme.colors.card, borderRadius: theme.radius.md, paddingVertical: 4, paddingHorizontal: 14, marginTop: 4, alignSelf: 'center', flexDirection: 'row', alignItems: 'center', ...theme.shadow },
+  nameText: { fontSize: theme.fonts.size.md, fontWeight: 'bold', color: theme.colors.text, marginTop: 8, textAlign: 'center' },
+  subdomainCard: { 
+    backgroundColor: theme.colors.card, 
+    borderRadius: theme.radius.md, 
+    paddingVertical: 4, 
+    paddingHorizontal: 14, 
+    marginTop: 4, 
+    alignSelf: 'center', 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
+  },
   subdomainText: { color: theme.colors.textSecondary, fontSize: theme.fonts.size.sm, fontWeight: 'bold', textAlign: 'center' },
   copyIconBtn: { marginLeft: 8, padding: 2 },
-  optionCard: { backgroundColor: theme.colors.card, borderRadius: 24, marginBottom: 18, ...theme.strongShadow },
+  optionCard: { 
+    backgroundColor: theme.colors.card, 
+    borderRadius: 24, 
+    marginBottom: 18, 
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.25,
+    shadowRadius: 16,
+    elevation: 8,
+  },
   optionRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 18, paddingHorizontal: 18, borderRadius: 24 },
   optionIconCircle: { width: 44, height: 44, borderRadius: 22, justifyContent: 'center', alignItems: 'center', marginRight: 14 },
-  optionText: { fontSize: theme.fonts.size.md, color: theme.colors.text, fontWeight: 'bold', fontFamily: theme.fonts.bold },
+  optionText: { fontSize: theme.fonts.size.md, color: theme.colors.text, fontWeight: 'bold' },
 });
 
 

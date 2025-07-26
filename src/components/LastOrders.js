@@ -55,7 +55,7 @@ export default function LastOrders() {
         ListEmptyComponent={
           <View style={{ alignItems: 'center', marginTop: 30 }}>
             <Text style={{ color: theme.colors.textSecondary, fontSize: theme.fonts.size.md, fontFamily: theme.fonts.regular }}>
-              <Text>🛒</Text> No recent orders
+              🛒 No recent orders
             </Text>
           </View>
         }

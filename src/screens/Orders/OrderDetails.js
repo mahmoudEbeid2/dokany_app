@@ -6,8 +6,11 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
+  Dimensions,
+  StyleSheet,
 } from "react-native";
-import { styles } from "../../components/Order/OrderDetailsStyle";
+import theme from '../../utils/theme';
+import { styles as orderDetailsStyles } from "../../components/Order/OrderDetailsStyle";
 import OrderSummary from "../../components/Order/OrderSummary";
 import OrderStatus from "../../components/Order/OrderStatus";
 import { useRoute, useNavigation } from "@react-navigation/native";
@@ -17,13 +20,24 @@ export default function OrderDetails() {
   const route = useRoute();
   const navigation = useNavigation();
   const { order } = route.params;
+  const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
+
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener('change', ({ window }) => {
+      setScreenHeight(window.height);
+    });
+
+    return () => {
+      subscription?.remove();
+    };
+  }, []);
 
   return (
     <>
-      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-      <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      <StatusBar barStyle="dark-content" backgroundColor={theme.colors.background} />
+      <SafeAreaView style={styles.safeArea}>
         <ScrollView
-          contentContainerStyle={styles.container}
+          contentContainerStyle={orderDetailsStyles.container}
           showsVerticalScrollIndicator={false}
         >
           <View
@@ -33,12 +47,15 @@ export default function OrderDetails() {
               marginBottom: 20,
             }}
           >
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <AntDesign name="arrowleft" size={24} color="black" />
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={theme.header.backButton}
+            >
+              <AntDesign name="arrowleft" size={22} color={theme.colors.primary} />
             </TouchableOpacity>
             <Text
               style={[
-                styles.title,
+                orderDetailsStyles.title,
                 { flex: 1, textAlign: "center", marginRight: 24 },
               ]}
             >
@@ -54,3 +71,10 @@ export default function OrderDetails() {
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
+});

@@ -61,6 +61,7 @@ export default function AllOrder() {
           keyExtractor={(item, index) => item._id ?? index.toString()}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => <OrderItem order={item} />}
+          contentContainerStyle={{ paddingHorizontal: 15 }}
         />
       )}
     </View>

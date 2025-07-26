@@ -100,9 +100,14 @@ export default function CategoriesScreen() {
       </TouchableOpacity>
 
       {loading ? (
-  <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={theme.colors.primary} />
-      </View>      ) : (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={theme.colors.primary} />
+        </View>
+      ) : categories.length === 0 ? (
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>No categories found</Text>
+        </View>
+      ) : (
         <FlatList
           data={categories}
           keyExtractor={(item) => item.id}
@@ -116,7 +121,12 @@ export default function CategoriesScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 10, backgroundColor: theme.colors.background },
+  container: { 
+    flex: 1, 
+    padding: 10, 
+    paddingHorizontal: 15,
+    backgroundColor: theme.colors.background 
+  },
   card: {
     width: '48%',
     backgroundColor: theme.colors.card,
@@ -180,22 +190,23 @@ const styles = StyleSheet.create({
     marginHorizontal: 2,
   },
   fab: {
-    position: 'absolute',
-    bottom: 60,
-    right: 20,
-    backgroundColor: theme.colors.primary,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    ...theme.shadow,
-    zIndex: 10,
+    ...theme.fab,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: theme.colors.background,
-  }
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: theme.colors.background,
+  },
+  emptyText: {
+    fontSize: theme.fonts.size.lg,
+    color: theme.colors.textSecondary,
+    fontWeight: '500',
+  },
 });
