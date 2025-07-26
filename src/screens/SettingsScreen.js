@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import {
   ScrollView,
   View,
@@ -42,6 +43,7 @@ const settings = [
   },
 ];
 
+
 export default function SettingsScreen({ navigation }) {
   const [seller, setSeller] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -49,6 +51,7 @@ export default function SettingsScreen({ navigation }) {
 
   const fetchSeller = async () => {
     try {
+      setLoading(true);
       const res = await sellerAPI.get('api/seller/id');
       setSeller(res.data);
     } catch (err) {
@@ -58,6 +61,21 @@ export default function SettingsScreen({ navigation }) {
       setLoading(false);
     }
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchSeller();
+
+      const subscription = Dimensions.addEventListener('change', ({ window }) => {
+        setScreenHeight(window.height);
+      });
+
+      return () => {
+        subscription?.remove();
+      };
+    }, [])
+  );
+
 
   const handleLogout = async () => {
     try {
