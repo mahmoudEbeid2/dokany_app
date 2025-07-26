@@ -102,7 +102,7 @@ const EditCustomerScreen = ({ route, navigation }) => {
         headers: { "Content-Type": "multipart/form-data" },
       });
       Alert.alert("Success", "Customer details updated!");
-      navigation.goBack();
+      navigation.navigate("CustomersList");
     } catch (error) {
       Alert.alert(
         "Error",
