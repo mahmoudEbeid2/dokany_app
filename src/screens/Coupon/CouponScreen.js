@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.background,
   },
   container: {
-    padding: 20,
+    padding: 10,
     paddingBottom: 50,
     backgroundColor: theme.colors.background,
     minHeight: Dimensions.get('window').height - 100,

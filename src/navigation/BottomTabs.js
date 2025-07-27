@@ -47,13 +47,63 @@ export default function BottomTabs() {
         },
         tabBarActiveTintColor: "#4F479E",
         tabBarInactiveTintColor: "gray",
+        tabBarStyle: {
+          display: 'flex',
+          backgroundColor: theme.colors.card,
+          borderTopWidth: 1,
+          borderTopColor: theme.colors.border,
+          paddingBottom: 5,
+          paddingTop: 5,
+          height: 60,
+        },
+        tabBarShowLabel: true,
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: '500',
+        },
+        tabBarHideOnKeyboard: false,
       })}
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Orders" component={OrdersScreen} />
-      <Tab.Screen name="Products" component={ProductsAndCategories} />
-      <Tab.Screen name="Customers" component={CustomersScreen} />
-      <Tab.Screen name="Coupons" component={CouponsScreen} />
+      <Tab.Screen 
+        name="Home" 
+        component={HomeScreen}
+        options={{
+          tabBarVisible: true,
+          tabBarStyle: { display: 'flex' },
+        }}
+      />
+      <Tab.Screen 
+        name="Orders" 
+        component={OrdersScreen}
+        options={{
+          tabBarVisible: true,
+          tabBarStyle: { display: 'flex' },
+        }}
+      />
+      <Tab.Screen 
+        name="Products" 
+        component={ProductsAndCategories}
+        options={{
+          tabBarVisible: true,
+          tabBarStyle: { display: 'flex' },
+        }}
+      />
+      <Tab.Screen 
+        name="Customers" 
+        component={CustomersScreen}
+        options={{
+          tabBarVisible: true,
+          tabBarStyle: { display: 'flex' },
+        }}
+      />
+      <Tab.Screen 
+        name="Coupons" 
+        component={CouponsScreen}
+        options={{
+          tabBarVisible: true,
+          tabBarStyle: { display: 'flex' },
+        }}
+      />
     </Tab.Navigator>
     </SafeAreaView>
   );

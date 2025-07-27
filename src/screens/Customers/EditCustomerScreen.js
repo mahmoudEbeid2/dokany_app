@@ -101,8 +101,37 @@ const EditCustomerScreen = ({ route, navigation }) => {
       await sellerAPI.put(`/api/seller/customers/${customer.id}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      Alert.alert("Success", "Customer details updated!");
-      navigation.navigate("CustomersList");
+      
+      // Update customer data with new information
+      const updatedCustomer = {
+        ...customer,
+        f_name,
+        l_name,
+        user_name: userName,
+        email,
+        phone,
+        city,
+        governorate,
+        country,
+        profile_imge: image ? image.uri : customer.profile_imge
+      };
+      
+      Alert.alert(
+        "Success", 
+        "Customer details updated successfully!",
+        [
+          {
+            text: "OK",
+            onPress: () => {
+              // Navigate back to customer details screen with updated data
+              navigation.navigate("CustomerDetails", { 
+                customer: updatedCustomer,
+                fromEdit: true 
+              });
+            }
+          }
+        ]
+      );
     } catch (error) {
       Alert.alert(
         "Error",
@@ -130,7 +159,7 @@ const EditCustomerScreen = ({ route, navigation }) => {
       <View style={styles.headerContainer}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
-          style={theme.header.backButton}
+          style={[theme.header.backButton, { marginLeft: 15 }]}
         >
           <AntDesign name="arrowleft" size={22} color={theme.colors.primary} />
         </TouchableOpacity>

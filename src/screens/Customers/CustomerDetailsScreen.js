@@ -18,8 +18,18 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialIcons } from '@expo/vector-icons';
 
 const CustomerDetailsScreen = ({ route, navigation }) => {
-  const { customer } = route.params;
+  const { customer, fromEdit } = route.params;
   const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
+
+  const handleBackPress = () => {
+    // If we came from edit screen, go back to customers list
+    if (fromEdit) {
+      navigation.navigate("MainTabs", { screen: "Customers" });
+    } else {
+      // Otherwise, go back normally
+      navigation.goBack();
+    }
+  };
 
   useEffect(() => {
     const subscription = Dimensions.addEventListener('change', ({ window }) => {
@@ -79,12 +89,12 @@ const CustomerDetailsScreen = ({ route, navigation }) => {
       <StatusBar barStyle="dark-content" backgroundColor={theme.colors.background} />
       <LinearGradient colors={[theme.colors.background, '#e8eaf6']} style={styles.gradientBg}>
         <View style={styles.headerContainer}>
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={theme.header.backButton}
-          >
-            <AntDesign name="arrowleft" size={22} color={theme.colors.primary} />
-          </TouchableOpacity>
+                  <TouchableOpacity
+          onPress={handleBackPress}
+          style={theme.header.backButton}
+        >
+          <AntDesign name="arrowleft" size={22} color={theme.colors.primary} />
+        </TouchableOpacity>
           <Text style={styles.title}>Customer Details</Text>
           <View style={{ width: 40 }} />
         </View>

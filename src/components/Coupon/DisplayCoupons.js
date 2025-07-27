@@ -4,7 +4,7 @@ import theme from '../../utils/theme';
 
 function DisplayCoupons({ coupon, onDeleteCoupon, onSelectCoupon }) {
   return (
-    <View style={{ padding: 20, flex: 1 }}>
+    <View style={{ padding: 10, flex: 1 }}>
       <Text style={{ fontSize: theme.fonts.size.lg, fontWeight: 'bold', marginBottom: 10, color: theme.colors.text, fontFamily: theme.fonts.bold }}>
         Coupons
       </Text>

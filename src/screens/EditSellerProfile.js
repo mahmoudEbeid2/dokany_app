@@ -193,14 +193,26 @@ const validateForm = () => {
         </View>
         <View style={styles.card}>
 
-          <View style={styles.avatarWrapper}>
-            <TouchableOpacity onPress={() => pickImage("profile")}>
-              <Image
-                source={profilePreview ? { uri: profilePreview } : require('../../assets/avtar.jpg')}
-                style={styles.profileImage}
-              />
-            </TouchableOpacity>
-            <Text style={styles.imageText}>Profile</Text>
+          <View style={styles.imagesContainer}>
+            <View style={styles.avatarWrapper}>
+              <TouchableOpacity onPress={() => pickImage("profile")}>
+                <Image
+                  source={profilePreview ? { uri: profilePreview } : require('../../assets/avtar.jpg')}
+                  style={styles.profileImage}
+                />
+              </TouchableOpacity>
+              <Text style={styles.imageText}>Profile</Text>
+            </View>
+
+            <View style={styles.logoWrapper}>
+              <TouchableOpacity onPress={() => pickImage("logo")}>
+                <Image
+                  source={logoPreview ? { uri: logoPreview } : require('../../assets/icon.png')}
+                  style={styles.logoImage}
+                />
+              </TouchableOpacity>
+              <Text style={styles.imageText}>Logo</Text>
+            </View>
           </View>
 
           <View style={styles.formFields}>
@@ -411,14 +423,38 @@ const styles = StyleSheet.create({
     elevation: 8,
     marginVertical: 30,
   },
+  imagesContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 18,
+    width: '100%',
+  },
   avatarWrapper: {
     alignItems: 'center',
-    marginBottom: 18,
+    flex: 1,
+  },
+  logoWrapper: {
+    alignItems: 'center',
+    flex: 1,
   },
   profileImage: {
     width: 110,
     height: 110,
     borderRadius: 55,
+    backgroundColor: theme.colors.card,
+    borderWidth: 3,
+    borderColor: theme.colors.primary,
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.25,
+    shadowRadius: 16,
+    elevation: 8,
+    marginBottom: 8,
+  },
+  logoImage: {
+    width: 110,
+    height: 110,
+    borderRadius: 16,
     backgroundColor: theme.colors.card,
     borderWidth: 3,
     borderColor: theme.colors.primary,

@@ -18,6 +18,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { Ionicons, MaterialIcons, FontAwesome, AntDesign } from '@expo/vector-icons';
 import { authAPI } from '../utils/api/api';
 import ThemeSelector from '../components/ThemeSelector';
+import { API } from "@env";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import theme from '../utils/theme';
@@ -44,6 +45,7 @@ export default function RegisterScreen({ navigation }) {
   const [logo, setLogo] = useState(null);
   const [profileImage, setProfileImage] = useState(null);
   const [selectedTheme, setSelectedTheme] = useState(null);
+  const [themes, setThemes] = useState([]);
   const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
 
   useEffect(() => {
@@ -54,6 +56,20 @@ export default function RegisterScreen({ navigation }) {
     return () => {
       subscription?.remove();
     };
+  }, []);
+
+  useEffect(() => {
+    const fetchThemes = async () => {
+      try {
+        const themeRes = await fetch(`${API}/themes`);
+        const themeData = await themeRes.json();
+        setThemes(themeData);
+      } catch (err) {
+        console.log("Error loading themes:", err.message);
+      }
+    };
+
+    fetchThemes();
   }, []);
 
   const handleChange = (field, value) => {
@@ -267,7 +283,9 @@ export default function RegisterScreen({ navigation }) {
       });
     }
 
-    formData.append('theme', selectedTheme);
+    if (selectedTheme) {
+      formData.append('theme_id', selectedTheme);
+    }
 
     try {
       await authAPI.post('seller/register', formData, {
@@ -356,7 +374,31 @@ export default function RegisterScreen({ navigation }) {
             </TouchableOpacity>
           </View>
 
-          <ThemeSelector selectedTheme={selectedTheme} onSelectTheme={setSelectedTheme} />
+          <View style={styles.themeSection}>
+            <Text style={styles.themeLabel}>Select Theme</Text>
+            <View style={styles.themeList}>
+              {themes.length > 0 ? (
+                themes.map((themeItem) => (
+                  <TouchableOpacity
+                    key={themeItem.id}
+                    style={[
+                      styles.themeCard,
+                      selectedTheme === themeItem.id && styles.selectedThemeCard
+                    ]}
+                    onPress={() => setSelectedTheme(themeItem.id)}
+                  >
+                    <Image source={{ uri: themeItem.preview_image }} style={styles.themeImage} />
+                    <Text style={styles.themeName}>{themeItem.name}</Text>
+                    {selectedTheme === themeItem.id && (
+                      <Text style={styles.selectedText}>Selected</Text>
+                    )}
+                  </TouchableOpacity>
+                ))
+              ) : (
+                <Text style={styles.noThemesText}>No themes available</Text>
+              )}
+            </View>
+          </View>
 
 
           <TouchableOpacity onPress={handleRegister} style={styles.registerButton}>
@@ -518,6 +560,66 @@ const styles = StyleSheet.create({
     shadowRadius: 18,
     elevation: 10,
     alignSelf: 'center',
+  },
+  themeSection: {
+    marginBottom: 20,
+  },
+  themeLabel: {
+    fontSize: theme.fonts.size.md,
+    color: theme.colors.text,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  themeList: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: 12,
+  },
+  themeCard: {
+    width: 130,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    borderRadius: theme.radius.md,
+    padding: 8,
+    alignItems: 'center',
+    backgroundColor: theme.colors.card,
+    shadowColor: theme.colors.shadow || '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
+  },
+  selectedThemeCard: {
+    borderColor: theme.colors.primary,
+    borderWidth: 2,
+    backgroundColor: theme.colors.background,
+  },
+  themeImage: {
+    width: 100,
+    height: 100,
+    borderRadius: theme.radius.sm,
+    marginBottom: 6,
+    borderWidth: 2,
+    borderColor: theme.colors.primary,
+  },
+  themeName: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#333',
+  },
+  selectedText: {
+    marginTop: 4,
+    fontSize: 12,
+    color: '#6a0dad',
+    fontWeight: 'bold',
+  },
+  noThemesText: {
+    fontSize: theme.fonts.size.md,
+    color: theme.colors.textSecondary,
+    textAlign: 'center',
+    fontStyle: 'italic',
   },
 
 });
