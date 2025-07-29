@@ -4,7 +4,7 @@ import { useState } from "react";
 import { statusStyle as styles } from "./OrderDetailsStyle";
 import { API } from "@env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import theme from '../../utils/theme';
+import theme from "../../utils/theme";
 
 function OrderStatus({ status, order_id }) {
   const [open, setOpen] = useState(false);
@@ -20,12 +20,12 @@ function OrderStatus({ status, order_id }) {
   async function handleUpdate() {
     try {
       const token = await AsyncStorage.getItem("token");
-
+      console.log(token);
       const res = await fetch(`${API}/api/orders/${order_id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: token,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ status: value }),
       });
@@ -42,19 +42,19 @@ function OrderStatus({ status, order_id }) {
     }
   }
   const buttonStyle = {
-    width: '100%',
+    width: "100%",
     backgroundColor: theme.colors.primary,
     marginTop: 40,
     height: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     borderRadius: theme.radius.lg,
     ...theme.shadow,
   };
 
   const buttonTextStyle = {
     color: theme.colors.card,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: theme.fonts.size.md,
     fontFamily: theme.fonts.bold,
   };
